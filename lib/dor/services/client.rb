@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'dor/services/client/version'
 require 'singleton'
 require 'faraday'
@@ -9,7 +11,6 @@ module Dor
       class Error < StandardError; end
 
       include Singleton
-
 
       def self.configure(url:)
         instance.url = url
@@ -37,7 +38,7 @@ module Dor
       attr_writer :url
 
       def url
-        @url || raise(Error, "url has not yet been configured")
+        @url || raise(Error, 'url has not yet been configured')
       end
 
       def register(params:)
@@ -48,6 +49,7 @@ module Dor
           req.body = params.to_json
         end
         raise "#{resp.reason_phrase}: #{resp.status} (#{resp.body})" unless resp.success?
+
         JSON.parse(resp.body).with_indifferent_access
       end
 

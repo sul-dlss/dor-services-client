@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 RSpec.describe Dor::Services::Client do
-  it "has a version number" do
+  it 'has a version number' do
     expect(Dor::Services::Client::VERSION).not_to be nil
   end
 
