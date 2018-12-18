@@ -6,6 +6,7 @@ require 'faraday'
 require 'active_support/core_ext/hash/indifferent_access'
 require 'dor/services/client/files'
 require 'dor/services/client/objects'
+require 'dor/services/client/release_tags'
 require 'dor/services/client/workflow'
 require 'dor/services/client/workspace'
 
@@ -30,6 +31,10 @@ module Dor
 
       def workspace
         @workspace ||= Workspace.new(connection: connection)
+      end
+
+      def release_tags
+        @release_tags ||= ReleaseTags.new(connection: connection)
       end
 
       def self.configure(url:)
@@ -71,6 +76,17 @@ module Dor
       # @return nil
       def self.initialize_workspace(object:, source:)
         instance.workspace.create(object: object, source: source)
+      end
+
+      # Creates a new release tag for the object
+      # @param object [String] the pid for the object
+      # @param release [Boolean]
+      # @param what [String]
+      # @param to [String]
+      # @param who [String]
+      # @return [Boolean] true if successful
+      def self.create_release_tag(object:, release:, what:, to:, who:)
+        instance.release_tags.create(object: object, release: release, what: what, to: to, who: who)
       end
 
       attr_writer :url

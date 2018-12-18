@@ -22,23 +22,34 @@ RSpec.describe Dor::Services::Client do
     end
 
     describe '.retrieve_file' do
-      it 'calls #retrieve_file on a new instance' do
+      it 'calls #retrieve on a the file' do
         expect(described_class.instance.files).to receive(:retrieve)
         described_class.retrieve_file(object: 'druid:123', filename: 'M1090_S15_B01_F04_0073.jp2')
       end
     end
 
     describe '.list_files' do
-      it 'calls #list_files on a new instance' do
+      it 'calls #list on the files' do
         expect(described_class.instance.files).to receive(:list)
         described_class.list_files(object: 'druid:123')
       end
     end
 
     describe '.initialize_workspace' do
-      it 'calls #list_files on a new instance' do
+      it 'calls #create on a new instance' do
         expect(described_class.instance.workspace).to receive(:create)
         described_class.initialize_workspace(object: 'druid:123', source: 'foo/bar/baz')
+      end
+    end
+
+    describe '.create_release_tag' do
+      it 'calls #create on a the release_tags' do
+        expect(described_class.instance.release_tags).to receive(:create)
+        described_class.create_release_tag(object: 'druid:123',
+                                           release: true,
+                                           to: 'searchworks',
+                                           who: 'justin',
+                                           what: 'foo')
       end
     end
   end
