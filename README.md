@@ -1,6 +1,7 @@
 [![Gem Version](https://badge.fury.io/rb/dor-services-client.svg)](https://badge.fury.io/rb/dor-services-client) 
 [![Build Status](https://travis-ci.com/sul-dlss/dor-services-client.svg?branch=master)](https://travis-ci.com/sul-dlss/dor-services-client) 
-[![Coverage Status](https://coveralls.io/repos/github/sul-dlss/dor-services-client/badge.svg?branch=master)](https://coveralls.io/github/sul-dlss/dor-services-client?branch=master)
+[![Code Climate](https://codeclimate.com/github/sul-dlss/dor-services-client/badges/gpa.svg)](https://codeclimate.com/github/sul-dlss/dor-services-client)
+ [![Code Climate Test Coverage](https://codeclimate.com/github/sul-dlss/dor-services-client/badges/coverage.svg)](https://codeclimate.com/github/sul-dlss/dor-services-client/coverage)
 
 # Dor::Services::Client
 
