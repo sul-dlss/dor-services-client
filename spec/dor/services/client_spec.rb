@@ -34,5 +34,12 @@ RSpec.describe Dor::Services::Client do
         described_class.list_files(object: 'druid:123')
       end
     end
+
+    describe '.initialize_workspace' do
+      it 'calls #list_files on a new instance' do
+        expect(described_class.instance.workspace).to receive(:create)
+        described_class.initialize_workspace(object: 'druid:123', source: 'foo/bar/baz')
+      end
+    end
   end
 end
