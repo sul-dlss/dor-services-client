@@ -6,6 +6,8 @@ require 'faraday'
 require 'active_support/core_ext/hash/indifferent_access'
 require 'dor/services/client/files'
 require 'dor/services/client/objects'
+require 'dor/services/client/workflow'
+require 'dor/services/client/workspace'
 
 module Dor
   module Services
@@ -20,6 +22,14 @@ module Dor
 
       def files
         @files ||= Files.new(connection: connection)
+      end
+
+      def workflow
+        @workflow ||= Workflow.new(connection: connection)
+      end
+
+      def workspace
+        @workspace ||= Workspace.new(connection: connection)
       end
 
       def self.configure(url:)
@@ -43,6 +53,24 @@ module Dor
       # @return [Array<String>] the list of filenames in the workspace
       def self.list_files(object:)
         instance.files.list(object: object)
+      end
+
+      # Initializes a new workflow
+      # @param object [String] the pid for the object
+      # @param wf_name [String] the name of the workflow
+      # @raises [Error] if the request is unsuccessful.
+      # @return nil
+      def self.initialize_workflow(object:, wf_name:)
+        instance.workflow.create(object: object, wf_name: wf_name)
+      end
+
+      # Initializes a new workspace
+      # @param object [String] the pid for the object
+      # @param source [String] the path to the object
+      # @raises [Error] if the request is unsuccessful.
+      # @return nil
+      def self.initialize_workspace(object:, source:)
+        instance.workspace.create(object: object, source: source)
       end
 
       attr_writer :url

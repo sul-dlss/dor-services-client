@@ -21,7 +21,7 @@ module Dor
             req.headers['Accept'] = 'application/json'
             req.body = params.to_json
           end
-          raise "#{resp.reason_phrase}: #{resp.status} (#{resp.body})" unless resp.success?
+          raise Error, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})" unless resp.success?
 
           JSON.parse(resp.body).with_indifferent_access
         end
