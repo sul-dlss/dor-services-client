@@ -25,6 +25,19 @@ module Dor
 
           JSON.parse(resp.body).with_indifferent_access
         end
+
+        # Publish a new object
+        # @param object [String] the pid for the object
+        # @raise [Error] when the response is not successful.
+        # @return [boolean] true on success
+        def publish(object:)
+          resp = connection.post do |req|
+            req.url "v1/objects/#{object}/publish"
+          end
+          raise Error, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})" unless resp.success?
+
+          true
+        end
       end
     end
   end

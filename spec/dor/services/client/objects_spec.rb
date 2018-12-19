@@ -40,4 +40,31 @@ RSpec.describe Dor::Services::Client::Objects do
       end
     end
   end
+
+  describe '#publish' do
+    let(:pid) { 'druid:1234' }
+    subject(:request) { client.publish(object: pid) }
+
+    context 'when API request succeeds' do
+      before do
+        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/publish')
+          .to_return(status: 200)
+      end
+
+      it 'returns true' do
+        expect(request).to be true
+      end
+    end
+
+    context 'when API request fails' do
+      before do
+        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/publish')
+          .to_return(status: [409, 'conflict'])
+      end
+
+      it 'raises an error' do
+        expect { request }.to raise_error(Dor::Services::Client::Error, 'conflict: 409 ()')
+      end
+    end
+  end
 end
