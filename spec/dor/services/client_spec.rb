@@ -52,5 +52,12 @@ RSpec.describe Dor::Services::Client do
                                            what: 'foo')
       end
     end
+
+    describe '.publish' do
+      it 'calls #publish on a the object' do
+        expect(described_class.instance.objects).to receive(:publish)
+        described_class.publish(object: 'druid:123')
+      end
+    end
   end
 end

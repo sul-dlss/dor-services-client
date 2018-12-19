@@ -89,6 +89,14 @@ module Dor
         instance.release_tags.create(object: object, release: release, what: what, to: to, who: who)
       end
 
+      # Publish a new object
+      # @param object [String] the pid for the object
+      # @raise [Error] when the response is not successful.
+      # @return [boolean] true on success
+      def self.publish(object:)
+        instance.objects.publish(object: object)
+      end
+
       attr_writer :url
 
       private
