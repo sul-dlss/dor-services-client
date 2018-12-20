@@ -35,6 +35,13 @@ RSpec.describe Dor::Services::Client do
       end
     end
 
+    describe '.preserved_content' do
+      it 'calls #preserved_content on a the file' do
+        expect(described_class.instance.files).to receive(:preserved_content)
+        described_class.preserved_content(object: 'druid:123', filename: 'M1090_S15_B01_F04_0073.jp2', version: 2)
+      end
+    end
+
     describe '.initialize_workspace' do
       it 'calls #create on a new instance' do
         expect(described_class.instance.workspace).to receive(:create)

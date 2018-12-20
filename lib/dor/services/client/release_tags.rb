@@ -22,7 +22,7 @@ module Dor
             release: release
           }
           resp = connection.post do |req|
-            req.url "#{version}/objects/#{object}/release_tags"
+            req.url "#{api_version}/objects/#{object}/release_tags"
             req.headers['Content-Type'] = 'application/json'
             req.body = params.to_json
           end

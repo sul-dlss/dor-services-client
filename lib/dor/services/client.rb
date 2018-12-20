@@ -61,6 +61,7 @@ module Dor
         instance.objects.register(params: params)
       end
 
+      # Get the contents from the workspace
       # @param [String] object the identifier for the object
       # @param [String] filename the name of the file to retrieve
       # @return [String] the file contents from the workspace
@@ -68,6 +69,16 @@ module Dor
         instance.files.retrieve(object: object, filename: filename)
       end
 
+      # Get the preserved file contents
+      # @param [String] object the identifier for the object
+      # @param [String] filename the name of the file to retrieve
+      # @param [Integer] version the version of the file to retrieve
+      # @return [String] the file contents from the SDR
+      def self.preserved_content(object:, filename:, version:)
+        instance.files.preserved_content(object: object, filename: filename, version: version)
+      end
+
+      # Get the list of files in the workspace
       # @param [String] object the identifier for the object
       # @return [Array<String>] the list of filenames in the workspace
       def self.list_files(object:)

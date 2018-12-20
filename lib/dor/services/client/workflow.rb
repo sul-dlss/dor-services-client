@@ -12,7 +12,7 @@ module Dor
         # @return nil
         def create(object:, wf_name:)
           resp = connection.post do |req|
-            req.url "#{version}/objects/#{object}/apo_workflows/#{wf_name}"
+            req.url "#{api_version}/objects/#{object}/apo_workflows/#{wf_name}"
           end
           raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})" unless resp.success?
         end
