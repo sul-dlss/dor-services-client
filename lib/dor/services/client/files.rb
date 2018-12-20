@@ -4,14 +4,10 @@ module Dor
   module Services
     class Client
       # API calls relating to files
-      class Files
-        def initialize(connection:)
-          @connection = connection
-        end
-
+      class Files < VersionedService
         def retrieve(object:, filename:)
           resp = connection.get do |req|
-            req.url "v1/objects/#{object}/contents/#{filename}"
+            req.url "#{version}/objects/#{object}/contents/#{filename}"
           end
           return unless resp.success?
 
@@ -20,17 +16,13 @@ module Dor
 
         def list(object:)
           resp = connection.get do |req|
-            req.url "v1/objects/#{object}/contents"
+            req.url "#{version}/objects/#{object}/contents"
           end
           return [] unless resp.success?
 
           json = JSON.parse(resp.body)
           json['items'].map { |item| item['name'] }
         end
-
-        private
-
-        attr_reader :connection
       end
     end
   end
