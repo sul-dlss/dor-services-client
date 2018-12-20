@@ -59,6 +59,13 @@ RSpec.describe Dor::Services::Client do
         described_class.publish(object: 'druid:123')
       end
     end
+
+    describe '.current_version' do
+      it 'calls #current_version on a the object' do
+        expect(described_class.instance.objects).to receive(:current_version)
+        described_class.current_version(object: 'druid:123')
+      end
+    end
   end
 
   context 'when passed a username and password' do

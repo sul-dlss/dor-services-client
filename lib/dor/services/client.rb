@@ -111,6 +111,15 @@ module Dor
         instance.objects.publish(object: object)
       end
 
+      # Gets the current version number for the object
+      # @param object [String] the pid for the object
+      # @raise [UnexpectedResponse] when the response is not successful.
+      # @raise [MalformedResponse] when the response is not parseable.
+      # @return [Integer] the current version
+      def self.current_version(object:)
+        instance.objects.current_version(object: object)
+      end
+
       attr_writer :url, :username, :password, :connection
 
       private
