@@ -4,6 +4,7 @@ require 'dor/services/client/version'
 require 'singleton'
 require 'faraday'
 require 'active_support/core_ext/hash/indifferent_access'
+require 'active_support/core_ext/module/delegation'
 require 'dor/services/client/versioned_service'
 require 'dor/services/client/files'
 require 'dor/services/client/objects'
@@ -47,79 +48,76 @@ module Dor
         @release_tags ||= ReleaseTags.new(connection: connection, version: DEFAULT_VERSION)
       end
 
-      def self.configure(url:, username: nil, password: nil)
-        instance.url = url
-        instance.username = username
-        instance.password = password
-        # Force connection to be re-established when `.configure` is called
-        instance.connection = nil
-      end
+      class << self
+        def configure(url:, username: nil, password: nil)
+          instance.url = url
+          instance.username = username
+          instance.password = password
+          # Force connection to be re-established when `.configure` is called
+          instance.connection = nil
+        end
 
-      # Creates a new object in DOR
-      # @return [HashWithIndifferentAccess] the response, which includes a :pid
-      def self.register(params:)
-        instance.objects.register(params: params)
-      end
+        delegate :objects, :files, :workflow, :workspace, :release_tags, to: :instance
+        private :objects, :files, :workflow, :workspace, :release_tags
 
-      # Get the contents from the workspace
-      # @param [String] object the identifier for the object
-      # @param [String] filename the name of the file to retrieve
-      # @return [String] the file contents from the workspace
-      def self.retrieve_file(object:, filename:)
-        instance.files.retrieve(object: object, filename: filename)
-      end
+        # Creates a new object in DOR
+        # @return [HashWithIndifferentAccess] the response, which includes a :pid
+        delegate :register, to: :objects
 
-      # Get the preserved file contents
-      # @param [String] object the identifier for the object
-      # @param [String] filename the name of the file to retrieve
-      # @param [Integer] version the version of the file to retrieve
-      # @return [String] the file contents from the SDR
-      def self.preserved_content(object:, filename:, version:)
-        instance.files.preserved_content(object: object, filename: filename, version: version)
-      end
+        # @param [String] object the identifier for the object
+        # @param [String] filename the name of the file to retrieve
+        # @return [String] the file contents from the workspace
+        def retrieve_file(object:, filename:)
+          files.retrieve(object: object, filename: filename)
+        end
 
-      # Get the list of files in the workspace
-      # @param [String] object the identifier for the object
-      # @return [Array<String>] the list of filenames in the workspace
-      def self.list_files(object:)
-        instance.files.list(object: object)
-      end
+        # Get the preserved file contents
+        # @param [String] object the identifier for the object
+        # @param [String] filename the name of the file to retrieve
+        # @param [Integer] version the version of the file to retrieve
+        # @return [String] the file contents from the SDR
+        delegate :preserved_content, to: :files
 
-      # Initializes a new workflow
-      # @param object [String] the pid for the object
-      # @param wf_name [String] the name of the workflow
-      # @raises [UnexpectedResponse] if the request is unsuccessful.
-      # @return nil
-      def self.initialize_workflow(object:, wf_name:)
-        instance.workflow.create(object: object, wf_name: wf_name)
-      end
+        # @param [String] object the identifier for the object
+        # @return [Array<String>] the list of filenames in the workspace
+        def list_files(object:)
+          files.list(object: object)
+        end
 
-      # Initializes a new workspace
-      # @param object [String] the pid for the object
-      # @param source [String] the path to the object
-      # @raises [UnexpectedResponse] if the request is unsuccessful.
-      # @return nil
-      def self.initialize_workspace(object:, source:)
-        instance.workspace.create(object: object, source: source)
-      end
+        # Initializes a new workflow
+        # @param object [String] the pid for the object
+        # @param wf_name [String] the name of the workflow
+        # @raises [UnexpectedResponse] if the request is unsuccessful.
+        # @return nil
+        def initialize_workflow(object:, wf_name:)
+          workflow.create(object: object, wf_name: wf_name)
+        end
 
-      # Creates a new release tag for the object
-      # @param object [String] the pid for the object
-      # @param release [Boolean]
-      # @param what [String]
-      # @param to [String]
-      # @param who [String]
-      # @return [Boolean] true if successful
-      def self.create_release_tag(object:, release:, what:, to:, who:)
-        instance.release_tags.create(object: object, release: release, what: what, to: to, who: who)
-      end
+        # Initializes a new workspace
+        # @param object [String] the pid for the object
+        # @param source [String] the path to the object
+        # @raises [UnexpectedResponse] if the request is unsuccessful.
+        # @return nil
+        def initialize_workspace(object:, source:)
+          workspace.create(object: object, source: source)
+        end
 
-      # Publish a new object
-      # @param object [String] the pid for the object
-      # @raise [UnexpectedResponse] when the response is not successful.
-      # @return [boolean] true on success
-      def self.publish(object:)
-        instance.objects.publish(object: object)
+        # Creates a new release tag for the object
+        # @param object [String] the pid for the object
+        # @param release [Boolean]
+        # @param what [String]
+        # @param to [String]
+        # @param who [String]
+        # @return [Boolean] true if successful
+        def create_release_tag(object:, release:, what:, to:, who:)
+          release_tags.create(object: object, release: release, what: what, to: to, who: who)
+        end
+
+        # Publish a new object
+        # @param object [String] the pid for the object
+        # @raise [UnexpectedResponse] when the response is not successful.
+        # @return [boolean] true on success
+        delegate :publish, to: :objects
       end
 
       attr_writer :url, :username, :password, :connection
