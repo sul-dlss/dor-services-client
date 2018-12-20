@@ -37,8 +37,12 @@ module Dor
         @release_tags ||= ReleaseTags.new(connection: connection)
       end
 
-      def self.configure(url:)
+      def self.configure(url:, username: nil, password: nil)
         instance.url = url
+        instance.username = username
+        instance.password = password
+        # Force connection to be re-established when `.configure` is called
+        instance.connection = nil
       end
 
       # Creates a new object in DOR
@@ -97,16 +101,24 @@ module Dor
         instance.objects.publish(object: object)
       end
 
-      attr_writer :url
+      attr_writer :url, :username, :password, :connection
 
       private
+
+      attr_reader :username, :password
 
       def url
         @url || raise(Error, 'url has not yet been configured')
       end
 
       def connection
-        @connection ||= Faraday.new(url)
+        @connection ||= Faraday.new(url) do |conn|
+          # @note when username & password are nil, this line is required else
+          #       the Faraday instance will be passed an empty block, which
+          #       causes the adapter not to be set. Thus, everything breaks.
+          conn.adapter    Faraday.default_adapter
+          conn.basic_auth username, password if username && password
+        end
       end
     end
   end
