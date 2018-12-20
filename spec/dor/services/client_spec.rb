@@ -60,4 +60,21 @@ RSpec.describe Dor::Services::Client do
       end
     end
   end
+
+  context 'when passed a username and password' do
+    before do
+      described_class.configure(url: 'https://dor-services.example.com',
+                                username: username,
+                                password: password)
+    end
+
+    let(:username) { 'foo' }
+    let(:password) { 'bar' }
+
+    it 'sets the Authorization header on the instance connection' do
+      expect(described_class.instance.send(:connection).headers).to include(
+        'Authorization' => 'Basic Zm9vOmJhcg=='
+      )
+    end
+  end
 end
