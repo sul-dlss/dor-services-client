@@ -16,6 +16,13 @@ module Dor
     class Client
       class Error < StandardError; end
 
+      # Error that is raised when the remote server returns some unexpected response
+      # this could be any 4xx or 5xx status.
+      class UnexpectedResponse < Error; end
+
+      # Error that is raised when the remote server returns some unparsable response
+      class MalformedResponse < Error; end
+
       DEFAULT_VERSION = 'v1'
 
       include Singleton
@@ -70,7 +77,7 @@ module Dor
       # Initializes a new workflow
       # @param object [String] the pid for the object
       # @param wf_name [String] the name of the workflow
-      # @raises [Error] if the request is unsuccessful.
+      # @raises [UnexpectedResponse] if the request is unsuccessful.
       # @return nil
       def self.initialize_workflow(object:, wf_name:)
         instance.workflow.create(object: object, wf_name: wf_name)
@@ -79,7 +86,7 @@ module Dor
       # Initializes a new workspace
       # @param object [String] the pid for the object
       # @param source [String] the path to the object
-      # @raises [Error] if the request is unsuccessful.
+      # @raises [UnexpectedResponse] if the request is unsuccessful.
       # @return nil
       def self.initialize_workspace(object:, source:)
         instance.workspace.create(object: object, source: source)
@@ -98,7 +105,7 @@ module Dor
 
       # Publish a new object
       # @param object [String] the pid for the object
-      # @raise [Error] when the response is not successful.
+      # @raise [UnexpectedResponse] when the response is not successful.
       # @return [boolean] true on success
       def self.publish(object:)
         instance.objects.publish(object: object)

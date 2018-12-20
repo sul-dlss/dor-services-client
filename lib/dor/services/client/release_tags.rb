@@ -11,6 +11,7 @@ module Dor
         # @param what [String]
         # @param to [String]
         # @param who [String]
+        # @raises [UnexpectedResponse] if the request is unsuccessful.
         # @return [Boolean] true if successful
         # rubocop:disable Metrics/MethodLength
         def create(object:, release:, what:, to:, who:)
@@ -25,7 +26,7 @@ module Dor
             req.headers['Content-Type'] = 'application/json'
             req.body = params.to_json
           end
-          raise Error, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})" unless resp.success?
+          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})" unless resp.success?
 
           true
         end

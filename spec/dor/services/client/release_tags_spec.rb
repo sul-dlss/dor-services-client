@@ -28,7 +28,7 @@ RSpec.describe Dor::Services::Client::ReleaseTags do
       end
 
       it 'raises an error' do
-        expect { request }.to raise_error('something is amiss: 500 ()')
+        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse, 'something is amiss: 500 ()')
       end
     end
   end
