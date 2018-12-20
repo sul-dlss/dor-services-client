@@ -1,13 +1,11 @@
-[![Gem Version](https://badge.fury.io/rb/dor-services-client.svg)](https://badge.fury.io/rb/dor-services-client) 
-[![Build Status](https://travis-ci.com/sul-dlss/dor-services-client.svg?branch=master)](https://travis-ci.com/sul-dlss/dor-services-client) 
+[![Gem Version](https://badge.fury.io/rb/dor-services-client.svg)](https://badge.fury.io/rb/dor-services-client)
+[![Build Status](https://travis-ci.com/sul-dlss/dor-services-client.svg?branch=master)](https://travis-ci.com/sul-dlss/dor-services-client)
 [![Code Climate](https://codeclimate.com/github/sul-dlss/dor-services-client/badges/gpa.svg)](https://codeclimate.com/github/sul-dlss/dor-services-client)
- [![Code Climate Test Coverage](https://codeclimate.com/github/sul-dlss/dor-services-client/badges/coverage.svg)](https://codeclimate.com/github/sul-dlss/dor-services-client/coverage)
+[![Code Climate Test Coverage](https://codeclimate.com/github/sul-dlss/dor-services-client/badges/coverage.svg)](https://codeclimate.com/github/sul-dlss/dor-services-client/coverage)
 
 # Dor::Services::Client
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/dor/services/client`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Dor::Services::Client is a Ruby gem that acts as a client to the RESTful HTTP APIs provided by [dor-services-app](https://github.com/sul-dlss/dor-services-app). The gem is intended to be used as a replacement to the [dor-services gem](https://github.com/sul-dlss/dor-services)
 
 ## Installation
 
@@ -27,7 +25,26 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+To configure the client, you may do so globally (say, in a Rails initializer):
+
+```ruby
+require 'dor/services/client'
+
+Dor::Services::Client.configure(url: Settings.DOR_SERVICES.URL,
+                                username: Settings.DOR_SERVICES.USER,
+                                password: Settings.DOR_SERVICES.PASS)
+```
+
+Note that the client may not be used without first having been configured, and the `url` keyword is required. The `username` and `password` arguments are optional. (If you are working in a project where the credentials are embedded in the URL, that ought to work just fine as well.)
+
+Then you can invoke methods on the client that correspond to dor-services-app API requests, e.g.:
+
+```ruby
+# This API endpoint returns JSON
+response = Dor::Services::Client.register(params: { druid: 'druid:123' })
+response[:pid]
+# => 'druid:123'
+```
 
 ## Development
 
@@ -37,4 +54,8 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/dor-services-client.
+Bug reports and pull requests are welcome on GitHub at https://github.com/sul-dlss/dor-services-client
+
+## Copyright
+
+Copyright (c) 2018 Stanford Libraries. See LICENSE for details.
