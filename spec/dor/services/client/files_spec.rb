@@ -5,7 +5,7 @@ RSpec.describe Dor::Services::Client::Files do
     Dor::Services::Client.configure(url: 'https://dor-services.example.com')
   end
   let(:connection) { Dor::Services::Client.instance.send(:connection) }
-  subject(:client) { described_class.new(connection: connection) }
+  subject(:client) { described_class.new(connection: connection, version: 'v1') }
 
   describe '#list' do
     subject { client.list(object: 'druid:ck546xs5106') }

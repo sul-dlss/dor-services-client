@@ -4,13 +4,7 @@ module Dor
   module Services
     class Client
       # API calls that are about a repository object
-      class ReleaseTags
-        def initialize(connection:)
-          @connection = connection
-        end
-
-        attr_reader :connection
-
+      class ReleaseTags < VersionedService
         # Creates a new release tag for the object
         # @param object [String] the pid for the object
         # @param release [Boolean]
@@ -27,7 +21,7 @@ module Dor
             release: release
           }
           resp = connection.post do |req|
-            req.url "v1/objects/#{object}/release_tags"
+            req.url "#{version}/objects/#{object}/release_tags"
             req.headers['Content-Type'] = 'application/json'
             req.body = params.to_json
           end

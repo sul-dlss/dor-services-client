@@ -4,18 +4,12 @@ module Dor
   module Services
     class Client
       # API calls that are about a repository object
-      class Objects
-        def initialize(connection:)
-          @connection = connection
-        end
-
-        attr_reader :connection
-
+      class Objects < VersionedService
         # Creates a new object in DOR
         # @return [HashWithIndifferentAccess] the response, which includes a :pid
         def register(params:)
           resp = connection.post do |req|
-            req.url 'v1/objects'
+            req.url "#{version}/objects"
             req.headers['Content-Type'] = 'application/json'
             # asking the service to return JSON (else it'll be plain text)
             req.headers['Accept'] = 'application/json'
@@ -32,7 +26,7 @@ module Dor
         # @return [boolean] true on success
         def publish(object:)
           resp = connection.post do |req|
-            req.url "v1/objects/#{object}/publish"
+            req.url "#{version}/objects/#{object}/publish"
           end
           raise Error, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})" unless resp.success?
 

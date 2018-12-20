@@ -4,6 +4,7 @@ require 'dor/services/client/version'
 require 'singleton'
 require 'faraday'
 require 'active_support/core_ext/hash/indifferent_access'
+require 'dor/services/client/versioned_service'
 require 'dor/services/client/files'
 require 'dor/services/client/objects'
 require 'dor/services/client/release_tags'
@@ -15,26 +16,28 @@ module Dor
     class Client
       class Error < StandardError; end
 
+      DEFAULT_VERSION = 'v1'
+
       include Singleton
 
       def objects
-        @objects ||= Objects.new(connection: connection)
+        @objects ||= Objects.new(connection: connection, version: DEFAULT_VERSION)
       end
 
       def files
-        @files ||= Files.new(connection: connection)
+        @files ||= Files.new(connection: connection, version: DEFAULT_VERSION)
       end
 
       def workflow
-        @workflow ||= Workflow.new(connection: connection)
+        @workflow ||= Workflow.new(connection: connection, version: DEFAULT_VERSION)
       end
 
       def workspace
-        @workspace ||= Workspace.new(connection: connection)
+        @workspace ||= Workspace.new(connection: connection, version: DEFAULT_VERSION)
       end
 
       def release_tags
-        @release_tags ||= ReleaseTags.new(connection: connection)
+        @release_tags ||= ReleaseTags.new(connection: connection, version: DEFAULT_VERSION)
       end
 
       def self.configure(url:, username: nil, password: nil)
