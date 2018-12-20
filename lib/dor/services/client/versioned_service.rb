@@ -7,12 +7,12 @@ module Dor
       class VersionedService
         def initialize(connection:, version:)
           @connection = connection
-          @version = version
+          @api_version = version
         end
 
         private
 
-        attr_reader :connection, :version
+        attr_reader :connection, :api_version
       end
     end
   end

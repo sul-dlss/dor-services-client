@@ -20,7 +20,7 @@ module Dor
         # @return [boolean] true on success
         def publish(object:)
           resp = connection.post do |req|
-            req.url "#{version}/objects/#{object}/publish"
+            req.url "#{api_version}/objects/#{object}/publish"
           end
           raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})" unless resp.success?
 
@@ -51,7 +51,7 @@ module Dor
         # @returns [String] the raw JSON from the server
         def register_response(params:)
           resp = connection.post do |req|
-            req.url "#{version}/objects"
+            req.url "#{api_version}/objects"
             req.headers['Content-Type'] = 'application/json'
             # asking the service to return JSON (else it'll be plain text)
             req.headers['Accept'] = 'application/json'
@@ -75,7 +75,7 @@ module Dor
         end
 
         def current_version_path(object:)
-          "#{version}/sdr/objects/#{object}/current_version"
+          "#{api_version}/sdr/objects/#{object}/current_version"
         end
       end
     end

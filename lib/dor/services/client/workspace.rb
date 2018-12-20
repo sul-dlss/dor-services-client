@@ -12,7 +12,7 @@ module Dor
         # @return nil
         def create(object:, source:)
           resp = connection.post do |req|
-            req.url "#{version}/objects/#{object}/initialize_workspace"
+            req.url "#{api_version}/objects/#{object}/initialize_workspace"
             req.params['source'] = source
           end
           raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})" unless resp.success?
