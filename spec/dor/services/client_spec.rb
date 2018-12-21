@@ -75,6 +75,14 @@ RSpec.describe Dor::Services::Client do
     end
   end
 
+  describe '#configure' do
+    subject(:client) { described_class.configure(url: 'https://dor-services.example.com') }
+
+    it 'returns Client class' do
+      expect(client).to eq Dor::Services::Client
+    end
+  end
+
   context 'when passed a username and password' do
     before do
       described_class.configure(url: 'https://dor-services.example.com',
