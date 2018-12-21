@@ -55,6 +55,8 @@ module Dor
           instance.password = password
           # Force connection to be re-established when `.configure` is called
           instance.connection = nil
+
+          self
         end
 
         delegate :objects, :files, :workflow, :workspace, :release_tags, to: :instance
