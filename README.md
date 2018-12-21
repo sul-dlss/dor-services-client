@@ -25,26 +25,27 @@ Or install it yourself as:
 
 ## Usage
 
-To configure the client, you may do so globally (say, in a Rails initializer):
+To configure and use the client, here's an example:
 
 ```ruby
 require 'dor/services/client'
 
-Dor::Services::Client.configure(url: Settings.DOR_SERVICES.URL,
-                                username: Settings.DOR_SERVICES.USER,
-                                password: Settings.DOR_SERVICES.PASS)
+def do_the_thing
+  # This API endpoint returns JSON
+  response = client.register(params: { druid: 'druid:123' })
+  response[:pid] # => 'druid:123'
+end
+
+private
+
+def client
+  @client ||= Dor::Services::Client.configure(url: Settings.DOR_SERVICES.URL,
+                                              username: Settings.DOR_SERVICES.USER,
+                                              password: Settings.DOR_SERVICES.PASS)
+end
 ```
 
-Note that the client may not be used without first having been configured, and the `url` keyword is required. The `username` and `password` arguments are optional. (If you are working in a project where the credentials are embedded in the URL, that ought to work just fine as well.)
-
-Then you can invoke methods on the client that correspond to dor-services-app API requests, e.g.:
-
-```ruby
-# This API endpoint returns JSON
-response = Dor::Services::Client.register(params: { druid: 'druid:123' })
-response[:pid]
-# => 'druid:123'
-```
+Note that the client may **not** be used without first having been configured, and the `url` keyword is **required**. The `username` and `password` arguments are optional. (If you are working in a project where the credentials are embedded in the URL, that ought to work just fine as well.)
 
 ## Development
 
