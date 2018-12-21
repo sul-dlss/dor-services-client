@@ -27,6 +27,19 @@ module Dor
           true
         end
 
+        # Notify the external Goobi system for a new object that was registered in DOR
+        # @param object [String] the pid for the object
+        # @raise [UnexpectedResponse] when the response is not successful.
+        # @return [boolean] true on success
+        def notify_goobi(object:)
+          resp = connection.post do |req|
+            req.url "#{api_version}/objects/#{object}/notify_goobi"
+          end
+          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})" unless resp.success?
+
+          true
+        end
+
         # Gets the current version number for the object
         # @param object [String] the pid for the object
         # @raise [UnexpectedResponse] when the response is not successful.
