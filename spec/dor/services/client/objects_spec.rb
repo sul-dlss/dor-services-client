@@ -63,6 +63,31 @@ RSpec.describe Dor::Services::Client::Objects do
     end
   end
 
+  describe '#notify_goobi' do
+    let(:pid) { 'druid:1234' }
+    subject(:request) { client.notify_goobi(object: pid) }
+    before do
+      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/notify_goobi')
+        .to_return(status: status)
+    end
+
+    context 'when API request succeeds' do
+      let(:status) { 200 }
+
+      it 'returns true' do
+        expect(request).to be true
+      end
+    end
+
+    context 'when API request fails' do
+      let(:status) { [401, 'unauthorized'] }
+
+      it 'raises an error' do
+        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse, 'unauthorized: 401 ()')
+      end
+    end
+  end
+
   describe '#current_version' do
     let(:pid) { 'druid:1234' }
     subject(:request) { client.current_version(object: pid) }

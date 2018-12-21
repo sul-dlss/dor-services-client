@@ -120,6 +120,10 @@ module Dor
         # @raise [UnexpectedResponse] when the response is not successful.
         # @return [boolean] true on success
         delegate :publish, to: :objects
+
+        # Notify goobi system of a new object
+        delegate :notify_goobi, to: :objects
+
       end
 
       # Gets the current version number for the object

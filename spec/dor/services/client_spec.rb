@@ -21,6 +21,15 @@ RSpec.describe Dor::Services::Client do
       end
     end
 
+    describe '.notify_goobi' do
+      let(:params) { { foo: 'bar' } }
+
+      it 'calls #notify_goobi on a new instance' do
+        expect(described_class.instance.objects).to receive(:notify_goobi)
+        described_class.notify_goobi(params: params)
+      end
+    end
+
     describe '.retrieve_file' do
       it 'calls #retrieve on a the file' do
         expect(described_class.instance.files).to receive(:retrieve)
