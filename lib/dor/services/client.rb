@@ -7,6 +7,7 @@ require 'active_support/core_ext/hash/indifferent_access'
 require 'active_support/core_ext/module/delegation'
 require 'dor/services/client/versioned_service'
 require 'dor/services/client/files'
+require 'dor/services/client/object'
 require 'dor/services/client/objects'
 require 'dor/services/client/release_tags'
 require 'dor/services/client/workflow'
@@ -27,6 +28,10 @@ module Dor
       DEFAULT_VERSION = 'v1'
 
       include Singleton
+
+      def object(object)
+        Object.new(connection: connection, version: DEFAULT_VERSION, object: object)
+      end
 
       def objects
         @objects ||= Objects.new(connection: connection, version: DEFAULT_VERSION)
@@ -123,7 +128,6 @@ module Dor
 
         # Notify goobi system of a new object
         delegate :notify_goobi, to: :objects
-
       end
 
       # Gets the current version number for the object

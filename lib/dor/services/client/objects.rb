@@ -1,12 +1,15 @@
 # frozen_string_literal: true
 
 require 'nokogiri'
+require 'deprecation'
 
 module Dor
   module Services
     class Client
-      # API calls that are about a repository object
+      # API calls that are about a repository objects
       class Objects < VersionedService
+        extend Deprecation
+
         # Creates a new object in DOR
         # @return [HashWithIndifferentAccess] the response, which includes a :pid
         def register(params:)
@@ -19,26 +22,18 @@ module Dor
         # @raise [UnexpectedResponse] when the response is not successful.
         # @return [boolean] true on success
         def publish(object:)
-          resp = connection.post do |req|
-            req.url "#{api_version}/objects/#{object}/publish"
-          end
-          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})" unless resp.success?
-
-          true
+          Object.new(connection: connection, version: api_version, object: object).publish
         end
+        deprecation_deprecate publish: 'Use Dor::Client.object(obj).publish instead'
 
         # Notify the external Goobi system for a new object that was registered in DOR
         # @param object [String] the pid for the object
         # @raise [UnexpectedResponse] when the response is not successful.
         # @return [boolean] true on success
         def notify_goobi(object:)
-          resp = connection.post do |req|
-            req.url "#{api_version}/objects/#{object}/notify_goobi"
-          end
-          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})" unless resp.success?
-
-          true
+          Object.new(connection: connection, version: api_version, object: object).notify_goobi
         end
+        deprecation_deprecate notify_goobi: 'Use Dor::Client.object(obj).notify_goobi instead'
 
         # Gets the current version number for the object
         # @param object [String] the pid for the object

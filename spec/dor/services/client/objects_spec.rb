@@ -50,15 +50,8 @@ RSpec.describe Dor::Services::Client::Objects do
       let(:status) { 200 }
 
       it 'returns true' do
+        expect(Deprecation).to receive(:warn)
         expect(request).to be true
-      end
-    end
-
-    context 'when API request fails' do
-      let(:status) { [409, 'conflict'] }
-
-      it 'raises an error' do
-        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse, 'conflict: 409 ()')
       end
     end
   end
@@ -75,15 +68,8 @@ RSpec.describe Dor::Services::Client::Objects do
       let(:status) { 200 }
 
       it 'returns true' do
+        expect(Deprecation).to receive(:warn)
         expect(request).to be true
-      end
-    end
-
-    context 'when API request fails' do
-      let(:status) { [401, 'unauthorized'] }
-
-      it 'raises an error' do
-        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse, 'unauthorized: 401 ()')
       end
     end
   end
