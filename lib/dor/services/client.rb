@@ -13,6 +13,7 @@ require 'dor/services/client/release_tags'
 require 'dor/services/client/sdr'
 require 'dor/services/client/workflow'
 require 'dor/services/client/workspace'
+require 'deprecation'
 
 module Dor
   module Services
@@ -29,6 +30,7 @@ module Dor
       DEFAULT_VERSION = 'v1'
 
       include Singleton
+      extend Deprecation
 
       def object(object)
         Object.new(connection: connection, version: DEFAULT_VERSION, object: object)
@@ -69,7 +71,7 @@ module Dor
           self
         end
 
-        delegate :objects, :files, :workflow, :workspace, :release_tags, to: :instance
+        delegate :objects, :object, :files, :workflow, :workspace, :release_tags, :sdr, to: :instance
         private :objects, :files, :workflow, :workspace, :release_tags
 
         # Creates a new object in DOR
@@ -133,15 +135,16 @@ module Dor
 
         # Notify goobi system of a new object
         delegate :notify_goobi, to: :objects
-      end
 
-      # Gets the current version number for the object
-      # @param object [String] the pid for the object
-      # @raise [UnexpectedResponse] when the response is not successful.
-      # @raise [MalformedResponse] when the response is not parseable.
-      # @return [Integer] the current version
-      def self.current_version(object:)
-        instance.objects.current_version(object: object)
+        # Gets the current version number for the object
+        # @param object [String] the pid for the object
+        # @raise [UnexpectedResponse] when the response is not successful.
+        # @raise [MalformedResponse] when the response is not parseable.
+        # @return [Integer] the current version
+        def current_version(object:)
+          sdr.current_version(object: object)
+        end
+        deprecation_deprecate current_version: 'use Client.sdr.current_version instead'
       end
 
       attr_writer :url, :username, :password, :connection
