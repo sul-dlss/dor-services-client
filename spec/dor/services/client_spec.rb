@@ -31,7 +31,7 @@ RSpec.describe Dor::Services::Client do
     end
 
     describe '.retrieve_file' do
-      it 'calls #retrieve on a the file' do
+      it 'calls #retrieve on the file' do
         expect(described_class.instance.files).to receive(:retrieve)
         described_class.retrieve_file(object: 'druid:123', filename: 'M1090_S15_B01_F04_0073.jp2')
       end
@@ -45,7 +45,7 @@ RSpec.describe Dor::Services::Client do
     end
 
     describe '.preserved_content' do
-      it 'calls #preserved_content on a the file' do
+      it 'calls #preserved_content on the file' do
         expect(described_class.instance.files).to receive(:preserved_content)
         described_class.preserved_content(object: 'druid:123', filename: 'M1090_S15_B01_F04_0073.jp2', version: 2)
       end
@@ -59,7 +59,7 @@ RSpec.describe Dor::Services::Client do
     end
 
     describe '.create_release_tag' do
-      it 'calls #create on a the release_tags' do
+      it 'calls #create on the release_tags' do
         expect(described_class.instance.release_tags).to receive(:create)
         described_class.create_release_tag(object: 'druid:123',
                                            release: true,
@@ -70,7 +70,7 @@ RSpec.describe Dor::Services::Client do
     end
 
     describe '.publish' do
-      it 'calls #publish on a the object' do
+      it 'calls #publish on the object' do
         expect(described_class.instance.objects).to receive(:publish)
         described_class.publish(object: 'druid:123')
       end
@@ -89,10 +89,24 @@ RSpec.describe Dor::Services::Client do
     end
 
     describe '.current_version' do
-      it 'calls #current_version on a the object' do
+      it 'calls #current_version on the object' do
         expect(Deprecation).to receive(:warn)
         expect(described_class.instance.sdr).to receive(:current_version)
         described_class.current_version(object: 'druid:123')
+      end
+    end
+
+    describe '.open_new_version' do
+      it 'delegates #open_new_version to the Object class instance' do
+        expect_any_instance_of(Dor::Services::Client::Object).to receive(:open_new_version)
+        described_class.open_new_version(object: 'druid:123')
+      end
+    end
+
+    describe '.close_version' do
+      it 'delegates #close_version to the Object class' do
+        expect_any_instance_of(Dor::Services::Client::Object).to receive(:close_version)
+        described_class.close_version(object: 'druid:123')
       end
     end
   end

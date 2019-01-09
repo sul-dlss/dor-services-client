@@ -127,6 +127,25 @@ module Dor
           release_tags.create(object: object, release: release, what: what, to: to, who: who)
         end
 
+        # Open new version for an object
+        # @param object [String] object identifier
+        # @param params [Hash] optional params (see dor-services-app)
+        # @raise [UnexpectedResponse] when the response is not successful.
+        # @raise [MalformedResponse] when the response is not parseable.
+        # @return [String] the current version
+        def open_new_version(object:, **params)
+          object(object).open_new_version(**params)
+        end
+
+        # Close current version for an object
+        # @param object [String] object identifier
+        # @param params [Hash] optional params (see dor-services-app)
+        # @raise [UnexpectedResponse] when the response is not successful.
+        # @return [String] a message confirming successful closing
+        def close_version(object:, **params)
+          object(object).close_version(**params)
+        end
+
         # Publish a new object
         # @param object [String] the pid for the object
         # @raise [UnexpectedResponse] when the response is not successful.

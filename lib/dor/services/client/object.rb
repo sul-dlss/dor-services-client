@@ -50,12 +50,62 @@ module Dor
           resp.body
         end
 
+        # Open new version for an object
+        # @param params [Hash] optional params (see dor-services-app)
+        # @raise [UnexpectedResponse] when the response is not successful.
+        # @raise [MalformedResponse] when the response is not parseable.
+        # @return [String] the current version
+        def open_new_version(**params)
+          version = open_new_version_response(**params)
+          raise MalformedResponse, "Version of #{object} is empty" if version.empty?
+
+          version
+        end
+
+        # Close current version for an object
+        # @param params [Hash] optional params (see dor-services-app)
+        # @raise [UnexpectedResponse] when the response is not successful.
+        # @return [String] a message confirming successful closing
+        def close_version(**params)
+          resp = connection.post do |req|
+            req.url close_version_path
+            req.headers['Content-Type'] = 'application/json'
+            req.body = params.to_json if params.any?
+          end
+          return resp.body if resp.success?
+
+          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body}) for #{object}"
+        end
+
         private
 
         attr_reader :object
 
         def object_path
           "#{api_version}/objects/#{object}"
+        end
+
+        # Make request to server to open a new version
+        # @param params [Hash] optional params (see dor-services-app)
+        # @raises [UnexpectedResponse] on an unsuccessful response from the server
+        # @returns [String] the plain text from the server
+        def open_new_version_response(**params)
+          resp = connection.post do |req|
+            req.url open_new_version_path
+            req.headers['Content-Type'] = 'application/json'
+            req.body = params.to_json if params.any?
+          end
+          return resp.body if resp.success?
+
+          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body}) for #{object}"
+        end
+
+        def open_new_version_path
+          "#{object_path}/versions"
+        end
+
+        def close_version_path
+          "#{object_path}/versions/current/close"
         end
       end
     end
