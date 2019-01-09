@@ -101,27 +101,8 @@ RSpec.describe Dor::Services::Client::Objects do
       let(:body) { '<currentVersion>2</currentVersion>' }
 
       it 'returns true' do
+        expect(Deprecation).to receive(:warn)
         expect(request).to eq 2
-      end
-    end
-
-    context 'when API request responds with bad xml' do
-      let(:status) { 200 }
-      let(:body) { '<foo><bar>' }
-
-      it 'raises an error' do
-        expect { request }.to raise_error(Dor::Services::Client::MalformedResponse,
-                                          'Unable to parse XML from current_version API call: <foo><bar>')
-      end
-    end
-
-    context 'when API request fails' do
-      let(:status) { [500, 'internal server error'] }
-      let(:body) { 'broken' }
-
-      it 'raises an error' do
-        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
-                                          'internal server error: 500 (broken) for druid:1234')
       end
     end
   end
