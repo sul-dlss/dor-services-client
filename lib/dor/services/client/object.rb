@@ -31,16 +31,32 @@ module Dor
         # @return [boolean] true on success
         def notify_goobi
           resp = connection.post do |req|
-            req.url "#{api_version}/objects/#{object}/notify_goobi"
+            req.url "#{object_path}/notify_goobi"
           end
           raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})" unless resp.success?
 
           true
         end
 
+        # Get the current_version for a DOR object. This comes from Dor::VersionMetadataDS
+        # @raise [UnexpectedResponse] when the response is not successful.
+        # @return [String] the version identifier
+        def current_version
+          resp = connection.get do |req|
+            req.url "#{object_path}/versions/current"
+          end
+          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})" unless resp.success?
+
+          resp.body
+        end
+
         private
 
         attr_reader :object
+
+        def object_path
+          "#{api_version}/objects/#{object}"
+        end
       end
     end
   end

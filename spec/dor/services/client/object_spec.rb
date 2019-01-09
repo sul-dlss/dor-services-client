@@ -56,4 +56,33 @@ RSpec.describe Dor::Services::Client::Object do
       end
     end
   end
+
+  describe '#current_version' do
+    let(:pid) { 'druid:1234' }
+    subject(:request) { client.current_version }
+
+    context 'when API request succeeds' do
+      let(:status) { 200 }
+      before do
+        stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:1234/versions/current')
+          .to_return(status: status, body: '2')
+      end
+
+      it 'returns the value' do
+        expect(request).to eq '2'
+      end
+    end
+
+    context 'when API request fails' do
+      let(:status) { [401, 'unauthorized'] }
+      before do
+        stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:1234/versions/current')
+          .to_return(status: status)
+      end
+
+      it 'raises an error' do
+        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse, 'unauthorized: 401 ()')
+      end
+    end
+  end
 end
