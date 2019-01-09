@@ -4,7 +4,9 @@ RSpec.describe Dor::Services::Client::Objects do
   before do
     Dor::Services::Client.configure(url: 'https://dor-services.example.com')
   end
+
   let(:connection) { Dor::Services::Client.instance.send(:connection) }
+
   subject(:client) { described_class.new(connection: connection, version: 'v1') }
 
   describe '#register' do
