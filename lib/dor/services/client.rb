@@ -9,6 +9,7 @@ require 'dor/services/client/versioned_service'
 require 'dor/services/client/files'
 require 'dor/services/client/objects'
 require 'dor/services/client/release_tags'
+require 'dor/services/client/sdr'
 require 'dor/services/client/workflow'
 require 'dor/services/client/workspace'
 
@@ -30,6 +31,10 @@ module Dor
 
       def objects
         @objects ||= Objects.new(connection: connection, version: DEFAULT_VERSION)
+      end
+
+      def sdr
+        @sdr ||= SDR.new(connection: connection, version: DEFAULT_VERSION)
       end
 
       def files
@@ -123,7 +128,6 @@ module Dor
 
         # Notify goobi system of a new object
         delegate :notify_goobi, to: :objects
-
       end
 
       # Gets the current version number for the object
