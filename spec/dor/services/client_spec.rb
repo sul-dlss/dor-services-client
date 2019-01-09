@@ -76,9 +76,22 @@ RSpec.describe Dor::Services::Client do
       end
     end
 
+    describe '.object' do
+      it 'returns the object class' do
+        expect(described_class.object('druid:123')).to be_instance_of Dor::Services::Client::Object
+      end
+    end
+
+    describe '.sdr' do
+      it 'returns the sdr class' do
+        expect(described_class.sdr).to be_instance_of  Dor::Services::Client::SDR
+      end
+    end
+
     describe '.current_version' do
       it 'calls #current_version on a the object' do
-        expect(described_class.instance.objects).to receive(:current_version)
+        expect(Deprecation).to receive(:warn)
+        expect(described_class.instance.sdr).to receive(:current_version)
         described_class.current_version(object: 'druid:123')
       end
     end
