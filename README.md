@@ -39,9 +39,9 @@ end
 private
 
 def client
-  @client ||= Dor::Services::Client.configure(url: Settings.DOR_SERVICES.URL,
-                                              username: Settings.DOR_SERVICES.USER,
-                                              password: Settings.DOR_SERVICES.PASS)
+  @client ||= Dor::Services::Client.configure(url: Settings.dor_services.url,
+                                              username: Settings.dor_services.user,
+                                              password: Settings.dor_services.pass)
 end
 ```
 
