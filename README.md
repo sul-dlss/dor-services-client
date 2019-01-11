@@ -32,7 +32,7 @@ require 'dor/services/client'
 
 def do_the_thing
   # This API endpoint returns JSON
-  response = client.register(params: { druid: 'druid:123' })
+  response = client.objects.register(params: { druid: 'druid:123' })
   response[:pid] # => 'druid:123'
 end
 
@@ -46,6 +46,31 @@ end
 ```
 
 Note that the client may **not** be used without first having been configured, and the `url` keyword is **required**. The `username` and `password` arguments are optional. (If you are working in a project where the credentials are embedded in the URL, that ought to work just fine as well.)
+
+## API Coverage
+
+Dor::Services:Client provides a number of methods to simplify connecting to the RESTful HTTP API of dor-services-app. In this section we list all of the available methods, reflecting how much of the API the client covers:
+
+```ruby
+# For registering a non-existent object
+objects_client = Dor::Services::Client.objects
+objects_client.register(params: {})
+
+# For performing operations on a known, registered object
+object_client = Dor::Services::Client.object(object_identifier)
+object_client.publish
+object_client.notify_goobi
+object_client.current_version
+object_client.open_new_version(**params)
+object_client.close_version(**params)
+object_client.files.retrieve(filename: filename_string)
+object_client.files.preserved_content(filename: filename_string, version: version_string)
+object_client.files.list
+object_client.release_tags.create(release: release, what: what, to: to, who: who)
+object_client.sdr.current_version
+object_client.workflow.create(wf_name: workflow_name_string)
+object_client.workspace.create(source: object_path_string)
+```
 
 ## Development
 

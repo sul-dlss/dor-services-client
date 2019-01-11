@@ -6,14 +6,8 @@ require 'faraday'
 require 'active_support/core_ext/hash/indifferent_access'
 require 'active_support/core_ext/module/delegation'
 require 'dor/services/client/versioned_service'
-require 'dor/services/client/files'
 require 'dor/services/client/object'
 require 'dor/services/client/objects'
-require 'dor/services/client/release_tags'
-require 'dor/services/client/sdr'
-require 'dor/services/client/workflow'
-require 'dor/services/client/workspace'
-require 'deprecation'
 
 module Dor
   module Services
@@ -30,34 +24,13 @@ module Dor
       DEFAULT_VERSION = 'v1'
 
       include Singleton
-      extend Deprecation
 
-      def object(object)
-        Object.new(connection: connection, version: DEFAULT_VERSION, object: object)
+      def object(object_identifier)
+        Object.new(connection: connection, version: DEFAULT_VERSION, object_id: object_identifier)
       end
 
       def objects
         @objects ||= Objects.new(connection: connection, version: DEFAULT_VERSION)
-      end
-
-      def sdr
-        @sdr ||= SDR.new(connection: connection, version: DEFAULT_VERSION)
-      end
-
-      def files
-        @files ||= Files.new(connection: connection, version: DEFAULT_VERSION)
-      end
-
-      def workflow
-        @workflow ||= Workflow.new(connection: connection, version: DEFAULT_VERSION)
-      end
-
-      def workspace
-        @workspace ||= Workspace.new(connection: connection, version: DEFAULT_VERSION)
-      end
-
-      def release_tags
-        @release_tags ||= ReleaseTags.new(connection: connection, version: DEFAULT_VERSION)
       end
 
       class << self
@@ -71,99 +44,7 @@ module Dor
           self
         end
 
-        delegate :objects, :object, :files, :workflow, :workspace, :release_tags, :sdr, to: :instance
-        private :objects, :files, :workflow, :workspace, :release_tags
-
-        # Creates a new object in DOR
-        # @return [HashWithIndifferentAccess] the response, which includes a :pid
-        delegate :register, to: :objects
-
-        # @param [String] object the identifier for the object
-        # @param [String] filename the name of the file to retrieve
-        # @return [String] the file contents from the workspace
-        def retrieve_file(object:, filename:)
-          files.retrieve(object: object, filename: filename)
-        end
-
-        # Get the preserved file contents
-        # @param [String] object the identifier for the object
-        # @param [String] filename the name of the file to retrieve
-        # @param [Integer] version the version of the file to retrieve
-        # @return [String] the file contents from the SDR
-        delegate :preserved_content, to: :files
-
-        # @param [String] object the identifier for the object
-        # @return [Array<String>] the list of filenames in the workspace
-        def list_files(object:)
-          files.list(object: object)
-        end
-
-        # Initializes a new workflow
-        # @param object [String] the pid for the object
-        # @param wf_name [String] the name of the workflow
-        # @raises [UnexpectedResponse] if the request is unsuccessful.
-        # @return nil
-        def initialize_workflow(object:, wf_name:)
-          workflow.create(object: object, wf_name: wf_name)
-        end
-
-        # Initializes a new workspace
-        # @param object [String] the pid for the object
-        # @param source [String] the path to the object
-        # @raises [UnexpectedResponse] if the request is unsuccessful.
-        # @return nil
-        def initialize_workspace(object:, source:)
-          workspace.create(object: object, source: source)
-        end
-
-        # Creates a new release tag for the object
-        # @param object [String] the pid for the object
-        # @param release [Boolean]
-        # @param what [String]
-        # @param to [String]
-        # @param who [String]
-        # @return [Boolean] true if successful
-        def create_release_tag(object:, release:, what:, to:, who:)
-          release_tags.create(object: object, release: release, what: what, to: to, who: who)
-        end
-
-        # Open new version for an object
-        # @param object [String] object identifier
-        # @param params [Hash] optional params (see dor-services-app)
-        # @raise [UnexpectedResponse] when the response is not successful.
-        # @raise [MalformedResponse] when the response is not parseable.
-        # @return [String] the current version
-        def open_new_version(object:, **params)
-          object(object).open_new_version(**params)
-        end
-
-        # Close current version for an object
-        # @param object [String] object identifier
-        # @param params [Hash] optional params (see dor-services-app)
-        # @raise [UnexpectedResponse] when the response is not successful.
-        # @return [String] a message confirming successful closing
-        def close_version(object:, **params)
-          object(object).close_version(**params)
-        end
-
-        # Publish a new object
-        # @param object [String] the pid for the object
-        # @raise [UnexpectedResponse] when the response is not successful.
-        # @return [boolean] true on success
-        delegate :publish, to: :objects
-
-        # Notify goobi system of a new object
-        delegate :notify_goobi, to: :objects
-
-        # Gets the current version number for the object
-        # @param object [String] the pid for the object
-        # @raise [UnexpectedResponse] when the response is not successful.
-        # @raise [MalformedResponse] when the response is not parseable.
-        # @return [Integer] the current version
-        def current_version(object:)
-          sdr.current_version(object: object)
-        end
-        deprecation_deprecate current_version: 'use Client.sdr.current_version instead'
+        delegate :objects, :object, to: :instance
       end
 
       attr_writer :url, :username, :password, :connection

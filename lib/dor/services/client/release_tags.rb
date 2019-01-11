@@ -5,8 +5,13 @@ module Dor
     class Client
       # API calls that are about a repository object
       class ReleaseTags < VersionedService
+        # @param object_id [String] the pid for the object
+        def initialize(connection:, version:, object_id:)
+          super(connection: connection, version: version)
+          @object_id = object_id
+        end
+
         # Creates a new release tag for the object
-        # @param object [String] the pid for the object
         # @param release [Boolean]
         # @param what [String]
         # @param to [String]
@@ -14,7 +19,7 @@ module Dor
         # @raises [UnexpectedResponse] if the request is unsuccessful.
         # @return [Boolean] true if successful
         # rubocop:disable Metrics/MethodLength
-        def create(object:, release:, what:, to:, who:)
+        def create(release:, what:, to:, who:)
           params = {
             to: to,
             who: who,
@@ -22,7 +27,7 @@ module Dor
             release: release
           }
           resp = connection.post do |req|
-            req.url "#{api_version}/objects/#{object}/release_tags"
+            req.url "#{api_version}/objects/#{object_id}/release_tags"
             req.headers['Content-Type'] = 'application/json'
             req.body = params.to_json
           end
@@ -31,6 +36,10 @@ module Dor
           true
         end
         # rubocop:enable Metrics/MethodLength
+
+        private
+
+        attr_reader :object_id
       end
     end
   end

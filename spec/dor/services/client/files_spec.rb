@@ -4,11 +4,14 @@ RSpec.describe Dor::Services::Client::Files do
   before do
     Dor::Services::Client.configure(url: 'https://dor-services.example.com')
   end
+
   let(:connection) { Dor::Services::Client.instance.send(:connection) }
-  subject(:client) { described_class.new(connection: connection, version: 'v1') }
+  let(:pid) { 'druid:ck546xs5106' }
+
+  subject(:client) { described_class.new(connection: connection, version: 'v1', object_id: pid) }
 
   describe '#list' do
-    subject { client.list(object: 'druid:ck546xs5106') }
+    subject { client.list }
     context 'when the response is 200' do
       let(:body) do
         <<~JSON
@@ -38,7 +41,7 @@ RSpec.describe Dor::Services::Client::Files do
   end
 
   describe '#retrieve' do
-    subject { client.retrieve(object: 'druid:ck546xs5106', filename: 'olemiss1v.jp2') }
+    subject { client.retrieve(filename: 'olemiss1v.jp2') }
     context 'when the response is 200' do
       let(:body) do
         <<~BODY
@@ -65,7 +68,7 @@ RSpec.describe Dor::Services::Client::Files do
   end
 
   describe '#preserved_content' do
-    subject { client.preserved_content(object: 'druid:ck546xs5106', filename: 'olemiss1v.jp2', version: 1) }
+    subject { client.preserved_content(filename: 'olemiss1v.jp2', version: 1) }
     before do
       stub_request(:get, 'https://dor-services.example.com/v1/sdr/objects/druid:ck546xs5106/content/olemiss1v.jp2?version=1')
         .to_return(status: status, body: body)

@@ -4,12 +4,15 @@ RSpec.describe Dor::Services::Client::Workspace do
   before do
     Dor::Services::Client.configure(url: 'https://dor-services.example.com')
   end
+
   let(:connection) { Dor::Services::Client.instance.send(:connection) }
-  subject(:client) { described_class.new(connection: connection, version: 'v1') }
+  let(:pid) { 'druid:123' }
+
+  subject(:client) { described_class.new(connection: connection, version: 'v1', object_id: pid) }
 
   describe '#create' do
-    let(:pid) { 'druid:123' }
-    subject(:request) { client.create(object: pid, source: 'abd/cwef/vwef/content') }
+    subject(:request) { client.create(source: 'abd/cwef/vwef/content') }
+
     context 'when API request succeeds' do
       before do
         stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:123/initialize_workspace?source=abd/cwef/vwef/content')
