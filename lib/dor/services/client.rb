@@ -14,8 +14,11 @@ module Dor
     class Client
       class Error < StandardError; end
 
+      # Error that is raised when the remote server returns a 404 Not Found
+      class NotFoundResponse < Error; end
+
       # Error that is raised when the remote server returns some unexpected response
-      # this could be any 4xx or 5xx status.
+      # this could be any 4xx or 5xx status
       class UnexpectedResponse < Error; end
 
       # Error that is raised when the remote server returns some unparsable response
