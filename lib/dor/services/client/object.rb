@@ -1,17 +1,42 @@
 # frozen_string_literal: true
 
-require 'nokogiri'
-require 'deprecation'
+require 'dor/services/client/files'
+require 'dor/services/client/release_tags'
+require 'dor/services/client/sdr'
+require 'dor/services/client/workflow'
+require 'dor/services/client/workspace'
 
 module Dor
   module Services
     class Client
       # API calls that are about a repository object
       class Object < VersionedService
-        # @param object [String] the pid for the object
-        def initialize(connection:, version:, object:)
+        # @param object_id [String] the pid for the object
+        def initialize(connection:, version:, object_id:)
+          raise ArgumentError, "The `object_id` parameter must be an identifier string: #{object_id.inspect}" unless object_id.is_a?(String)
+
           super(connection: connection, version: version)
-          @object = object
+          @object_id = object_id
+        end
+
+        def sdr
+          @sdr ||= SDR.new(connection: connection, version: api_version, object_id: object_id)
+        end
+
+        def files
+          @files ||= Files.new(connection: connection, version: api_version, object_id: object_id)
+        end
+
+        def workflow
+          @workflow ||= Workflow.new(connection: connection, version: api_version, object_id: object_id)
+        end
+
+        def workspace
+          @workspace ||= Workspace.new(connection: connection, version: api_version, object_id: object_id)
+        end
+
+        def release_tags
+          @release_tags ||= ReleaseTags.new(connection: connection, version: api_version, object_id: object_id)
         end
 
         # Publish a new object
@@ -19,7 +44,7 @@ module Dor
         # @return [boolean] true on success
         def publish
           resp = connection.post do |req|
-            req.url "#{api_version}/objects/#{object}/publish"
+            req.url "#{object_path}/publish"
           end
           raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})" unless resp.success?
 
@@ -57,7 +82,7 @@ module Dor
         # @return [String] the current version
         def open_new_version(**params)
           version = open_new_version_response(**params)
-          raise MalformedResponse, "Version of #{object} is empty" if version.empty?
+          raise MalformedResponse, "Version of #{object_id} is empty" if version.empty?
 
           version
         end
@@ -74,15 +99,15 @@ module Dor
           end
           return resp.body if resp.success?
 
-          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body}) for #{object}"
+          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body}) for #{object_id}"
         end
 
         private
 
-        attr_reader :object
+        attr_reader :object_id
 
         def object_path
-          "#{api_version}/objects/#{object}"
+          "#{api_version}/objects/#{object_id}"
         end
 
         # Make request to server to open a new version
@@ -97,7 +122,7 @@ module Dor
           end
           return resp.body if resp.success?
 
-          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body}) for #{object}"
+          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body}) for #{object_id}"
         end
 
         def open_new_version_path

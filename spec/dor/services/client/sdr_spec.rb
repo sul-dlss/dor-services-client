@@ -4,12 +4,15 @@ RSpec.describe Dor::Services::Client::SDR do
   before do
     Dor::Services::Client.configure(url: 'https://dor-services.example.com')
   end
+
   let(:connection) { Dor::Services::Client.instance.send(:connection) }
-  subject(:client) { described_class.new(connection: connection, version: 'v1') }
+  let(:pid) { 'druid:1234' }
+
+  subject(:client) { described_class.new(connection: connection, version: 'v1', object_id: pid) }
 
   describe '#current_version' do
-    let(:pid) { 'druid:1234' }
-    subject(:request) { client.current_version(object: pid) }
+    subject(:request) { client.current_version }
+
     before do
       stub_request(:get, 'https://dor-services.example.com/v1/sdr/objects/druid:1234/current_version')
         .to_return(status: status, body: body)

@@ -1,48 +1,16 @@
 # frozen_string_literal: true
 
-require 'nokogiri'
-
 module Dor
   module Services
     class Client
       # API calls that are about a repository objects
       class Objects < VersionedService
-        extend Deprecation
-
         # Creates a new object in DOR
         # @return [HashWithIndifferentAccess] the response, which includes a :pid
         def register(params:)
           json = register_response(params: params)
           JSON.parse(json).with_indifferent_access
         end
-
-        # Publish a new object
-        # @param object [String] the pid for the object
-        # @raise [UnexpectedResponse] when the response is not successful.
-        # @return [boolean] true on success
-        def publish(object:)
-          Object.new(connection: connection, version: api_version, object: object).publish
-        end
-        deprecation_deprecate publish: 'Use Dor::Services::Client.object(obj).publish instead'
-
-        # Notify the external Goobi system for a new object that was registered in DOR
-        # @param object [String] the pid for the object
-        # @raise [UnexpectedResponse] when the response is not successful.
-        # @return [boolean] true on success
-        def notify_goobi(object:)
-          Object.new(connection: connection, version: api_version, object: object).notify_goobi
-        end
-        deprecation_deprecate notify_goobi: 'Use Dor::Services::Client.object(obj).notify_goobi instead'
-
-        # Gets the current version number for the object
-        # @param object [String] the pid for the object
-        # @raise [UnexpectedResponse] when the response is not successful.
-        # @raise [MalformedResponse] when the response is not parseable.
-        # @return [Integer] the current version
-        def current_version(object:)
-          SDR.new(connection: connection, version: api_version).current_version(object: object)
-        end
-        deprecation_deprecate current_version: 'Use Dor::Services::Client.sdr.current_version(object: obj) instead'
 
         private
 

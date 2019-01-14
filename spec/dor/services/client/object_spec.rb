@@ -4,12 +4,45 @@ RSpec.describe Dor::Services::Client::Object do
   before do
     Dor::Services::Client.configure(url: 'https://dor-services.example.com')
   end
+
   let(:connection) { Dor::Services::Client.instance.send(:connection) }
   let(:pid) { 'druid:1234' }
-  subject(:client) { described_class.new(connection: connection, version: 'v1', object: pid) }
+
+  subject(:client) { described_class.new(connection: connection, version: 'v1', object_id: pid) }
+
+  describe '#files' do
+    it 'returns an instance of Client::Files' do
+      expect(client.files).to be_instance_of Dor::Services::Client::Files
+    end
+  end
+
+  describe '#release_tags' do
+    it 'returns an instance of Client::ReleaseTags' do
+      expect(client.release_tags).to be_instance_of Dor::Services::Client::ReleaseTags
+    end
+  end
+
+  describe '#sdr' do
+    it 'returns an instance of Client::SDR' do
+      expect(client.sdr).to be_instance_of Dor::Services::Client::SDR
+    end
+  end
+
+  describe '#workflow' do
+    it 'returns an instance of Client::Workflow' do
+      expect(client.workflow).to be_instance_of Dor::Services::Client::Workflow
+    end
+  end
+
+  describe '#workspace' do
+    it 'returns an instance of Client::Workspace' do
+      expect(client.workspace).to be_instance_of Dor::Services::Client::Workspace
+    end
+  end
 
   describe '#publish' do
     subject(:request) { client.publish }
+
     before do
       stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/publish')
         .to_return(status: status)
