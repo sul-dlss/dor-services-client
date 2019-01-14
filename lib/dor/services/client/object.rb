@@ -46,9 +46,9 @@ module Dor
           resp = connection.post do |req|
             req.url "#{object_path}/publish"
           end
-          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})" unless resp.success?
+          return true if resp.success?
 
-          true
+          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})"
         end
 
         # Notify the external Goobi system for a new object that was registered in DOR
@@ -58,21 +58,24 @@ module Dor
           resp = connection.post do |req|
             req.url "#{object_path}/notify_goobi"
           end
-          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})" unless resp.success?
+          return true
 
-          true
+          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})"
         end
 
         # Get the current_version for a DOR object. This comes from Dor::VersionMetadataDS
         # @raise [UnexpectedResponse] when the response is not successful.
+        # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @return [String] the version identifier
         def current_version
           resp = connection.get do |req|
             req.url "#{object_path}/versions/current"
           end
-          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})" unless resp.success?
+          return resp.body if resp.success?
 
-          resp.body
+          raise NotFoundResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})" if resp.status == 404
+
+          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})"
         end
 
         # Open new version for an object
@@ -99,7 +102,7 @@ module Dor
           end
           return resp.body if resp.success?
 
-          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body}) for #{object_id}"
+          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})"
         end
 
         private
@@ -122,7 +125,7 @@ module Dor
           end
           return resp.body if resp.success?
 
-          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body}) for #{object_id}"
+          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})"
         end
 
         def open_new_version_path

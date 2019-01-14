@@ -171,7 +171,7 @@ RSpec.describe Dor::Services::Client::Object do
 
       it 'raises an UnexpectedResponse error' do
         expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
-                                          'internal server error: 500 (broken) for druid:1234')
+                                          'internal server error: 500 (broken)')
       end
     end
   end
@@ -220,7 +220,7 @@ RSpec.describe Dor::Services::Client::Object do
 
       it 'raises an UnexpectedResponse error' do
         expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
-                                          'internal server error: 500 (broken) for druid:1234')
+                                          'internal server error: 500 (broken)')
       end
     end
   end
