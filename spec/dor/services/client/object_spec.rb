@@ -56,6 +56,14 @@ RSpec.describe Dor::Services::Client::Object do
       end
     end
 
+    context 'when API request returns 404' do
+      let(:status) { [404, 'not found'] }
+
+      it 'raises a NotFoundResponse exception' do
+        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse, 'not found: 404 ()')
+      end
+    end
+
     context 'when API request fails' do
       let(:status) { [409, 'conflict'] }
 
@@ -67,6 +75,7 @@ RSpec.describe Dor::Services::Client::Object do
 
   describe '#notify_goobi' do
     subject(:request) { client.notify_goobi }
+
     before do
       stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/notify_goobi')
         .to_return(status: status)
@@ -77,6 +86,14 @@ RSpec.describe Dor::Services::Client::Object do
 
       it 'returns true' do
         expect(request).to be true
+      end
+    end
+
+    context 'when API request returns 404' do
+      let(:status) { [404, 'not found'] }
+
+      it 'raises a NotFoundResponse exception' do
+        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse, 'not found: 404 ()')
       end
     end
 
@@ -92,24 +109,32 @@ RSpec.describe Dor::Services::Client::Object do
   describe '#current_version' do
     subject(:request) { client.current_version }
 
+    before do
+      stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:1234/versions/current')
+        .to_return(status: status, body: body)
+    end
+
     context 'when API request succeeds' do
       let(:status) { 200 }
-      before do
-        stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:1234/versions/current')
-          .to_return(status: status, body: '2')
-      end
+      let(:body) { '2' }
 
       it 'returns the value' do
         expect(request).to eq '2'
       end
     end
 
+    context 'when API request returns 404' do
+      let(:status) { [404, 'not found'] }
+      let(:body) { '' }
+
+      it 'raises a NotFoundResponse exception' do
+        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse, 'not found: 404 ()')
+      end
+    end
+
     context 'when API request fails' do
       let(:status) { [401, 'unauthorized'] }
-      before do
-        stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:1234/versions/current')
-          .to_return(status: status)
-      end
+      let(:body) { '' }
 
       it 'raises an error' do
         expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse, 'unauthorized: 401 ()')
@@ -165,13 +190,22 @@ RSpec.describe Dor::Services::Client::Object do
       end
     end
 
+    context 'when API request returns 404' do
+      let(:status) { [404, 'not found'] }
+      let(:body) { '' }
+
+      it 'raises a NotFoundResponse exception' do
+        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse, 'not found: 404 ()')
+      end
+    end
+
     context 'when API request fails' do
       let(:status) { [500, 'internal server error'] }
       let(:body) { 'broken' }
 
       it 'raises an UnexpectedResponse error' do
         expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
-                                          'internal server error: 500 (broken) for druid:1234')
+                                          'internal server error: 500 (broken)')
       end
     end
   end
@@ -214,13 +248,22 @@ RSpec.describe Dor::Services::Client::Object do
       end
     end
 
+    context 'when API request returns 404' do
+      let(:status) { [404, 'not found'] }
+      let(:body) { '' }
+
+      it 'raises a NotFoundResponse exception' do
+        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse, 'not found: 404 ()')
+      end
+    end
+
     context 'when API request fails' do
       let(:status) { [500, 'internal server error'] }
       let(:body) { 'broken' }
 
       it 'raises an UnexpectedResponse error' do
         expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
-                                          'internal server error: 500 (broken) for druid:1234')
+                                          'internal server error: 500 (broken)')
       end
     end
   end

@@ -40,45 +40,49 @@ module Dor
         end
 
         # Publish a new object
+        # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
         # @return [boolean] true on success
         def publish
           resp = connection.post do |req|
             req.url "#{object_path}/publish"
           end
-          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})" unless resp.success?
+          return true if resp.success?
 
-          true
+          raise_exception_based_on_response!(resp)
         end
 
         # Notify the external Goobi system for a new object that was registered in DOR
+        # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
         # @return [boolean] true on success
         def notify_goobi
           resp = connection.post do |req|
             req.url "#{object_path}/notify_goobi"
           end
-          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})" unless resp.success?
+          return true if resp.success?
 
-          true
+          raise_exception_based_on_response!(resp)
         end
 
         # Get the current_version for a DOR object. This comes from Dor::VersionMetadataDS
+        # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
         # @return [String] the version identifier
         def current_version
           resp = connection.get do |req|
             req.url "#{object_path}/versions/current"
           end
-          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})" unless resp.success?
+          return resp.body if resp.success?
 
-          resp.body
+          raise_exception_based_on_response!(resp)
         end
 
         # Open new version for an object
         # @param params [Hash] optional params (see dor-services-app)
-        # @raise [UnexpectedResponse] when the response is not successful.
         # @raise [MalformedResponse] when the response is not parseable.
+        # @raise [NotFoundResponse] when the response is a 404 (object not found)
+        # @raise [UnexpectedResponse] when the response is not successful.
         # @return [String] the current version
         def open_new_version(**params)
           version = open_new_version_response(**params)
@@ -89,6 +93,7 @@ module Dor
 
         # Close current version for an object
         # @param params [Hash] optional params (see dor-services-app)
+        # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
         # @return [String] a message confirming successful closing
         def close_version(**params)
@@ -99,7 +104,7 @@ module Dor
           end
           return resp.body if resp.success?
 
-          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body}) for #{object_id}"
+          raise_exception_based_on_response!(resp)
         end
 
         private
@@ -110,8 +115,14 @@ module Dor
           "#{api_version}/objects/#{object_id}"
         end
 
+        def raise_exception_based_on_response!(response)
+          raise (response.status == 404 ? NotFoundResponse : UnexpectedResponse),
+                "#{response.reason_phrase}: #{response.status} (#{response.body})"
+        end
+
         # Make request to server to open a new version
         # @param params [Hash] optional params (see dor-services-app)
+        # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raises [UnexpectedResponse] on an unsuccessful response from the server
         # @returns [String] the plain text from the server
         def open_new_version_response(**params)
@@ -122,7 +133,7 @@ module Dor
           end
           return resp.body if resp.success?
 
-          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body}) for #{object_id}"
+          raise_exception_based_on_response!(resp)
         end
 
         def open_new_version_path
