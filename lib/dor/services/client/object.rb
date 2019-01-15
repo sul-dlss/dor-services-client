@@ -11,6 +11,8 @@ module Dor
     class Client
       # API calls that are about a repository object
       class Object < VersionedService
+        attr_reader :object_id
+
         # @param object_id [String] the pid for the object
         def initialize(connection:, version:, object_id:)
           raise ArgumentError, "The `object_id` parameter must be an identifier string: #{object_id.inspect}" unless object_id.is_a?(String)
@@ -108,8 +110,6 @@ module Dor
         end
 
         private
-
-        attr_reader :object_id
 
         def object_path
           "#{api_version}/objects/#{object_id}"
