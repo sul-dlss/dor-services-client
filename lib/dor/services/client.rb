@@ -28,10 +28,21 @@ module Dor
 
       include Singleton
 
+      # @param object_identifier [String] the pid for the object
+      # @raise [ArgumentError] when `object_identifier` is `nil`
+      # @return [Dor::Services::Client::Object] an instance of the `Client::Object` class
       def object(object_identifier)
-        Object.new(connection: connection, version: DEFAULT_VERSION, object_id: object_identifier)
+        raise ArgumentError, '`object_identifier` argument cannot be `nil` in call to `#object(object_identifier)' if object_identifier.nil?
+
+        # Return memoized object instance if object identifier value is the same
+        # This allows us to test the client more easily in downstream codebases,
+        # opening up stubbing without requiring `any_instance_of`
+        return @object if @object&.object_id == object_identifier
+
+        @object = Object.new(connection: connection, version: DEFAULT_VERSION, object_id: object_identifier)
       end
 
+      # @return [Dor::Services::Client::Objects] an instance of the `Client::Objects` class
       def objects
         @objects ||= Objects.new(connection: connection, version: DEFAULT_VERSION)
       end

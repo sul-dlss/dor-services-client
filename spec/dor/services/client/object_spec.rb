@@ -10,6 +10,12 @@ RSpec.describe Dor::Services::Client::Object do
 
   subject(:client) { described_class.new(connection: connection, version: 'v1', object_id: pid) }
 
+  describe '#object_id' do
+    it 'returns the injected pid' do
+      expect(client.object_id).to eq pid
+    end
+  end
+
   describe '#files' do
     it 'returns an instance of Client::Files' do
       expect(client.files).to be_instance_of Dor::Services::Client::Files
