@@ -11,26 +11,26 @@ RSpec.describe Dor::Services::Client do
     end
 
     describe '.object' do
-      let(:object_id) { 'druid:123' }
+      let(:object_identifier) { 'druid:123' }
 
-      context 'with a nil object_id value' do
-        let(:object_id) { nil }
+      context 'with a nil object_identifier value' do
+        let(:object_identifier) { nil }
 
         it 'raises an ArgumentError' do
-          expect { described_class.object(object_id) }.to raise_error(ArgumentError)
+          expect { described_class.object(object_identifier) }.to raise_error(ArgumentError)
         end
       end
 
       it 'returns an instance of Client::Object' do
-        expect(described_class.object(object_id)).to be_instance_of Dor::Services::Client::Object
+        expect(described_class.object(object_identifier)).to be_instance_of Dor::Services::Client::Object
       end
 
       it 'returns the memoized instance when called again' do
-        expect(described_class.object(object_id)).to eq described_class.object(object_id)
+        expect(described_class.object(object_identifier)).to eq described_class.object(object_identifier)
       end
 
       it 'refreshes the memoized instance when called with a different identifier'  do
-        expect(described_class.object(object_id)).not_to eq described_class.object('druid:1234')
+        expect(described_class.object(object_identifier)).not_to eq described_class.object('druid:1234')
       end
     end
 

@@ -8,11 +8,11 @@ RSpec.describe Dor::Services::Client::Object do
   let(:connection) { Dor::Services::Client.instance.send(:connection) }
   let(:pid) { 'druid:1234' }
 
-  subject(:client) { described_class.new(connection: connection, version: 'v1', object_id: pid) }
+  subject(:client) { described_class.new(connection: connection, version: 'v1', object_identifier: pid) }
 
-  describe '#object_id' do
+  describe '#object_identifier' do
     it 'returns the injected pid' do
-      expect(client.object_id).to eq pid
+      expect(client.object_identifier).to eq pid
     end
   end
 

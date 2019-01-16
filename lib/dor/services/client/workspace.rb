@@ -5,10 +5,10 @@ module Dor
     class Client
       # API calls that are about the DOR workspace
       class Workspace < VersionedService
-        # @param object_id [String] the pid for the object
-        def initialize(connection:, version:, object_id:)
+        # @param object_identifier [String] the pid for the object
+        def initialize(connection:, version:, object_identifier:)
           super(connection: connection, version: version)
-          @object_id = object_id
+          @object_identifier = object_identifier
         end
 
         # Initializes a new workspace
@@ -17,7 +17,7 @@ module Dor
         # @return nil
         def create(source:)
           resp = connection.post do |req|
-            req.url "#{api_version}/objects/#{object_id}/initialize_workspace"
+            req.url "#{api_version}/objects/#{object_identifier}/initialize_workspace"
             req.params['source'] = source
           end
           raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})" unless resp.success?
@@ -25,7 +25,7 @@ module Dor
 
         private
 
-        attr_reader :object_id
+        attr_reader :object_identifier
       end
     end
   end

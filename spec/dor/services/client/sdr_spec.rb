@@ -8,7 +8,7 @@ RSpec.describe Dor::Services::Client::SDR do
   let(:connection) { Dor::Services::Client.instance.send(:connection) }
   let(:pid) { 'druid:1234' }
 
-  subject(:client) { described_class.new(connection: connection, version: 'v1', object_id: pid) }
+  subject(:client) { described_class.new(connection: connection, version: 'v1', object_identifier: pid) }
 
   describe '#current_version' do
     subject(:request) { client.current_version }

@@ -37,9 +37,9 @@ module Dor
         # Return memoized object instance if object identifier value is the same
         # This allows us to test the client more easily in downstream codebases,
         # opening up stubbing without requiring `any_instance_of`
-        return @object if @object&.object_id == object_identifier
+        return @object if @object&.object_identifier == object_identifier
 
-        @object = Object.new(connection: connection, version: DEFAULT_VERSION, object_id: object_identifier)
+        @object = Object.new(connection: connection, version: DEFAULT_VERSION, object_identifier: object_identifier)
       end
 
       # @return [Dor::Services::Client::Objects] an instance of the `Client::Objects` class

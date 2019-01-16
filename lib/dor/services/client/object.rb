@@ -11,34 +11,34 @@ module Dor
     class Client
       # API calls that are about a repository object
       class Object < VersionedService
-        attr_reader :object_id
+        attr_reader :object_identifier
 
-        # @param object_id [String] the pid for the object
-        def initialize(connection:, version:, object_id:)
-          raise ArgumentError, "The `object_id` parameter must be an identifier string: #{object_id.inspect}" unless object_id.is_a?(String)
+        # @param object_identifier [String] the pid for the object
+        def initialize(connection:, version:, object_identifier:)
+          raise ArgumentError, "The `object_identifier` parameter must be an identifier string: #{object_identifier.inspect}" unless object_identifier.is_a?(String)
 
           super(connection: connection, version: version)
-          @object_id = object_id
+          @object_identifier = object_identifier
         end
 
         def sdr
-          @sdr ||= SDR.new(connection: connection, version: api_version, object_id: object_id)
+          @sdr ||= SDR.new(connection: connection, version: api_version, object_identifier: object_identifier)
         end
 
         def files
-          @files ||= Files.new(connection: connection, version: api_version, object_id: object_id)
+          @files ||= Files.new(connection: connection, version: api_version, object_identifier: object_identifier)
         end
 
         def workflow
-          @workflow ||= Workflow.new(connection: connection, version: api_version, object_id: object_id)
+          @workflow ||= Workflow.new(connection: connection, version: api_version, object_identifier: object_identifier)
         end
 
         def workspace
-          @workspace ||= Workspace.new(connection: connection, version: api_version, object_id: object_id)
+          @workspace ||= Workspace.new(connection: connection, version: api_version, object_identifier: object_identifier)
         end
 
         def release_tags
-          @release_tags ||= ReleaseTags.new(connection: connection, version: api_version, object_id: object_id)
+          @release_tags ||= ReleaseTags.new(connection: connection, version: api_version, object_identifier: object_identifier)
         end
 
         # Publish a new object
@@ -88,7 +88,7 @@ module Dor
         # @return [String] the current version
         def open_new_version(**params)
           version = open_new_version_response(**params)
-          raise MalformedResponse, "Version of #{object_id} is empty" if version.empty?
+          raise MalformedResponse, "Version of #{object_identifier} is empty" if version.empty?
 
           version
         end
@@ -112,7 +112,7 @@ module Dor
         private
 
         def object_path
-          "#{api_version}/objects/#{object_id}"
+          "#{api_version}/objects/#{object_identifier}"
         end
 
         def raise_exception_based_on_response!(response)
