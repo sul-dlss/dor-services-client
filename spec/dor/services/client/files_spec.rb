@@ -8,7 +8,7 @@ RSpec.describe Dor::Services::Client::Files do
   let(:connection) { Dor::Services::Client.instance.send(:connection) }
   let(:pid) { 'druid:ck546xs5106' }
 
-  subject(:client) { described_class.new(connection: connection, version: 'v1', object_id: pid) }
+  subject(:client) { described_class.new(connection: connection, version: 'v1', object_identifier: pid) }
 
   describe '#list' do
     subject { client.list }

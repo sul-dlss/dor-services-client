@@ -8,7 +8,7 @@ RSpec.describe Dor::Services::Client::Workflow do
   let(:connection) { Dor::Services::Client.instance.send(:connection) }
   let(:pid) { 'druid:123' }
 
-  subject(:client) { described_class.new(connection: connection, version: 'v1', object_id: pid) }
+  subject(:client) { described_class.new(connection: connection, version: 'v1', object_identifier: pid) }
 
   describe '#create' do
     subject(:request) { client.create(wf_name: 'accessionWF') }

@@ -5,10 +5,10 @@ module Dor
     class Client
       # API calls that are about a repository object
       class ReleaseTags < VersionedService
-        # @param object_id [String] the pid for the object
-        def initialize(connection:, version:, object_id:)
+        # @param object_identifier [String] the pid for the object
+        def initialize(connection:, version:, object_identifier:)
           super(connection: connection, version: version)
-          @object_id = object_id
+          @object_identifier = object_identifier
         end
 
         # Creates a new release tag for the object
@@ -27,7 +27,7 @@ module Dor
             release: release
           }
           resp = connection.post do |req|
-            req.url "#{api_version}/objects/#{object_id}/release_tags"
+            req.url "#{api_version}/objects/#{object_identifier}/release_tags"
             req.headers['Content-Type'] = 'application/json'
             req.body = params.to_json
           end
@@ -39,7 +39,7 @@ module Dor
 
         private
 
-        attr_reader :object_id
+        attr_reader :object_identifier
       end
     end
   end

@@ -7,10 +7,10 @@ module Dor
     class Client
       # API calls that are about preserved objects
       class SDR < VersionedService
-        # @param object_id [String] the pid for the object
-        def initialize(connection:, version:, object_id:)
+        # @param object_identifier [String] the pid for the object
+        def initialize(connection:, version:, object_identifier:)
           super(connection: connection, version: version)
-          @object_id = object_id
+          @object_identifier = object_identifier
         end
 
         # Gets the current version number for the object
@@ -31,7 +31,7 @@ module Dor
 
         private
 
-        attr_reader :object_id
+        attr_reader :object_identifier
 
         # make the request to the server for the currentVersion xml
         # @raises [UnexpectedResponse] on an unsuccessful response from the server
@@ -42,11 +42,11 @@ module Dor
           end
           return resp.body if resp.success?
 
-          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body}) for #{object_id}"
+          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body}) for #{object_identifier}"
         end
 
         def current_version_path
-          "#{api_version}/sdr/objects/#{object_id}/current_version"
+          "#{api_version}/sdr/objects/#{object_identifier}/current_version"
         end
       end
     end

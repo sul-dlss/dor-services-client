@@ -5,10 +5,10 @@ module Dor
     class Client
       # API calls relating to files
       class Files < VersionedService
-        # @param object_id [String] the pid for the object
-        def initialize(connection:, version:, object_id:)
+        # @param object_identifier [String] the pid for the object
+        def initialize(connection:, version:, object_identifier:)
           super(connection: connection, version: version)
-          @object_id = object_id
+          @object_identifier = object_identifier
         end
 
         # Get the contents from the workspace
@@ -16,7 +16,7 @@ module Dor
         # @return [String] the file contents from the workspace
         def retrieve(filename:)
           resp = connection.get do |req|
-            req.url "#{api_version}/objects/#{object_id}/contents/#{filename}"
+            req.url "#{api_version}/objects/#{object_identifier}/contents/#{filename}"
           end
           return unless resp.success?
 
@@ -29,7 +29,7 @@ module Dor
         # @return [String] the file contents from the SDR
         def preserved_content(filename:, version:)
           resp = connection.get do |req|
-            req.url "#{api_version}/sdr/objects/#{object_id}/content/#{CGI.escape(filename)}?version=#{version}"
+            req.url "#{api_version}/sdr/objects/#{object_identifier}/content/#{CGI.escape(filename)}?version=#{version}"
           end
           return unless resp.success?
 
@@ -40,7 +40,7 @@ module Dor
         # @return [Array<String>] the list of filenames in the workspace
         def list
           resp = connection.get do |req|
-            req.url "#{api_version}/objects/#{object_id}/contents"
+            req.url "#{api_version}/objects/#{object_identifier}/contents"
           end
           return [] unless resp.success?
 
@@ -50,7 +50,7 @@ module Dor
 
         private
 
-        attr_reader :object_id
+        attr_reader :object_identifier
       end
     end
   end
