@@ -8,6 +8,7 @@ require 'active_support/core_ext/module/delegation'
 require 'dor/services/client/versioned_service'
 require 'dor/services/client/object'
 require 'dor/services/client/objects'
+require 'dor/services/client/workflows'
 
 module Dor
   module Services
@@ -47,6 +48,10 @@ module Dor
         @objects ||= Objects.new(connection: connection, version: DEFAULT_VERSION)
       end
 
+      def workflows
+        @workflows ||= Workflows.new(connection: connection, version: DEFAULT_VERSION)
+      end
+
       class << self
         def configure(url:, username: nil, password: nil)
           instance.url = url
@@ -58,7 +63,7 @@ module Dor
           self
         end
 
-        delegate :objects, :object, to: :instance
+        delegate :objects, :object, :workflows, to: :instance
       end
 
       attr_writer :url, :username, :password, :connection

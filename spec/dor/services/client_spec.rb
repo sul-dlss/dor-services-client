@@ -29,7 +29,7 @@ RSpec.describe Dor::Services::Client do
         expect(described_class.object(object_identifier)).to eq described_class.object(object_identifier)
       end
 
-      it 'refreshes the memoized instance when called with a different identifier'  do
+      it 'refreshes the memoized instance when called with a different identifier' do
         expect(described_class.object(object_identifier)).not_to eq described_class.object('druid:1234')
       end
     end
@@ -41,6 +41,16 @@ RSpec.describe Dor::Services::Client do
 
       it 'returns the memoized instance when called again' do
         expect(described_class.objects).to eq described_class.objects
+      end
+    end
+
+    describe '.workflows' do
+      it 'returns an instance of Client::Workflows' do
+        expect(described_class.workflows).to be_instance_of Dor::Services::Client::Workflows
+      end
+
+      it 'returns the memoized instance when called again' do
+        expect(described_class.workflows).to eq described_class.workflows
       end
     end
   end
