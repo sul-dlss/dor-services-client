@@ -70,6 +70,10 @@ object_client.release_tags.create(release: release, what: what, to: to, who: who
 object_client.sdr.current_version
 object_client.workflow.create(wf_name: workflow_name_string)
 object_client.workspace.create(source: object_path_string)
+
+# For retrieving a workflow template
+workflows_client = Dor::Services::Client.workflow
+workflows_client.initial(name: workflow_name)
 ```
 
 ## Development
