@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'nokogiri'
+require 'moab'
 
 module Dor
   module Services
@@ -29,6 +30,16 @@ module Dor
           end
         end
 
+        def signature_catalog
+          resp = connection.get do |req|
+            req.url "#{base_path}/manifest/signatureCatalog.xml"
+          end
+
+          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body}) for #{object_identifier}" unless resp.success?
+
+          Moab::SignatureCatalog.parse resp.body
+        end
+
         private
 
         attr_reader :object_identifier
@@ -46,7 +57,11 @@ module Dor
         end
 
         def current_version_path
-          "#{api_version}/sdr/objects/#{object_identifier}/current_version"
+          "#{base_path}/current_version"
+        end
+
+        def base_path
+          "#{api_version}/sdr/objects/#{object_identifier}"
         end
       end
     end
