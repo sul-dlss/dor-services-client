@@ -61,6 +61,18 @@ module Dor
           Moab::FileInventoryDifference.parse(resp.body)
         end
 
+        # @param [String] datastream The identifier of the metadata datastream
+        # @return [String] The datastream contents from the previous version of the digital object (fetched from SDR storage)
+        def metadata(datastream:)
+          resp = connection.get do |req|
+            req.url "#{base_path}/metadata/#{datastream}.xml"
+          end
+          return resp.body if resp.success?
+          return if resp.status == 404
+
+          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body}) for #{object_identifier}"
+        end
+
         private
 
         attr_reader :object_identifier
