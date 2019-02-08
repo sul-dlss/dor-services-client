@@ -67,8 +67,11 @@ object_client.files.retrieve(filename: filename_string)
 object_client.files.preserved_content(filename: filename_string, version: version_string)
 object_client.files.list
 object_client.release_tags.create(release: release, what: what, to: to, who: who)
+object_client.sdr.content_diff(current_content: existing_content)
 object_client.sdr.current_version
+object_client.sdr.metadata(datastream: dsid)
 object_client.sdr.signature_catalog
+
 object_client.workflow.create(wf_name: workflow_name_string)
 object_client.workspace.create(source: object_path_string)
 
