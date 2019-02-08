@@ -40,6 +40,27 @@ module Dor
           Moab::SignatureCatalog.parse resp.body
         end
 
+        # Retrieves file difference manifest for contentMetadata from SDR
+        #
+        # @param [String] current_content The contentMetadata xml
+        # @param [String] subset ('all') The keyword for file attributes 'shelve', 'preserve', 'publish'.
+        # @param [Integer, NilClass] version (nil)
+        # @return [Moab::FileInventoryDifference] the differences for the given content and subset (i.e.: cm_inv_diff manifest)
+        def content_diff(current_content:, subset: 'all', version: nil)
+          raise ArgumentError, "Invalid subset value: #{subset}" unless %w[all shelve preserve publish].include?(subset)
+
+          query_string = { subset: subset }
+          query_string[:version] = version.to_s unless version.nil?
+          query_string = URI.encode_www_form(query_string)
+
+          resp = connection.post do |req|
+            req.url "#{base_path}/cm-inv-diff?#{query_string}"
+            req.headers['Content-Type'] = 'application/xml'
+            req.body = current_content
+          end
+          Moab::FileInventoryDifference.parse(resp.body)
+        end
+
         private
 
         attr_reader :object_identifier
