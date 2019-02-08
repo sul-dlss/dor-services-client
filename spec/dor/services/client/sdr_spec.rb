@@ -88,6 +88,30 @@ RSpec.describe Dor::Services::Client::SDR do
     end
   end
 
+  describe '#content_diff' do
+    subject(:inventory_difference) { client.content_diff(current_content: '') }
+
+    let(:body) { '<fileInventoryDifference />' }
+    let(:status) { 200 }
+
+    before do
+      stub_request(:post, 'https://dor-services.example.com/v1/sdr/objects/druid:1234/cm-inv-diff?subset=all')
+        .to_return(status: status, body: body)
+    end
+
+    it 'fetches the file inventory difference from SDR' do
+      expect(inventory_difference.to_xml).to match(/<fileInventoryDifference/)
+    end
+
+    context 'with invalid parameters' do
+      subject(:inventory_difference) { client.content_diff(current_content: '', subset: 'bad') }
+
+      it 'raises an error' do
+        expect { inventory_difference }.to raise_error ArgumentError
+      end
+    end
+  end
+
   describe '#current_version' do
     subject(:request) { client.current_version }
 
