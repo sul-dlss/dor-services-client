@@ -89,7 +89,7 @@ RSpec.describe Dor::Services::Client::SDR do
   end
 
   describe '#content_diff' do
-    subject(:inventory_difference) { client.content_diff(current_content: '') }
+    subject(:response) { client.content_diff(current_content: '') }
 
     let(:body) { '<fileInventoryDifference />' }
     let(:status) { 200 }
@@ -100,14 +100,24 @@ RSpec.describe Dor::Services::Client::SDR do
     end
 
     it 'fetches the file inventory difference from SDR' do
-      expect(inventory_difference.to_xml).to match(/<fileInventoryDifference/)
+      expect(response.to_xml).to match(/<fileInventoryDifference/)
     end
 
     context 'with invalid parameters' do
-      subject(:inventory_difference) { client.content_diff(current_content: '', subset: 'bad') }
+      subject(:response) { client.content_diff(current_content: '', subset: 'bad') }
 
       it 'raises an error' do
-        expect { inventory_difference }.to raise_error ArgumentError
+        expect { response }.to raise_error ArgumentError
+      end
+    end
+
+    context 'when API request fails' do
+      let(:status) { [404, 'not found'] }
+      let(:body) { 'i dunno?' }
+
+      it 'raises an error' do
+        expect { response }.to raise_error(Dor::Services::Client::UnexpectedResponse,
+                                           'not found: 404 (i dunno?) for druid:1234')
       end
     end
   end

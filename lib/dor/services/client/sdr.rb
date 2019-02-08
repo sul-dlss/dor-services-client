@@ -49,16 +49,9 @@ module Dor
         def content_diff(current_content:, subset: 'all', version: nil)
           raise ArgumentError, "Invalid subset value: #{subset}" unless %w[all shelve preserve publish].include?(subset)
 
-          query_string = { subset: subset }
-          query_string[:version] = version.to_s unless version.nil?
-          query_string = URI.encode_www_form(query_string)
+          resp = content_diff_response(current_content: current_content, subset: subset, version: version)
 
-          resp = connection.post do |req|
-            req.url "#{base_path}/cm-inv-diff?#{query_string}"
-            req.headers['Content-Type'] = 'application/xml'
-            req.body = current_content
-          end
-          Moab::FileInventoryDifference.parse(resp.body)
+          Moab::FileInventoryDifference.parse(resp)
         end
 
         # @param [String] datastream The identifier of the metadata datastream
@@ -91,6 +84,27 @@ module Dor
 
         def current_version_path
           "#{base_path}/current_version"
+        end
+
+        # make the request to the server for the content diff
+        # @raises [UnexpectedResponse] on an unsuccessful response from the server
+        # @returns [String] the raw xml from the server
+        def content_diff_response(current_content:, subset:, version:)
+          resp = connection.post do |req|
+            req.url content_diff_path(subset: subset, version: version)
+            req.headers['Content-Type'] = 'application/xml'
+            req.body = current_content
+          end
+          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body}) for #{object_identifier}" unless resp.success?
+
+          resp.body
+        end
+
+        def content_diff_path(subset:, version:)
+          query_string = { subset: subset }
+          query_string[:version] = version.to_s unless version.nil?
+          query_string = URI.encode_www_form(query_string)
+          "#{base_path}/cm-inv-diff?#{query_string}"
         end
 
         def base_path
