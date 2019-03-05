@@ -31,10 +31,9 @@ module Dor
         end
 
         def signature_catalog
-          resp = connection.get do |req|
-            req.url "#{base_path}/manifest/signatureCatalog.xml"
-          end
+          resp = signature_catalog_response
 
+          return Moab::SignatureCatalog.new(digital_object_id: object_identifier, version_id: 0) if resp.status == 404
           raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body}) for #{object_identifier}" unless resp.success?
 
           Moab::SignatureCatalog.parse resp.body
@@ -69,6 +68,12 @@ module Dor
         private
 
         attr_reader :object_identifier
+
+        def signature_catalog_response
+          connection.get do |req|
+            req.url "#{base_path}/manifest/signatureCatalog.xml"
+          end
+        end
 
         # make the request to the server for the currentVersion xml
         # @raises [UnexpectedResponse] on an unsuccessful response from the server

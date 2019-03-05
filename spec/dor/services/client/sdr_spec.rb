@@ -77,13 +77,22 @@ RSpec.describe Dor::Services::Client::SDR do
       end
     end
 
-    context 'when API request fails' do
+    context 'when API request is not found' do
       let(:status) { [404, 'not found'] }
+      let(:body) { 'i dunno?' }
+
+      it 'returns a Moab::SignatureCatalog' do
+        expect(request).to be_kind_of Moab::SignatureCatalog
+      end
+    end
+
+    context 'when API request fails' do
+      let(:status) { [500, 'internal server error'] }
       let(:body) { 'i dunno?' }
 
       it 'raises an error' do
         expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
-                                          'not found: 404 (i dunno?) for druid:1234')
+                                          'internal server error: 500 (i dunno?) for druid:1234')
       end
     end
   end
