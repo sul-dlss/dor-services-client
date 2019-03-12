@@ -83,7 +83,12 @@ module Dor
           #       causes the adapter not to be set. Thus, everything breaks.
           conn.adapter    Faraday.default_adapter
           conn.basic_auth username, password if username && password
+          conn.headers[:user_agent] = user_agent
         end
+      end
+
+      def user_agent
+        "dor-services-client #{Dor::Services::Client::VERSION}"
       end
     end
   end

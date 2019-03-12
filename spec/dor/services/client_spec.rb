@@ -73,9 +73,10 @@ RSpec.describe Dor::Services::Client do
     let(:username) { 'foo' }
     let(:password) { 'bar' }
 
-    it 'sets the Authorization header on the instance connection' do
+    it 'sets the Authorization and User-Agent headers on the connection' do
       expect(described_class.instance.send(:connection).headers).to include(
-        'Authorization' => 'Basic Zm9vOmJhcg=='
+        'Authorization' => 'Basic Zm9vOmJhcg==',
+        'User-Agent' => /dor-services-client \d+\.\d+\.\d+/
       )
     end
   end
