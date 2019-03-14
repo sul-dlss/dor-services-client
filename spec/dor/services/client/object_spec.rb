@@ -179,6 +179,18 @@ RSpec.describe Dor::Services::Client::Object do
         expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse, 'unauthorized: 401 ()')
       end
     end
+
+    context 'when connection fails' do
+      before do
+        allow_any_instance_of(Faraday::Adapter::NetHttp).to receive(:call).and_raise(Faraday::ConnectionFailed.new('end of file reached'))
+      end
+      let(:status) { 555 }
+      let(:body) { '' }
+
+      it 'raises an error' do
+        expect { request }.to raise_error(Dor::Services::Client::ConnectionFailed, 'unable to reach dor-services-app')
+      end
+    end
   end
 
   describe '#open_new_version' do
