@@ -9,6 +9,7 @@ require 'dor/services/client/versioned_service'
 require 'dor/services/client/object'
 require 'dor/services/client/objects'
 require 'dor/services/client/workflows'
+require 'dor/services/client/error_faraday_middleware'
 
 module Dor
   module Services
@@ -24,6 +25,8 @@ module Dor
 
       # Error that is raised when the remote server returns some unparsable response
       class MalformedResponse < Error; end
+
+      class ConnectionFailed < Error; end
 
       DEFAULT_VERSION = 'v1'
 
@@ -78,6 +81,8 @@ module Dor
 
       def connection
         @connection ||= Faraday.new(url) do |conn|
+          conn.use ErrorFaradayMiddleware
+
           # @note when username & password are nil, this line is required else
           #       the Faraday instance will be passed an empty block, which
           #       causes the adapter not to be set. Thus, everything breaks.
