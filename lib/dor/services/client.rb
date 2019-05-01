@@ -56,10 +56,19 @@ module Dor
       end
 
       class << self
-        def configure(url:, username: nil, password: nil)
+        # @param [String] url
+        # @param [String] username
+        # @param [String] password
+        # @param [String] token a bearer token for HTTP auth
+        # @param [String] token_header ('Authorization') set this to something if you are also using
+        #                              basic auth, or the headers will collide
+        def configure(url:, username: nil, password: nil, token: nil, token_header: 'Authorization')
           instance.url = url
           instance.username = username
           instance.password = password
+          instance.token = token
+          instance.token_header = token_header
+
           # Force connection to be re-established when `.configure` is called
           instance.connection = nil
 
@@ -69,11 +78,11 @@ module Dor
         delegate :objects, :object, :workflows, to: :instance
       end
 
-      attr_writer :url, :username, :password, :connection
+      attr_writer :url, :username, :password, :token, :token_header, :connection
 
       private
 
-      attr_reader :username, :password
+      attr_reader :username, :password, :token, :token_header
 
       def url
         @url || raise(Error, 'url has not yet been configured')
@@ -86,9 +95,10 @@ module Dor
           # @note when username & password are nil, this line is required else
           #       the Faraday instance will be passed an empty block, which
           #       causes the adapter not to be set. Thus, everything breaks.
-          conn.adapter    Faraday.default_adapter
+          conn.adapter Faraday.default_adapter
           conn.basic_auth username, password if username && password
           conn.headers[:user_agent] = user_agent
+          conn.headers[token_header] = "Bearer #{token}" if token
         end
       end
 
