@@ -22,6 +22,17 @@ module Dor
           raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body}) for #{object_identifier}"
         end
 
+        # @return [String] The descriptive metadata XML representation of the object
+        def descriptive
+          resp = connection.get do |req|
+            req.url "#{base_path}/descriptive"
+          end
+          return resp.body if resp.success?
+          return if resp.status == 404
+
+          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body}) for #{object_identifier}"
+        end
+
         private
 
         attr_reader :object_identifier
