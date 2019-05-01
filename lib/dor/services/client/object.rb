@@ -5,6 +5,7 @@ require 'dor/services/client/release_tags'
 require 'dor/services/client/sdr'
 require 'dor/services/client/workflow'
 require 'dor/services/client/workspace'
+require 'dor/services/client/metadata'
 
 module Dor
   module Services
@@ -23,6 +24,10 @@ module Dor
 
         def sdr
           @sdr ||= SDR.new(connection: connection, version: api_version, object_identifier: object_identifier)
+        end
+
+        def metadata
+          @metadata ||= Metadata.new(connection: connection, version: api_version, object_identifier: object_identifier)
         end
 
         def files
