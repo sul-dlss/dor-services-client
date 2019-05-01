@@ -63,8 +63,10 @@ object_client.notify_goobi
 object_client.current_version
 object_client.open_new_version(**params)
 object_client.close_version(**params)
-# Return the Dublin Core XML representation
+# Get the Dublin Core XML representation
 object_client.metadata.dublin_core
+# Get the public descriptive XML representation
+object_client.metadata.descriptive
 object_client.files.retrieve(filename: filename_string)
 object_client.files.preserved_content(filename: filename_string, version: version_string)
 object_client.files.list
