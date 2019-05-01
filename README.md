@@ -59,6 +59,8 @@ objects_client.register(params: {})
 # For performing operations on a known, registered object
 object_client = Dor::Services::Client.object(object_identifier)
 object_client.publish
+# Copy metadata from Symphony into descMetadata
+object_client.refresh_metadata
 object_client.notify_goobi
 object_client.current_version
 object_client.open_new_version(**params)
