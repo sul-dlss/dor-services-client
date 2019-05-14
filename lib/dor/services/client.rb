@@ -1,15 +1,26 @@
 # frozen_string_literal: true
 
-require 'dor/services/client/version'
-require 'singleton'
-require 'faraday'
 require 'active_support/core_ext/hash/indifferent_access'
 require 'active_support/core_ext/module/delegation'
-require 'dor/services/client/versioned_service'
-require 'dor/services/client/object'
-require 'dor/services/client/objects'
-require 'dor/services/client/workflows'
-require 'dor/services/client/error_faraday_middleware'
+require 'faraday'
+require 'singleton'
+require 'zeitwerk'
+
+class DorServicesClientInflector < Zeitwerk::Inflector
+  def camelize(basename, _abspath)
+    case basename
+    when 'sdr'
+      'SDR'
+    else
+      super
+    end
+  end
+end
+
+loader = Zeitwerk::Loader.new
+loader.inflector = DorServicesClientInflector.new
+loader.push_dir('lib')
+loader.setup
 
 module Dor
   module Services
