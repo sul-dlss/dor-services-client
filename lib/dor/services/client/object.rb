@@ -1,12 +1,5 @@
 # frozen_string_literal: true
 
-require 'dor/services/client/files'
-require 'dor/services/client/release_tags'
-require 'dor/services/client/sdr'
-require 'dor/services/client/workflow'
-require 'dor/services/client/workspace'
-require 'dor/services/client/metadata'
-
 module Dor
   module Services
     class Client
