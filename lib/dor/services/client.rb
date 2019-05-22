@@ -115,7 +115,6 @@ module Dor
       end
       # rubocop:enable  Metrics/AbcSize
 
-
       def user_agent
         "dor-services-client #{Dor::Services::Client::VERSION}"
       end
