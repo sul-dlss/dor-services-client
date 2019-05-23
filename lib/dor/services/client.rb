@@ -99,6 +99,7 @@ module Dor
         @url || raise(Error, 'url has not yet been configured')
       end
 
+      # rubocop:disable  Metrics/AbcSize
       def connection
         @connection ||= Faraday.new(url) do |conn|
           conn.use ErrorFaradayMiddleware
@@ -112,6 +113,8 @@ module Dor
           conn.headers[token_header] = "Bearer #{token}" if token
         end
       end
+      # rubocop:enable  Metrics/AbcSize
+
 
       def user_agent
         "dor-services-client #{Dor::Services::Client::VERSION}"
