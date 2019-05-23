@@ -19,7 +19,7 @@ end
 
 loader = Zeitwerk::Loader.new
 loader.inflector = DorServicesClientInflector.new
-loader.push_dir('lib')
+loader.push_dir(File.absolute_path("#{__FILE__}/../../.."))
 loader.setup
 
 module Dor
