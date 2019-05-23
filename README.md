@@ -62,9 +62,10 @@ object_client.publish
 # Copy metadata from Symphony into descMetadata
 object_client.refresh_metadata
 object_client.notify_goobi
-object_client.current_version
-object_client.open_new_version(**params)
-object_client.close_version(**params)
+object_client.version.current
+object_client.version.openeable?(**params)
+object_client.version.open(**params)
+object_client.version.close(**params)
 # Get the Dublin Core XML representation
 object_client.metadata.dublin_core
 # Get the public descriptive XML representation
