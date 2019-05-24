@@ -11,6 +11,8 @@ class DorServicesClientInflector < Zeitwerk::Inflector
     case basename
     when 'sdr'
       'SDR'
+    when 'version'
+      'VERSION'
     else
       super
     end
