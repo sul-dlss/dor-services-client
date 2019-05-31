@@ -80,7 +80,10 @@ object_client.sdr.metadata(datastream: dsid)
 object_client.sdr.signature_catalog
 
 object_client.workflow.create(wf_name: workflow_name_string)
+
+# Create and remove workspaces
 object_client.workspace.create(source: object_path_string)
+object_client.workspace.cleanup
 
 # For retrieving a workflow template
 workflows_client = Dor::Services::Client.workflows
