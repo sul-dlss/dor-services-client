@@ -5,6 +5,9 @@ module Dor
     class Client
       # API calls that are about workflow
       class Workflow < VersionedService
+        extend Deprecation
+        self.deprecation_horizon = 'dor-service-client version 2.0'
+
         # @param object_identifier [String] the pid for the object
         def initialize(connection:, version:, object_identifier:)
           super(connection: connection, version: version)
@@ -21,6 +24,7 @@ module Dor
           end
           raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})" unless resp.success?
         end
+        deprecation_deprecate create: 'Create will be removed. Use dor-workflow-service instead'
 
         private
 
