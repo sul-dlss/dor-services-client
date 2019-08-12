@@ -8,6 +8,7 @@ module Dor
       # API calls that are about a repository object
       class Object < VersionedService
         extend Deprecation
+        self.deprecation_horizon = 'dor-services-client version 2.0'
 
         attr_reader :object_identifier
 
