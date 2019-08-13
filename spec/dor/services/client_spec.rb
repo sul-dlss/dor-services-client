@@ -63,40 +63,30 @@ RSpec.describe Dor::Services::Client do
     end
   end
 
-  context 'when passed a username and password' do
+  context 'when passed a token and token_header' do
     before do
       described_class.configure(url: 'https://dor-services.example.com',
-                                username: username,
-                                password: password)
+                                token_header: 'X-Auth',
+                                token: '123')
     end
 
-    let(:username) { 'foo' }
-    let(:password) { 'bar' }
-
-    it 'sets the Authorization and User-Agent headers on the connection' do
+    it 'sets the token header on the connection' do
       expect(described_class.instance.send(:connection).headers).to include(
-        'Authorization' => 'Basic Zm9vOmJhcg==',
+        'X-Auth' => 'Bearer 123',
         'User-Agent' => /dor-services-client \d+\.\d+\.\d+/
       )
     end
   end
 
-  context 'when passed a username and password and a token' do
+  context 'when passed a token without a token_header' do
     before do
       described_class.configure(url: 'https://dor-services.example.com',
-                                username: username,
-                                password: password,
-                                token_header: 'X-Auth',
                                 token: '123')
     end
 
-    let(:username) { 'foo' }
-    let(:password) { 'bar' }
-
-    it 'sets the token header on the connection' do
+    it 'sets the token on the connection and uses the default authorization header' do
       expect(described_class.instance.send(:connection).headers).to include(
-        'Authorization' => 'Basic Zm9vOmJhcg==',
-        'X-Auth' => 'Bearer 123',
+        'Authorization' => 'Bearer 123',
         'User-Agent' => /dor-services-client \d+\.\d+\.\d+/
       )
     end

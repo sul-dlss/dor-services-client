@@ -70,15 +70,11 @@ module Dor
 
       class << self
         # @param [String] url
-        # @param [String] username
-        # @param [String] password
         # @param [String] token a bearer token for HTTP auth
         # @param [String] token_header ('Authorization') set this to something if you are also using
         #                              basic auth, or the headers will collide
-        def configure(url:, username: nil, password: nil, token: nil, token_header: 'Authorization')
+        def configure(url:, token: nil, token_header: 'Authorization')
           instance.url = url
-          instance.username = username
-          instance.password = password
           instance.token = token
           instance.token_header = token_header
 
@@ -91,31 +87,28 @@ module Dor
         delegate :objects, :object, :workflows, to: :instance
       end
 
-      attr_writer :url, :username, :password, :token, :token_header, :connection
+      attr_writer :url, :token, :token_header, :connection
 
       private
 
-      attr_reader :username, :password, :token, :token_header
+      attr_reader :token, :token_header
 
       def url
         @url || raise(Error, 'url has not yet been configured')
       end
 
-      # rubocop:disable  Metrics/AbcSize
       def connection
         @connection ||= Faraday.new(url) do |conn|
           conn.use ErrorFaradayMiddleware
 
-          # @note when username & password are nil, this line is required else
+          # @note when token & token_header are nil, this line is required else
           #       the Faraday instance will be passed an empty block, which
           #       causes the adapter not to be set. Thus, everything breaks.
           conn.adapter Faraday.default_adapter
-          conn.basic_auth username, password if username && password
           conn.headers[:user_agent] = user_agent
           conn.headers[token_header] = "Bearer #{token}" if token
         end
       end
-      # rubocop:enable  Metrics/AbcSize
 
       def user_agent
         "dor-services-client #{Dor::Services::Client::VERSION}"
