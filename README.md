@@ -63,7 +63,7 @@ object_client.publish
 object_client.refresh_metadata
 object_client.notify_goobi
 object_client.version.current
-object_client.version.openeable?(**params)
+object_client.version.openable?(**params)
 object_client.version.open(**params)
 object_client.version.close(**params)
 # Get the Dublin Core XML representation
