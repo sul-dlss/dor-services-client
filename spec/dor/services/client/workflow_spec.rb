@@ -16,7 +16,7 @@ RSpec.describe Dor::Services::Client::Workflow do
     before do
       allow(Deprecation).to receive(:warn)
     end
-    
+
     context 'when API request succeeds' do
       before do
         stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:123/apo_workflows/accessionWF')

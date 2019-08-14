@@ -13,6 +13,7 @@ RSpec.describe Dor::Services::Client::Workflows do
     before do
       stub_request(:get, 'https://dor-services.example.com/v1/workflows/accessionWF/initial')
         .to_return(status: status, body: body)
+      allow(Deprecation).to receive(:warn)
     end
 
     context 'when API request succeeds' do
@@ -21,6 +22,7 @@ RSpec.describe Dor::Services::Client::Workflows do
 
       it 'gets the result' do
         expect(client.initial(name: 'accessionWF')).to eq body
+        expect(Deprecation).to have_received(:warn)
       end
     end
 
@@ -31,6 +33,7 @@ RSpec.describe Dor::Services::Client::Workflows do
       it 'raises an error' do
         expect { client.initial(name: 'accessionWF') }.to raise_error(Dor::Services::Client::UnexpectedResponse,
                                                                       'not found: 404 ()')
+        expect(Deprecation).to have_received(:warn)
       end
     end
   end

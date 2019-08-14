@@ -5,6 +5,9 @@ module Dor
     class Client
       # API calls that are about workflows
       class Workflows < VersionedService
+        extend Deprecation
+        self.deprecation_horizon = 'dor-services-client version 2.0.0'
+
         # Get the initial XML for a workflow
         # @param name [String] the name of the xml
         # @return [String] the response
@@ -18,6 +21,7 @@ module Dor
 
           raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})"
         end
+        deprecation_deprecate initial: 'Initial will be removed. Use dor-workflow-client instead'
       end
     end
   end
