@@ -59,6 +59,7 @@ objects_client.register(params: {})
 # For performing operations on a known, registered object
 object_client = Dor::Services::Client.object(object_identifier)
 object_client.publish
+
 # Copy metadata from Symphony into descMetadata
 object_client.refresh_metadata
 object_client.notify_goobi
@@ -66,8 +67,10 @@ object_client.version.current
 object_client.version.openable?(**params)
 object_client.version.open(**params)
 object_client.version.close(**params)
+
 # Get the Dublin Core XML representation
 object_client.metadata.dublin_core
+
 # Get the public descriptive XML representation
 object_client.metadata.descriptive
 object_client.files.retrieve(filename: filename_string)
@@ -79,15 +82,9 @@ object_client.sdr.current_version
 object_client.sdr.metadata(datastream: dsid)
 object_client.sdr.signature_catalog
 
-object_client.workflow.create(wf_name: workflow_name_string)
-
 # Create and remove workspaces
 object_client.workspace.create(source: object_path_string)
 object_client.workspace.cleanup
-
-# For retrieving a workflow template
-workflows_client = Dor::Services::Client.workflows
-workflows_client.initial(name: workflow_name)
 ```
 
 ## Development

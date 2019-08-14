@@ -40,12 +40,6 @@ RSpec.describe Dor::Services::Client::Object do
     end
   end
 
-  describe '#workflow' do
-    it 'returns an instance of Client::Workflow' do
-      expect(client.workflow).to be_instance_of Dor::Services::Client::Workflow
-    end
-  end
-
   describe '#workspace' do
     it 'returns an instance of Client::Workspace' do
       expect(client.workspace).to be_instance_of Dor::Services::Client::Workspace
@@ -187,58 +181,6 @@ RSpec.describe Dor::Services::Client::Object do
       it 'raises an error' do
         expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse, 'unauthorized: 401 ()')
       end
-    end
-  end
-
-  describe '#current_version' do
-    let(:object_version) { instance_double(Dor::Services::Client::ObjectVersion) }
-
-    before do
-      allow(client).to receive(:version).and_return(object_version)
-      allow(object_version).to receive(:current).and_return(3)
-      allow(Deprecation).to receive(:warn)
-    end
-
-    it 'delegates' do
-      expect(client.current_version).to eq(3)
-      expect(object_version).to have_received(:current)
-      expect(Deprecation).to have_received(:warn)
-    end
-  end
-
-  describe '#open_new_version' do
-    let(:object_version) { instance_double(Dor::Services::Client::ObjectVersion) }
-
-    let(:params) { { foo: 'bar' } }
-
-    before do
-      allow(client).to receive(:version).and_return(object_version)
-      allow(object_version).to receive(:open)
-      allow(Deprecation).to receive(:warn)
-    end
-
-    it 'delegates' do
-      client.open_new_version params
-      expect(object_version).to have_received(:open).with(params)
-      expect(Deprecation).to have_received(:warn)
-    end
-  end
-
-  describe '#close_version' do
-    let(:object_version) { instance_double(Dor::Services::Client::ObjectVersion) }
-
-    let(:params) { { foo: 'bar' } }
-
-    before do
-      allow(client).to receive(:version).and_return(object_version)
-      allow(object_version).to receive(:close)
-      allow(Deprecation).to receive(:warn)
-    end
-
-    it 'delegates' do
-      client.close_version params
-      expect(object_version).to have_received(:close).with(params)
-      expect(Deprecation).to have_received(:warn)
     end
   end
 end

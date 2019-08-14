@@ -184,27 +184,6 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
     end
   end
 
-  describe '#openeable?' do
-    let(:status) { 200 }
-    let(:body) { 'true' }
-
-    subject(:request) { client.openeable?(assume_accessioned: true) }
-
-    before do
-      # TODO: correct the typo below once
-      #       https://github.com/sul-dlss/dor-services-app/issues/322 is
-      #       merged and all running DSA instances have been deployed
-      stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:1234/versions/openeable?assume_accessioned=true')
-        .to_return(status: status, body: body)
-      allow(Deprecation).to receive(:warn)
-    end
-
-    it 'delegates to the non-deprecated form' do
-      expect(request).to be true
-      expect(Deprecation).to have_received(:warn)
-    end
-  end
-
   describe '#openable?' do
     let(:params) { {} }
 

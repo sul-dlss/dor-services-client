@@ -1,15 +1,10 @@
 # frozen_string_literal: true
 
-require 'deprecation'
-
 module Dor
   module Services
     class Client
       # API calls that are about a repository object
       class Object < VersionedService
-        extend Deprecation
-        self.deprecation_horizon = 'dor-services-client version 2.0'
-
         attr_reader :object_identifier
 
         # @param object_identifier [String] the pid for the object
@@ -30,10 +25,6 @@ module Dor
 
         def files
           @files ||= Files.new(connection: connection, version: api_version, object_identifier: object_identifier)
-        end
-
-        def workflow
-          @workflow ||= Workflow.new(connection: connection, version: api_version, object_identifier: object_identifier)
         end
 
         def workspace
@@ -99,21 +90,6 @@ module Dor
 
           raise_exception_based_on_response!(resp)
         end
-
-        def current_version
-          version.current
-        end
-        deprecation_deprecate current_version: 'use version.current instead'
-
-        def open_new_version(**params)
-          version.open(**params)
-        end
-        deprecation_deprecate open_new_version: 'use version.open instead'
-
-        def close_version(**params)
-          version.close(**params)
-        end
-        deprecation_deprecate close_version: 'use version.close instead'
 
         private
 
