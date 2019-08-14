@@ -43,16 +43,6 @@ RSpec.describe Dor::Services::Client do
         expect(described_class.objects).to eq described_class.objects
       end
     end
-
-    describe '.workflows' do
-      it 'returns an instance of Client::Workflows' do
-        expect(described_class.workflows).to be_instance_of Dor::Services::Client::Workflows
-      end
-
-      it 'returns the memoized instance when called again' do
-        expect(described_class.workflows).to eq described_class.workflows
-      end
-    end
   end
 
   describe '#configure' do

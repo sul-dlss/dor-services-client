@@ -1,15 +1,10 @@
 # frozen_string_literal: true
 
-require 'deprecation'
-
 module Dor
   module Services
     class Client
       # API calls that are about versions
       class ObjectVersion < VersionedService
-        extend Deprecation
-        self.deprecation_horizon = 'dor-services-client 2.0.0'
-
         # @param object_identifier [String] the pid for the object
         def initialize(connection:, version:, object_identifier:)
           super(connection: connection, version: version)
@@ -28,14 +23,6 @@ module Dor
 
           raise_exception_based_on_response!(resp)
         end
-
-        # TODO: remove this deprecation once
-        #       https://github.com/sul-dlss/dor-services-app/issues/322 is
-        #       merged and all DSC clients have moved to using `#openable?`
-        def openeable?(**params)
-          openable?(**params)
-        end
-        deprecation_deprecate openeable?: 'use version.openable? instead'
 
         # Determines if a new version can be opened for a DOR object.
         # @param params [Hash] optional params (see dor-services-app)

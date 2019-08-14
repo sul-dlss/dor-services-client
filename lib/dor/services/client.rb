@@ -64,10 +64,6 @@ module Dor
         @objects ||= Objects.new(connection: connection, version: DEFAULT_VERSION)
       end
 
-      def workflows
-        @workflows ||= Workflows.new(connection: connection, version: DEFAULT_VERSION)
-      end
-
       class << self
         # @param [String] url
         # @param [String] token a bearer token for HTTP auth
@@ -84,7 +80,7 @@ module Dor
           self
         end
 
-        delegate :objects, :object, :workflows, to: :instance
+        delegate :objects, :object, to: :instance
       end
 
       attr_writer :url, :token, :token_header, :connection
