@@ -62,7 +62,14 @@ object_client.publish
 
 # Copy metadata from Symphony into descMetadata
 object_client.refresh_metadata
+
+# Add constituents to an object (virtual-merge)
+object_client.add_constituents(child_druids:)
+
+# Send a notification to goobi
 object_client.notify_goobi
+
+# Manage versions
 object_client.version.current
 object_client.version.openable?(**params)
 object_client.version.open(**params)

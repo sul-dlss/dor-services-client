@@ -94,15 +94,16 @@ module Dor
       end
 
       def connection
-        @connection ||= Faraday.new(url) do |conn|
-          conn.use ErrorFaradayMiddleware
+        @connection ||= Faraday.new(url) do |builder|
+          builder.use ErrorFaradayMiddleware
+          builder.use Faraday::Request::UrlEncoded
 
           # @note when token & token_header are nil, this line is required else
           #       the Faraday instance will be passed an empty block, which
           #       causes the adapter not to be set. Thus, everything breaks.
-          conn.adapter Faraday.default_adapter
-          conn.headers[:user_agent] = user_agent
-          conn.headers[token_header] = "Bearer #{token}" if token
+          builder.adapter Faraday.default_adapter
+          builder.headers[:user_agent] = user_agent
+          builder.headers[token_header] = "Bearer #{token}" if token
         end
       end
 

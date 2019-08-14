@@ -151,6 +151,40 @@ RSpec.describe Dor::Services::Client::Object do
     end
   end
 
+  describe '#add_constituents' do
+    subject(:request) { client.add_constituents(child_druids: ['druid:child1', 'druid:child2']) }
+
+    before do
+      stub_request(:put, 'https://dor-services.example.com/v1/objects/druid:1234')
+        .with(body: { constituent_ids: ['druid:child1', 'druid:child2'] })
+        .to_return(status: status)
+    end
+
+    context 'when API request succeeds' do
+      let(:status) { 200 }
+
+      it 'returns true' do
+        expect(request).to be true
+      end
+    end
+
+    context 'when API request returns 404' do
+      let(:status) { [404, 'not found'] }
+
+      it 'raises a NotFoundResponse exception' do
+        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse, 'not found: 404 ()')
+      end
+    end
+
+    context 'when API request fails' do
+      let(:status) { [401, 'unauthorized'] }
+
+      it 'raises an error' do
+        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse, 'unauthorized: 401 ()')
+      end
+    end
+  end
+
   describe '#notify_goobi' do
     subject(:request) { client.notify_goobi }
 
