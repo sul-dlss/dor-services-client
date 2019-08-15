@@ -32,10 +32,7 @@ module Dor
         # rubocop:disable Metrics/MethodLength
         def openable?(**params)
           resp = connection.get do |req|
-            # TODO: correct the typo below once
-            #       https://github.com/sul-dlss/dor-services-app/issues/322 is
-            #       merged and all running DSA instances have been deployed
-            req.url "#{object_path}/versions/openeable"
+            req.url "#{object_path}/versions/openable"
             req.params = params
           end
 
