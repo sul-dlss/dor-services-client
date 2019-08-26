@@ -11,7 +11,8 @@ module Dor
           @object_identifier = object_identifier
         end
 
-        # @return [String] The Dublin Core XML representation of the object
+        # @return [String, NilClass] The Dublin Core XML representation of the object or nil if response is 404
+        # @raise [UnexpectedResponse] on an unsuccessful response from the server
         def dublin_core
           resp = connection.get do |req|
             req.url "#{base_path}/dublin_core"
@@ -19,10 +20,11 @@ module Dor
           return resp.body if resp.success?
           return if resp.status == 404
 
-          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body}) for #{object_identifier}"
+          raise UnexpectedResponse, ResponseErrorFormatter.format(response: resp, object_identifier: object_identifier)
         end
 
-        # @return [String] The descriptive metadata XML representation of the object
+        # @return [String, NilClass] The descriptive metadata XML representation of the object or nil if response is 404
+        # @raises [UnexpectedResponse] on an unsuccessful response from the server
         def descriptive
           resp = connection.get do |req|
             req.url "#{base_path}/descriptive"
@@ -30,7 +32,7 @@ module Dor
           return resp.body if resp.success?
           return if resp.status == 404
 
-          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body}) for #{object_identifier}"
+          raise UnexpectedResponse, ResponseErrorFormatter.format(response: resp, object_identifier: object_identifier)
         end
 
         private

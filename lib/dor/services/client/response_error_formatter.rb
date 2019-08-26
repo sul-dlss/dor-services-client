@@ -10,20 +10,23 @@ module Dor
                         and look into adding a `rescue_from` in dor-services-app \
                         to provide more details to the client in the future'
 
-        def self.format(response:)
-          new(response: response).format
+        def self.format(response:, object_identifier: nil)
+          new(response: response, object_identifier: object_identifier).format
         end
 
-        attr_reader :reason_phrase, :status, :body
+        attr_reader :reason_phrase, :status, :body, :object_identifier
 
-        def initialize(response:)
+        def initialize(response:, object_identifier: nil)
           @reason_phrase = response.reason_phrase
           @status = response.status
           @body = response.body.present? ? response.body : DEFAULT_BODY
+          @object_identifier = object_identifier
         end
 
         def format
-          "#{reason_phrase}: #{status} (#{body})"
+          return "#{reason_phrase}: #{status} (#{body})" if object_identifier.nil?
+
+          "#{reason_phrase}: #{status} (#{body}) for #{object_identifier}"
         end
       end
     end

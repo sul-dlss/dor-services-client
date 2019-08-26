@@ -10,7 +10,7 @@ RSpec.describe Dor::Services::Client::ResponseErrorFormatter do
 
     it 'calls #format on a new instance' do
       allow(mock_instance).to receive(:format)
-      allow(described_class).to receive(:new).with(response: response).and_return(mock_instance)
+      allow(described_class).to receive(:new).with(response: response, object_identifier: nil).and_return(mock_instance)
       described_class.format(response: response)
       expect(described_class).to have_received(:new).once
       expect(mock_instance).to have_received(:format).once
@@ -30,6 +30,10 @@ RSpec.describe Dor::Services::Client::ResponseErrorFormatter do
       expect(formatter.body).to eq('Something went badly')
     end
 
+    it 'has an object_identifier attribute' do
+      expect(formatter.object_identifier).to eq(nil)
+    end
+
     context 'with a blank body' do
       let(:response) { double('http response', reason_phrase: 'Internal Server Error', status: 500, body: '') }
 
@@ -42,6 +46,14 @@ RSpec.describe Dor::Services::Client::ResponseErrorFormatter do
   describe '#format' do
     it 'formats an error message from attributes in the instance' do
       expect(formatter.format).to eq('Internal Server Error: 500 (Something went badly)')
+    end
+
+    context 'when an object identifier is set' do
+      subject(:formatter) { described_class.new(response: response, object_identifier: 'druid:abc123') }
+
+      it 'includes the identifier in the formatted error' do
+        expect(formatter.format).to eq('Internal Server Error: 500 (Something went badly) for druid:abc123')
+      end
     end
   end
 end
