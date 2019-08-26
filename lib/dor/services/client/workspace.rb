@@ -20,7 +20,7 @@ module Dor
             req.url workspace_path
             req.params['source'] = source
           end
-          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})" unless resp.success?
+          raise UnexpectedResponse, ResponseErrorFormatter.format(response: resp) unless resp.success?
         end
 
         # Cleans up a workspace
@@ -30,7 +30,7 @@ module Dor
           resp = connection.delete do |req|
             req.url workspace_path
           end
-          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})" unless resp.success?
+          raise UnexpectedResponse, ResponseErrorFormatter.format(response: resp) unless resp.success?
         end
 
         private

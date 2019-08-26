@@ -32,7 +32,8 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
       let(:body) { '' }
 
       it 'raises a NotFoundResponse exception' do
-        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse, 'not found: 404 ()')
+        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse,
+                                          "not found: 404 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
       end
     end
 
@@ -41,7 +42,8 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
       let(:body) { '' }
 
       it 'raises an error' do
-        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse, 'unauthorized: 401 ()')
+        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
+                                          "unauthorized: 401 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
       end
     end
 
@@ -111,7 +113,8 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
       let(:body) { '' }
 
       it 'raises a NotFoundResponse exception' do
-        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse, 'not found: 404 ()')
+        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse,
+                                          "not found: 404 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
       end
     end
 
@@ -169,7 +172,8 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
       let(:body) { '' }
 
       it 'raises a NotFoundResponse exception' do
-        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse, 'not found: 404 ()')
+        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse,
+                                          "not found: 404 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
       end
     end
 
@@ -217,7 +221,8 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
       let(:body) { '' }
 
       it 'raises a NotFoundResponse exception' do
-        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse, 'not found: 404 ()')
+        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse,
+                                          "not found: 404 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
       end
     end
 

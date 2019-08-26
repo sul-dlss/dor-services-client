@@ -31,7 +31,8 @@ RSpec.describe Dor::Services::Client::Workspace do
       end
 
       it 'raises an error' do
-        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse, 'something is amiss: 500 ()')
+        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
+                                          "something is amiss: 500 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
       end
     end
   end
@@ -57,7 +58,8 @@ RSpec.describe Dor::Services::Client::Workspace do
       end
 
       it 'raises an error' do
-        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse, 'something is amiss: 500 ()')
+        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
+                                          "something is amiss: 500 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
       end
     end
   end

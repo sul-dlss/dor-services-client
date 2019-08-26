@@ -87,7 +87,7 @@ module Dor
 
         def raise_exception_based_on_response!(response)
           raise (response.status == 404 ? NotFoundResponse : UnexpectedResponse),
-                "#{response.reason_phrase}: #{response.status} (#{response.body})"
+                ResponseErrorFormatter.format(response: response)
         end
 
         # Make request to server to open a new version

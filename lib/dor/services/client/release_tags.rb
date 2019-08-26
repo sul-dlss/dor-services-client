@@ -31,7 +31,7 @@ module Dor
             req.headers['Content-Type'] = 'application/json'
             req.body = params.to_json
           end
-          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})" unless resp.success?
+          raise UnexpectedResponse, ResponseErrorFormatter.format(response: resp) unless resp.success?
 
           true
         end

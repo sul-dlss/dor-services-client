@@ -28,7 +28,7 @@ module Dor
           end
           return resp.body if resp.success?
 
-          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})"
+          raise UnexpectedResponse, ResponseErrorFormatter.format(response: resp)
         end
       end
     end
