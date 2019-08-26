@@ -24,7 +24,7 @@ module Dor
         end
 
         # @return [String, NilClass] The descriptive metadata XML representation of the object or nil if response is 404
-        # @raises [UnexpectedResponse] on an unsuccessful response from the server
+        # @raise [UnexpectedResponse] on an unsuccessful response from the server
         def descriptive
           resp = connection.get do |req|
             req.url "#{base_path}/descriptive"

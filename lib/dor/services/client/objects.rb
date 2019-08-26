@@ -16,8 +16,8 @@ module Dor
 
         # make the registration request to the server
         # @param params [Hash] optional params (see dor-services-app)
-        # @raises [UnexpectedResponse] on an unsuccessful response from the server
-        # @returns [String] the raw JSON from the server
+        # @raise [UnexpectedResponse] on an unsuccessful response from the server
+        # @return [String] the raw JSON from the server
         def register_response(params:)
           resp = connection.post do |req|
             req.url "#{api_version}/objects"

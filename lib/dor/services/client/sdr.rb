@@ -77,8 +77,8 @@ module Dor
         end
 
         # make the request to the server for the currentVersion xml
-        # @raises [UnexpectedResponse] on an unsuccessful response from the server
-        # @returns [String] the raw xml from the server
+        # @raise [UnexpectedResponse] on an unsuccessful response from the server
+        # @return [String] the raw xml from the server
         def current_version_response
           resp = connection.get do |req|
             req.url current_version_path
@@ -93,8 +93,8 @@ module Dor
         end
 
         # make the request to the server for the content diff
-        # @raises [UnexpectedResponse] on an unsuccessful response from the server
-        # @returns [String] the raw xml from the server
+        # @raise [UnexpectedResponse] on an unsuccessful response from the server
+        # @return [String] the raw xml from the server
         def content_diff_response(current_content:, subset:, version:)
           resp = connection.post do |req|
             req.url content_diff_path(subset: subset, version: version)

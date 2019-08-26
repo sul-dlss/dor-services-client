@@ -16,7 +16,7 @@ module Dor
         # @param what [String]
         # @param to [String]
         # @param who [String]
-        # @raises [UnexpectedResponse] if the request is unsuccessful.
+        # @raise [UnexpectedResponse] if the request is unsuccessful.
         # @return [Boolean] true if successful
         # rubocop:disable Metrics/MethodLength
         def create(release:, what:, to:, who:)
