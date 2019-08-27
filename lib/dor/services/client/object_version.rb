@@ -87,14 +87,14 @@ module Dor
 
         def raise_exception_based_on_response!(response)
           raise (response.status == 404 ? NotFoundResponse : UnexpectedResponse),
-                "#{response.reason_phrase}: #{response.status} (#{response.body})"
+                ResponseErrorFormatter.format(response: response)
         end
 
         # Make request to server to open a new version
         # @param params [Hash] optional params (see dor-services-app)
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
-        # @raises [UnexpectedResponse] on an unsuccessful response from the server
-        # @returns [String] the plain text from the server
+        # @raise [UnexpectedResponse] on an unsuccessful response from the server
+        # @return [String] the plain text from the server
         def open_new_version_response(**params)
           resp = connection.post do |req|
             req.url open_new_version_path

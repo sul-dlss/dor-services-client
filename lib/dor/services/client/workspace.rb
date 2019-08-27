@@ -13,24 +13,24 @@ module Dor
 
         # Initializes a new workspace
         # @param source [String] the path to the object
-        # @raises [UnexpectedResponse] if the request is unsuccessful.
+        # @raise [UnexpectedResponse] if the request is unsuccessful.
         # @return nil
         def create(source:)
           resp = connection.post do |req|
             req.url workspace_path
             req.params['source'] = source
           end
-          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})" unless resp.success?
+          raise UnexpectedResponse, ResponseErrorFormatter.format(response: resp) unless resp.success?
         end
 
         # Cleans up a workspace
-        # @raises [UnexpectedResponse] if the request is unsuccessful.
+        # @raise [UnexpectedResponse] if the request is unsuccessful.
         # @return nil
         def cleanup
           resp = connection.delete do |req|
             req.url workspace_path
           end
-          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body})" unless resp.success?
+          raise UnexpectedResponse, ResponseErrorFormatter.format(response: resp) unless resp.success?
         end
 
         private

@@ -34,7 +34,7 @@ module Dor
           resp = signature_catalog_response
 
           return Moab::SignatureCatalog.new(digital_object_id: object_identifier, version_id: 0) if resp.status == 404
-          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body}) for #{object_identifier}" unless resp.success?
+          raise UnexpectedResponse, ResponseErrorFormatter.format(response: resp, object_identifier: object_identifier) unless resp.success?
 
           Moab::SignatureCatalog.parse resp.body
         end
@@ -54,7 +54,8 @@ module Dor
         end
 
         # @param [String] datastream The identifier of the metadata datastream
-        # @return [String] The datastream contents from the previous version of the digital object (fetched from SDR storage)
+        # @return [String, NilClass] datastream content from previous version of the object (from SDR storage), or nil if response status is 404
+        # @raise [UnexpectedResponse] on an unsuccessful, non-404 response from the server
         def metadata(datastream:)
           resp = connection.get do |req|
             req.url "#{base_path}/metadata/#{datastream}.xml"
@@ -62,7 +63,7 @@ module Dor
           return resp.body if resp.success?
           return if resp.status == 404
 
-          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body}) for #{object_identifier}"
+          raise UnexpectedResponse, ResponseErrorFormatter.format(response: resp, object_identifier: object_identifier)
         end
 
         private
@@ -76,15 +77,15 @@ module Dor
         end
 
         # make the request to the server for the currentVersion xml
-        # @raises [UnexpectedResponse] on an unsuccessful response from the server
-        # @returns [String] the raw xml from the server
+        # @raise [UnexpectedResponse] on an unsuccessful response from the server
+        # @return [String] the raw xml from the server
         def current_version_response
           resp = connection.get do |req|
             req.url current_version_path
           end
           return resp.body if resp.success?
 
-          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body}) for #{object_identifier}"
+          raise UnexpectedResponse, ResponseErrorFormatter.format(response: resp, object_identifier: object_identifier)
         end
 
         def current_version_path
@@ -92,15 +93,15 @@ module Dor
         end
 
         # make the request to the server for the content diff
-        # @raises [UnexpectedResponse] on an unsuccessful response from the server
-        # @returns [String] the raw xml from the server
+        # @raise [UnexpectedResponse] on an unsuccessful response from the server
+        # @return [String] the raw xml from the server
         def content_diff_response(current_content:, subset:, version:)
           resp = connection.post do |req|
             req.url content_diff_path(subset: subset, version: version)
             req.headers['Content-Type'] = 'application/xml'
             req.body = current_content
           end
-          raise UnexpectedResponse, "#{resp.reason_phrase}: #{resp.status} (#{resp.body}) for #{object_identifier}" unless resp.success?
+          raise UnexpectedResponse, ResponseErrorFormatter.format(response: resp, object_identifier: object_identifier) unless resp.success?
 
           resp.body
         end
