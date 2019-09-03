@@ -16,27 +16,31 @@ module Dor
         end
 
         def sdr
-          @sdr ||= SDR.new(connection: connection, version: api_version, object_identifier: object_identifier)
+          @sdr ||= SDR.new(parent_params)
         end
 
         def metadata
-          @metadata ||= Metadata.new(connection: connection, version: api_version, object_identifier: object_identifier)
+          @metadata ||= Metadata.new(parent_params)
         end
 
         def files
-          @files ||= Files.new(connection: connection, version: api_version, object_identifier: object_identifier)
+          @files ||= Files.new(parent_params)
         end
 
         def workspace
-          @workspace ||= Workspace.new(connection: connection, version: api_version, object_identifier: object_identifier)
+          @workspace ||= Workspace.new(parent_params)
         end
 
         def release_tags
-          @release_tags ||= ReleaseTags.new(connection: connection, version: api_version, object_identifier: object_identifier)
+          @release_tags ||= ReleaseTags.new(parent_params)
         end
 
         def version
-          @version ||= ObjectVersion.new(connection: connection, version: api_version, object_identifier: object_identifier)
+          @version ||= ObjectVersion.new(parent_params)
+        end
+
+        def embargo
+          @embargo ||= Embargo.new(parent_params)
         end
 
         # Publish a new object
@@ -104,6 +108,10 @@ module Dor
         end
 
         private
+
+        def parent_params
+          { connection: connection, version: api_version, object_identifier: object_identifier }
+        end
 
         def object_path
           "#{api_version}/objects/#{object_identifier}"

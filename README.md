@@ -49,7 +49,7 @@ Note that the client may **not** be used without first having been configured, a
 
 ## API Coverage
 
-Dor::Services:Client provides a number of methods to simplify connecting to the RESTful HTTP API of dor-services-app. In this section we list all of the available methods, reflecting how much of the API the client covers:
+Dor::Services:Client provides a number of methods to simplify connecting to the RESTful HTTP API of dor-services-app. In this section we list all of the available methods, reflecting how much of the API the client covers. For details see the [API docs](https://www.rubydoc.info/github/sul-dlss/dor-services-client/master/Dor/Services/Client)
 
 ```ruby
 # For registering a non-existent object
@@ -92,6 +92,9 @@ object_client.sdr.signature_catalog
 # Create and remove workspaces
 object_client.workspace.create(source: object_path_string)
 object_client.workspace.cleanup
+
+# Update embargo
+object_client.embargo.update(embargo_date: date_string, requesting_user: username_string)
 ```
 
 ## Development

@@ -52,6 +52,12 @@ RSpec.describe Dor::Services::Client::Object do
     end
   end
 
+  describe '#embargo' do
+    it 'returns an instance of Client::Embargo' do
+      expect(client.embargo).to be_instance_of Dor::Services::Client::Embargo
+    end
+  end
+
   describe '#publish' do
     subject(:request) { client.publish }
 
