@@ -52,7 +52,7 @@ module Dor
           raise_exception_based_on_response!(resp)
         end
 
-        # Update the marc record for the give object
+        # Update the marc record for the given object
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
         # @return [boolean] true on success
