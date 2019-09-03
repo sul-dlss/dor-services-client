@@ -58,7 +58,12 @@ objects_client.register(params: {})
 
 # For performing operations on a known, registered object
 object_client = Dor::Services::Client.object(object_identifier)
+
+# Publish an object
 object_client.publish
+
+# Update the MARC record
+object_client.update_marc_record
 
 # Copy metadata from Symphony into descMetadata
 object_client.refresh_metadata
