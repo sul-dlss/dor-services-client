@@ -89,6 +89,9 @@ object_client.metadata.descriptive
 # Return the Cocina metadata
 object_client.find
 
+# Query for an objects collections
+object_client.collections
+
 object_client.files.retrieve(filename: filename_string)
 object_client.files.preserved_content(filename: filename_string, version: version_string)
 object_client.files.list

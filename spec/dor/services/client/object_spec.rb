@@ -22,6 +22,18 @@ RSpec.describe Dor::Services::Client::Object do
     end
   end
 
+  describe '#collections' do
+    let(:collections) { instance_double(Dor::Services::Client::Collections, collections: true) }
+    before do
+      allow(Dor::Services::Client::Collections).to receive(:new).and_return(collections)
+    end
+
+    it 'delegates to the Client::Collections' do
+      client.collections
+      expect(collections).to have_received(:collections)
+    end
+  end
+
   describe '#release_tags' do
     it 'returns an instance of Client::ReleaseTags' do
       expect(client.release_tags).to be_instance_of Dor::Services::Client::ReleaseTags

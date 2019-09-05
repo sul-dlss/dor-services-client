@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'cocina/models'
-
 module Dor
   module Services
     class Client
@@ -57,6 +55,13 @@ module Dor
           return Cocina::Models::DRO.from_json(resp.body) if resp.success?
 
           raise_exception_based_on_response!(resp)
+        end
+
+        # Get a list of the collections. (Similar to Valkyrie's find_inverse_references_by)
+        # @raise [UnexpectedResponse] if the request is unsuccessful.
+        # @return [Array<Cocina::Models::DRO>]
+        def collections
+          Collections.new(parent_params).collections
         end
 
         # Publish a new object
