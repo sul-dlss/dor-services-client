@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'cocina/models'
+
 module Dor
   module Services
     class Client
@@ -41,6 +43,20 @@ module Dor
 
         def embargo
           @embargo ||= Embargo.new(parent_params)
+        end
+
+        # Retrieves the Cocina model
+        # @raise [NotFoundResponse] when the response is a 404 (object not found)
+        # @raise [UnexpectedResponse] when the response is not successful.
+        # @return [Cocina::Models::DRO] the returned model
+        def find
+          resp = connection.get do |req|
+            req.url object_path
+          end
+
+          return Cocina::Models::DRO.from_json(resp.body) if resp.success?
+
+          raise_exception_based_on_response!(resp)
         end
 
         # Publish a new object

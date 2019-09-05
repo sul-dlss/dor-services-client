@@ -85,6 +85,10 @@ object_client.metadata.dublin_core
 
 # Get the public descriptive XML representation
 object_client.metadata.descriptive
+
+# Return the Cocina metadata
+object_client.find
+
 object_client.files.retrieve(filename: filename_string)
 object_client.files.preserved_content(filename: filename_string, version: version_string)
 object_client.files.list
