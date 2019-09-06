@@ -6,6 +6,7 @@ require 'active_support/core_ext/object/blank'
 require 'faraday'
 require 'singleton'
 require 'zeitwerk'
+require 'cocina/models'
 
 class DorServicesClientInflector < Zeitwerk::Inflector
   def camelize(basename, _abspath)

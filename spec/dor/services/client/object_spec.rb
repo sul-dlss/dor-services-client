@@ -22,6 +22,18 @@ RSpec.describe Dor::Services::Client::Object do
     end
   end
 
+  describe '#collections' do
+    let(:collections) { instance_double(Dor::Services::Client::Collections, collections: true) }
+    before do
+      allow(Dor::Services::Client::Collections).to receive(:new).and_return(collections)
+    end
+
+    it 'delegates to the Client::Collections' do
+      client.collections
+      expect(collections).to have_received(:collections)
+    end
+  end
+
   describe '#release_tags' do
     it 'returns an instance of Client::ReleaseTags' do
       expect(client.release_tags).to be_instance_of Dor::Services::Client::ReleaseTags
@@ -55,6 +67,33 @@ RSpec.describe Dor::Services::Client::Object do
   describe '#embargo' do
     it 'returns an instance of Client::Embargo' do
       expect(client.embargo).to be_instance_of Dor::Services::Client::Embargo
+    end
+  end
+
+  describe '#find' do
+    subject(:model) { client.find }
+    let(:json) do
+      <<~JSON
+        {
+          "externalIdentifier":"druid:12343234",
+          "type":"item",
+          "label":"my item"
+        }
+      JSON
+    end
+
+    before do
+      stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:1234')
+        .to_return(status: status,
+                   body: json)
+    end
+
+    context 'when API request succeeds' do
+      let(:status) { 200 }
+
+      it 'returns the cocina model' do
+        expect(model.externalIdentifier).to eq 'druid:12343234'
+      end
     end
   end
 

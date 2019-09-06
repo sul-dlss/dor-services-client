@@ -43,6 +43,27 @@ module Dor
           @embargo ||= Embargo.new(parent_params)
         end
 
+        # Retrieves the Cocina model
+        # @raise [NotFoundResponse] when the response is a 404 (object not found)
+        # @raise [UnexpectedResponse] when the response is not successful.
+        # @return [Cocina::Models::DRO] the returned model
+        def find
+          resp = connection.get do |req|
+            req.url object_path
+          end
+
+          return Cocina::Models::DRO.from_json(resp.body) if resp.success?
+
+          raise_exception_based_on_response!(resp)
+        end
+
+        # Get a list of the collections. (Similar to Valkyrie's find_inverse_references_by)
+        # @raise [UnexpectedResponse] if the request is unsuccessful.
+        # @return [Array<Cocina::Models::DRO>]
+        def collections
+          Collections.new(parent_params).collections
+        end
+
         # Publish a new object
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
