@@ -37,7 +37,7 @@ module Dor
         end
 
         def query_path
-          "#{object_path}/queries"
+          "#{object_path}/query"
         end
 
         attr_reader :object_identifier

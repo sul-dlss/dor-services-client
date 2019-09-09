@@ -26,7 +26,7 @@ RSpec.describe Dor::Services::Client::Collections do
         JSON
       end
       before do
-        stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:123/queries/collections')
+        stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:123/query/collections')
           .to_return(status: 200, body: json)
       end
 
@@ -37,7 +37,7 @@ RSpec.describe Dor::Services::Client::Collections do
 
     context 'when API request fails' do
       before do
-        stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:123/queries/collections')
+        stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:123/query/collections')
           .to_return(status: [500, 'something is amiss'])
       end
 
