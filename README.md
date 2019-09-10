@@ -52,9 +52,14 @@ Note that the client may **not** be used without first having been configured, a
 Dor::Services:Client provides a number of methods to simplify connecting to the RESTful HTTP API of dor-services-app. In this section we list all of the available methods, reflecting how much of the API the client covers. For details see the [API docs](https://www.rubydoc.info/github/sul-dlss/dor-services-client/master/Dor/Services/Client)
 
 ```ruby
-# For registering a non-existent object
+# For performing operations on one or more objects
 objects_client = Dor::Services::Client.objects
+
+# For registering a non-existent object
 objects_client.register(params: {})
+
+# Create a batch of virtual objects
+objects_client.create_virtual_objects(parent_druid: '', child_druids: [''])
 
 # For performing operations on a known, registered object
 object_client = Dor::Services::Client.object(object_identifier)
