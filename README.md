@@ -58,8 +58,11 @@ objects_client = Dor::Services::Client.objects
 # For registering a non-existent object
 objects_client.register(params: {})
 
+# For interacting with virtual objects
+virtual_objects_client = Dor::Services::Client.virtual_objects
+
 # Create a batch of virtual objects
-objects_client.create_virtual_objects(parent_druid: '', child_druids: [''])
+virtual_objects_client.create(params: {})
 
 # For performing operations on a known, registered object
 object_client = Dor::Services::Client.object(object_identifier)

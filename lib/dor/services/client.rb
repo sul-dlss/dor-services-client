@@ -66,6 +66,11 @@ module Dor
         @objects ||= Objects.new(connection: connection, version: DEFAULT_VERSION)
       end
 
+      # @return [Dor::Services::Client::VirtualObjects] an instance of the `Client::VirtualObjects` class
+      def virtual_objects
+        @virtual_objects ||= VirtualObjects.new(connection: connection, version: DEFAULT_VERSION)
+      end
+
       class << self
         # @param [String] url
         # @param [String] token a bearer token for HTTP auth
@@ -82,7 +87,7 @@ module Dor
           self
         end
 
-        delegate :objects, :object, to: :instance
+        delegate :objects, :object, :virtual_objects, to: :instance
       end
 
       attr_writer :url, :token, :token_header, :connection
