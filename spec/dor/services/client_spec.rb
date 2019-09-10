@@ -43,6 +43,16 @@ RSpec.describe Dor::Services::Client do
         expect(described_class.objects).to eq described_class.objects
       end
     end
+
+    describe '.virtual_objects' do
+      it 'returns an instance of Client::VirtualObjects' do
+        expect(described_class.virtual_objects).to be_instance_of Dor::Services::Client::VirtualObjects
+      end
+
+      it 'returns the memoized instance when called again' do
+        expect(described_class.virtual_objects).to eq described_class.virtual_objects
+      end
+    end
   end
 
   describe '#configure' do
