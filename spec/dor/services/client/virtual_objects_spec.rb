@@ -12,16 +12,19 @@ RSpec.describe Dor::Services::Client::VirtualObjects do
   describe '#create' do
     let(:params) do
       {
-        virtual_objects: [
-          {
-            parent_id: 'druid:1',
-            child_ids: [
-              'druid:2',
-              'druid:3'
-            ]
-          }
-        ]
+        virtual_objects: virtual_objects
       }
+    end
+    let(:virtual_objects) do
+      [
+        {
+          parent_id: 'druid:1',
+          child_ids: [
+            'druid:2',
+            'druid:3'
+          ]
+        }
+      ]
     end
 
     before do
@@ -38,7 +41,7 @@ RSpec.describe Dor::Services::Client::VirtualObjects do
       let(:body) { '' }
 
       it 'posts params and returns nil' do
-        expect(client.create(params: params)).to be_nil
+        expect(client.create(virtual_objects: virtual_objects)).to be_nil
       end
     end
 
@@ -47,8 +50,8 @@ RSpec.describe Dor::Services::Client::VirtualObjects do
       let(:body) { '{"errors":["error message here"]}' }
 
       it 'raises an error' do
-        expect { client.create(params: params) }.to raise_error(Dor::Services::Client::UnexpectedResponse,
-                                                                "unprocessable entity: 422 (#{body})")
+        expect { client.create(virtual_objects: virtual_objects) }.to raise_error(Dor::Services::Client::UnexpectedResponse,
+                                                                                  "unprocessable entity: 422 (#{body})")
       end
     end
   end
