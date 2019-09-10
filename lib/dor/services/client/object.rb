@@ -103,6 +103,7 @@ module Dor
           raise_exception_based_on_response!(resp)
         end
 
+        # TODO: Remove once Argo is using `VirtualObjects#create` instead.
         # Does a virtual-merge of the children into the parent
         # @param [Array<String>] child_druids the identifier of the children
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
