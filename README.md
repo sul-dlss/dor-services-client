@@ -62,7 +62,7 @@ objects_client.register(params: {})
 virtual_objects_client = Dor::Services::Client.virtual_objects
 
 # Create a batch of virtual objects
-virtual_objects_client.create(params: {})
+virtual_objects_client.create(virtual_objects: [{ parent_id: '', child_ids: [''] }])
 
 # For performing operations on a known, registered object
 object_client = Dor::Services::Client.object(object_identifier)
