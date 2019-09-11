@@ -5,10 +5,10 @@ module Dor
     class Client
       # Format HTTP response-related errors
       class ResponseErrorFormatter
-        DEFAULT_BODY = 'Response from dor-services-app did not contain a body. \
+        DEFAULT_BODY = "Response from dor-services-app did not contain a body. \
                         Check honeybadger for dor-services-app for backtraces, \
                         and look into adding a `rescue_from` in dor-services-app \
-                        to provide more details to the client in the future'
+                        to provide more details to the client in the future"
 
         def self.format(response:, object_identifier: nil)
           new(response: response, object_identifier: object_identifier).format
