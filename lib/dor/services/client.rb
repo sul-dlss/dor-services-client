@@ -3,10 +3,11 @@
 require 'active_support/core_ext/hash/indifferent_access'
 require 'active_support/core_ext/module/delegation'
 require 'active_support/core_ext/object/blank'
+require 'cocina/models'
+require 'deprecation'
 require 'faraday'
 require 'singleton'
 require 'zeitwerk'
-require 'cocina/models'
 
 class DorServicesClientInflector < Zeitwerk::Inflector
   def camelize(basename, _abspath)
@@ -29,6 +30,13 @@ loader.setup
 module Dor
   module Services
     class Client
+      include Singleton
+      extend Deprecation
+
+      DEFAULT_VERSION = 'v1'
+      TOKEN_HEADER = 'Authorization'
+
+      # Base class for Dor::Services::Client exceptions
       class Error < StandardError; end
 
       # Error that is raised when the remote server returns a 404 Not Found
@@ -41,11 +49,8 @@ module Dor
       # Error that is raised when the remote server returns some unparsable response
       class MalformedResponse < Error; end
 
+      # Error that wraps Faraday connection exceptions
       class ConnectionFailed < Error; end
-
-      DEFAULT_VERSION = 'v1'
-
-      include Singleton
 
       # @param object_identifier [String] the pid for the object
       # @raise [ArgumentError] when `object_identifier` is `nil`
@@ -73,13 +78,20 @@ module Dor
 
       class << self
         # @param [String] url
-        # @param [String] token a bearer token for HTTP auth
+        # @param [String] token a bearer token for HTTP authentication
         # @param [String] token_header ('Authorization') set this to something if you are also using
-        #                              basic auth, or the headers will collide
-        def configure(url:, token: nil, token_header: 'Authorization')
+        #                              basic auth, or the headers will collide -
+        # TODO: remove the `token_header` keyword arg altogether in version 3.0.0: https://github.com/sul-dlss/dor-services-client/issues/93
+        def configure(url:, token: nil, token_header: TOKEN_HEADER)
           instance.url = url
           instance.token = token
-          instance.token_header = token_header
+
+          # This is somewhat clumsy way of sniffing if the client has been
+          # configured with a soon-to-be-removed keyword argument.
+          # TODO: Remove this in 3.0.0
+          if token_header.nil? || token_header != TOKEN_HEADER
+            Deprecation.warn('`token_header` keyword arg will be removed from `Dor::Services::Client.configure` in version 3.0.0')
+          end
 
           # Force connection to be re-established when `.configure` is called
           instance.connection = nil
@@ -90,11 +102,11 @@ module Dor
         delegate :objects, :object, :virtual_objects, to: :instance
       end
 
-      attr_writer :url, :token, :token_header, :connection
+      attr_writer :url, :token, :connection
 
       private
 
-      attr_reader :token, :token_header
+      attr_reader :token
 
       def url
         @url || raise(Error, 'url has not yet been configured')
@@ -110,7 +122,7 @@ module Dor
           #       causes the adapter not to be set. Thus, everything breaks.
           builder.adapter Faraday.default_adapter
           builder.headers[:user_agent] = user_agent
-          builder.headers[token_header] = "Bearer #{token}" if token
+          builder.headers[TOKEN_HEADER] = "Bearer #{token}" if token
         end
       end
 

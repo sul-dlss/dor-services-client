@@ -40,12 +40,11 @@ private
 
 def client
   @client ||= Dor::Services::Client.configure(url: Settings.dor_services.url,
-                                              token: Settings.dor_services.token,
-                                              token_header: Settings.dor_services.token_header)
+                                              token: Settings.dor_services.token)
 end
 ```
 
-Note that the client may **not** be used without first having been configured, and the `url` keyword is **required**. The `token` and `token_header` arguments are optional (though when using the client with staging and production servers, you will always need to supply these in practice). For more about dor-services-app's token-based authentication, see [its README](https://github.com/sul-dlss/dor-services-app#authentication).
+Note that the client may **not** be used without first having been configured, and the `url` keyword is **required**. The `token` argument is optional (though when using the client with staging and production servers, you will always need to supply it in practice). For more about dor-services-app's token-based authentication, see [its README](https://github.com/sul-dlss/dor-services-app#authentication).
 
 ## API Coverage
 
