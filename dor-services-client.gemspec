@@ -24,6 +24,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'activesupport', '>= 4.2', '< 7'
   spec.add_dependency 'cocina-models', '~> 0.1.0'
+  spec.add_dependency 'deprecation'
   spec.add_dependency 'faraday', '~> 0.15'
   spec.add_dependency 'moab-versioning', '~> 4.0'
   spec.add_dependency 'nokogiri', '~> 1.8'
