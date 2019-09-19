@@ -103,19 +103,6 @@ module Dor
           raise_exception_based_on_response!(resp)
         end
 
-        # TODO: Remove once Argo is using `VirtualObjects#create` instead.
-        # Does a virtual-merge of the children into the parent
-        # @param [Array<String>] child_druids the identifier of the children
-        # @raise [NotFoundResponse] when the response is a 404 (object not found)
-        # @raise [UnexpectedResponse] when the response is not successful.
-        # @return [boolean] true on success
-        def add_constituents(child_druids:)
-          resp =  connection.put object_path, constituent_ids: child_druids
-          return true if resp.success?
-
-          raise_exception_based_on_response!(resp)
-        end
-
         # Notify the external Goobi system for a new object that was registered in DOR
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
