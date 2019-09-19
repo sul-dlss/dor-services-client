@@ -76,6 +76,11 @@ module Dor
         @virtual_objects ||= VirtualObjects.new(connection: connection, version: DEFAULT_VERSION)
       end
 
+      # @return [Dor::Services::Client::BackgroundJobResults] an instance of the `Client::BackgroundJobResults` class
+      def background_job_results
+        @background_job_results ||= BackgroundJobResults.new(connection: connection, version: DEFAULT_VERSION)
+      end
+
       class << self
         # @param [String] url
         # @param [String] token a bearer token for HTTP authentication
@@ -99,7 +104,7 @@ module Dor
           self
         end
 
-        delegate :objects, :object, :virtual_objects, to: :instance
+        delegate :objects, :object, :virtual_objects, :background_job_results, to: :instance
       end
 
       attr_writer :url, :token, :connection

@@ -53,6 +53,16 @@ RSpec.describe Dor::Services::Client do
         expect(described_class.virtual_objects).to eq described_class.virtual_objects
       end
     end
+
+    describe '.background_job_results' do
+      it 'returns an instance of Client::BackgroundJobResults' do
+        expect(described_class.background_job_results).to be_instance_of Dor::Services::Client::BackgroundJobResults
+      end
+
+      it 'returns the memoized instance when called again' do
+        expect(described_class.background_job_results).to eq described_class.background_job_results
+      end
+    end
   end
 
   describe '#configure' do
