@@ -75,9 +75,6 @@ object_client.update_marc_record
 # Copy metadata from Symphony into descMetadata
 object_client.refresh_metadata
 
-# Add constituents to an object (virtual-merge)
-object_client.add_constituents(child_druids:)
-
 # Send a notification to goobi
 object_client.notify_goobi
 
