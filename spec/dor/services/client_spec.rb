@@ -7,7 +7,7 @@ RSpec.describe Dor::Services::Client do
 
   context 'once configured' do
     before do
-      described_class.configure(url: 'https://dor-services.example.com')
+      described_class.configure(url: 'https://dor-services.example.com', token: '123')
     end
 
     describe '.object' do
@@ -66,37 +66,13 @@ RSpec.describe Dor::Services::Client do
   end
 
   describe '#configure' do
-    subject(:client) { described_class.configure(url: 'https://dor-services.example.com') }
+    subject(:client) { described_class.configure(url: 'https://dor-services.example.com', token: '123') }
 
     it 'returns Client class' do
       expect(client).to eq Dor::Services::Client
     end
-  end
 
-  context 'when passed a token and token_header' do
-    before do
-      allow(Deprecation).to receive(:warn)
-      described_class.configure(url: 'https://dor-services.example.com',
-                                token_header: 'X-Auth',
-                                token: '123')
-    end
-
-    it 'ignores the supplied token header on the connection and issues a deprecation warning' do
-      expect(described_class.instance.send(:connection).headers).to include(
-        described_class::TOKEN_HEADER => 'Bearer 123',
-        'User-Agent' => /dor-services-client \d+\.\d+\.\d+/
-      )
-      expect(Deprecation).to have_received(:warn).once
-    end
-  end
-
-  context 'when passed a token' do
-    before do
-      described_class.configure(url: 'https://dor-services.example.com',
-                                token: '123')
-    end
-
-    it 'sets the token on the connection and uses the default authorization header' do
+    it 'sets the token on the connection using the default authorization header' do
       expect(described_class.instance.send(:connection).headers).to include(
         described_class::TOKEN_HEADER => 'Bearer 123',
         'User-Agent' => /dor-services-client \d+\.\d+\.\d+/
