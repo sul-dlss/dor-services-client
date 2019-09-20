@@ -2,7 +2,7 @@
 
 RSpec.describe Dor::Services::Client::ReleaseTags do
   before do
-    Dor::Services::Client.configure(url: 'https://dor-services.example.com')
+    Dor::Services::Client.configure(url: 'https://dor-services.example.com', token: '123')
   end
 
   let(:connection) { Dor::Services::Client.instance.send(:connection) }
