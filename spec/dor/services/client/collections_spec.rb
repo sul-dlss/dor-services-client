@@ -20,7 +20,8 @@ RSpec.describe Dor::Services::Client::Collections do
             "collections":[{
               "externalIdentifier":"druid:12343234",
               "type":"collection",
-              "label":"my collection"
+              "label":"my collection",
+              "version":1
             }]
           }
         JSON

@@ -77,7 +77,8 @@ RSpec.describe Dor::Services::Client::Object do
         {
           "externalIdentifier":"druid:12343234",
           "type":"item",
-          "label":"my item"
+          "label":"my item",
+          "version":1
         }
       JSON
     end
