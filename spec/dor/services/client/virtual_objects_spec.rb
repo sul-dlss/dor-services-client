@@ -33,25 +33,25 @@ RSpec.describe Dor::Services::Client::VirtualObjects do
           body: params,
           headers: { 'Content-Type' => 'application/json', 'Accept' => 'application/json' }
         )
-        .to_return(status: status, body: body)
+        .to_return(status: status, body: body, headers: { 'Location' => 'https://dor-services.example.com/v1/background_job_results/123' })
     end
 
     context 'when API request succeeds' do
-      let(:status) { 204 }
+      let(:status) { 201 }
       let(:body) { '' }
 
-      it 'posts params and returns nil' do
-        expect(client.create(virtual_objects: virtual_objects)).to be_nil
+      it 'posts params and returns a location header' do
+        expect(client.create(virtual_objects: virtual_objects)).to eq('https://dor-services.example.com/v1/background_job_results/123')
       end
     end
 
-    context 'when API request fails with 422' do
-      let(:status) { [422, 'unprocessable entity'] }
+    context 'when API request fails with 400' do
+      let(:status) { [400, 'bad request'] }
       let(:body) { '{"errors":["error message here"]}' }
 
       it 'raises an error' do
         expect { client.create(virtual_objects: virtual_objects) }.to raise_error(Dor::Services::Client::UnexpectedResponse,
-                                                                                  "unprocessable entity: 422 (#{body})")
+                                                                                  "bad request: 400 (#{body})")
       end
     end
   end
