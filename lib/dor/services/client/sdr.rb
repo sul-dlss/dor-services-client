@@ -8,6 +8,9 @@ module Dor
     class Client
       # API calls that are about preserved objects
       class SDR < VersionedService
+        extend Deprecation
+        self.deprecation_horizon = 'dor-services-client version 4.0'
+
         # @param object_identifier [String] the pid for the object
         def initialize(connection:, version:, object_identifier:)
           super(connection: connection, version: version)
@@ -29,6 +32,7 @@ module Dor
             raise MalformedResponse, "Unable to parse XML from current_version API call: #{xml}"
           end
         end
+        deprecation_deprecate current_version: 'use preservation-client current_version instead'
 
         def signature_catalog
           resp = signature_catalog_response

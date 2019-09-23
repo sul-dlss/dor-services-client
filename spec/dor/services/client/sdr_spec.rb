@@ -168,6 +168,7 @@ RSpec.describe Dor::Services::Client::SDR do
     subject(:request) { client.current_version }
 
     before do
+      allow(Deprecation).to receive(:warn)
       stub_request(:get, 'https://dor-services.example.com/v1/sdr/objects/druid:1234/current_version')
         .to_return(status: status, body: body)
     end

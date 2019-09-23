@@ -107,7 +107,6 @@ object_client.files.preserved_content(filename: filename_string, version: versio
 object_client.files.list
 object_client.release_tags.create(release: release, what: what, to: to, who: who)
 object_client.sdr.content_diff(current_content: existing_content)
-object_client.sdr.current_version
 object_client.sdr.metadata(datastream: dsid)
 object_client.sdr.signature_catalog
 
