@@ -17,9 +17,8 @@ module Dor
             req.url "#{api_version}/background_job_results/#{job_id}"
             req.headers['Accept'] = 'application/json'
           end
-          # We expect this endpoint to semi-regularly return 422 responses, so do
-          # not bother raising the exception
-          return JSON.parse(resp.body).with_indifferent_access if resp.success? || resp.status == 422
+
+          return JSON.parse(resp.body).with_indifferent_access if resp.success?
 
           raise_exception_based_on_response!(resp)
         end

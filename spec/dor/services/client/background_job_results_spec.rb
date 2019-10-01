@@ -31,23 +31,25 @@ RSpec.describe Dor::Services::Client::BackgroundJobResults do
 
     context 'when API request returns 200' do
       let(:status) { 200 }
-      let(:body) { '{"output":{},"status":"complete"}' }
 
-      it 'gets the status as a hash' do
-        result = client.show(job_id: 123)
-        expect(result[:output]).to eq({})
-        expect(result[:status]).to eq('complete')
+      context 'without errors' do
+        let(:body) { '{"output":{},"status":"complete"}' }
+
+        it 'gets the status as a hash' do
+          result = client.show(job_id: 123)
+          expect(result[:output]).to eq({})
+          expect(result[:status]).to eq('complete')
+        end
       end
-    end
 
-    context 'when API request returns 422' do
-      let(:status) { 422 }
-      let(:body) { '{"output":{"errors":["error one","error two"]},"status":"complete"}' }
+      context 'with errors' do
+        let(:body) { '{"output":{"errors":["error one","error two"]},"status":"complete"}' }
 
-      it 'gets the status as a hash' do
-        result = client.show(job_id: 123)
-        expect(result[:output][:errors]).to eq(['error one', 'error two'])
-        expect(result[:status]).to eq('complete')
+        it 'gets the status as a hash' do
+          result = client.show(job_id: 123)
+          expect(result[:output][:errors]).to eq(['error one', 'error two'])
+          expect(result[:status]).to eq('complete')
+        end
       end
     end
 
