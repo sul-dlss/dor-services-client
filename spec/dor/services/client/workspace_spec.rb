@@ -63,4 +63,31 @@ RSpec.describe Dor::Services::Client::Workspace do
       end
     end
   end
+
+  describe '#reset' do
+    subject(:request) { client.reset }
+
+    context 'when API request succeeds' do
+      before do
+        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:123/workspace/reset')
+          .to_return(status: 200)
+      end
+
+      it 'raises no errors' do
+        expect(request).to be nil
+      end
+    end
+
+    context 'when API request fails' do
+      before do
+        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:123/workspace/reset')
+          .to_return(status: [500, 'something is amiss'])
+      end
+
+      it 'raises an error' do
+        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
+                                          "something is amiss: 500 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+      end
+    end
+  end
 end

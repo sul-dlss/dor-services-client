@@ -33,6 +33,17 @@ module Dor
           raise UnexpectedResponse, ResponseErrorFormatter.format(response: resp) unless resp.success?
         end
 
+        # After an object has been copied to preservation the workspace can be
+        # reset. This is called by the reset-workspace step of the accessionWF
+        # @raise [UnexpectedResponse] if the request is unsuccessful.
+        # @return nil
+        def reset
+          resp = connection.post do |req|
+            req.url "#{workspace_path}/reset"
+          end
+          raise UnexpectedResponse, ResponseErrorFormatter.format(response: resp) unless resp.success?
+        end
+
         private
 
         def workspace_path
