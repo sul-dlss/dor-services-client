@@ -110,9 +110,11 @@ object_client.sdr.content_diff(current_content: existing_content)
 object_client.sdr.metadata(datastream: dsid)
 object_client.sdr.signature_catalog
 
-# Create and remove workspaces
+# Create, remove, and reset workspaces
 object_client.workspace.create(source: object_path_string)
 object_client.workspace.cleanup
+object_client.workspace.reset
+
 
 # Update embargo
 object_client.embargo.update(embargo_date: date_string, requesting_user: username_string)
