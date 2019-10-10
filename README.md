@@ -72,8 +72,11 @@ background_jobs_client.show(job_id: 123)
 # For performing operations on a known, registered object
 object_client = Dor::Services::Client.object(object_identifier)
 
-# Publish an object
+# Publish an object (push to PURL)
 object_client.publish
+
+# Shelve an object (push to Stacks)
+object_client.shelve
 
 # Update the MARC record
 object_client.update_marc_record

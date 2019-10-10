@@ -64,13 +64,26 @@ module Dor
           Collections.new(parent_params).collections
         end
 
-        # Publish a new object
+        # Publish an object (send to PURL)
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
         # @return [boolean] true on success
         def publish
           resp = connection.post do |req|
             req.url "#{object_path}/publish"
+          end
+          return true if resp.success?
+
+          raise_exception_based_on_response!(resp)
+        end
+
+        # Shelve an object (send to Stacks)
+        # @raise [NotFoundResponse] when the response is a 404 (object not found)
+        # @raise [UnexpectedResponse] when the response is not successful.
+        # @return [boolean] true on success
+        def shelve
+          resp = connection.post do |req|
+            req.url "#{object_path}/shelve"
           end
           return true if resp.success?
 
