@@ -29,7 +29,7 @@ module Dor
         private
 
         def response_to_models(resp)
-          JSON.parse(resp.body)['collections'].map { |data| Cocina::Models::DRO.new(data.symbolize_keys) }
+          JSON.parse(resp.body)['collections'].map { |data| Cocina::Models.build(data) }
         end
 
         def object_path
