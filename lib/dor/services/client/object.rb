@@ -46,13 +46,13 @@ module Dor
         # Retrieves the Cocina model
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
-        # @return [Cocina::Models::DRO] the returned model
+        # @return [Cocina::Models::DRO,Cocina::Models::Collection,Cocina::Models::AdminPolicy] the returned model
         def find
           resp = connection.get do |req|
             req.url object_path
           end
 
-          return Cocina::Models::DRO.from_json(resp.body) if resp.success?
+          return Cocina::Models.build(JSON.parse(resp.body)) if resp.success?
 
           raise_exception_based_on_response!(resp)
         end

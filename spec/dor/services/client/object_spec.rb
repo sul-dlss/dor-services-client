@@ -72,16 +72,6 @@ RSpec.describe Dor::Services::Client::Object do
 
   describe '#find' do
     subject(:model) { client.find }
-    let(:json) do
-      <<~JSON
-        {
-          "externalIdentifier":"druid:12343234",
-          "type":"item",
-          "label":"my item",
-          "version":1
-        }
-      JSON
-    end
 
     before do
       stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:1234')
@@ -89,7 +79,37 @@ RSpec.describe Dor::Services::Client::Object do
                    body: json)
     end
 
-    context 'when API request succeeds' do
+    context 'when API request succeeds with DRO' do
+      let(:json) do
+        <<~JSON
+          {
+            "externalIdentifier":"druid:12343234",
+            "type":"http://cocina.sul.stanford.edu/models/book.jsonld",
+            "label":"my item",
+            "version":1
+          }
+        JSON
+      end
+
+      let(:status) { 200 }
+
+      it 'returns the cocina model' do
+        expect(model.externalIdentifier).to eq 'druid:12343234'
+      end
+    end
+
+    context 'when API request succeeds with Collection' do
+      let(:json) do
+        <<~JSON
+          {
+            "externalIdentifier":"druid:12343234",
+            "type":"http://cocina.sul.stanford.edu/models/collection.jsonld",
+            "label":"my item",
+            "version":1
+          }
+        JSON
+      end
+
       let(:status) { 200 }
 
       it 'returns the cocina model' do
