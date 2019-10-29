@@ -77,6 +77,19 @@ module Dor
           raise_exception_based_on_response!(resp)
         end
 
+        # Preserve an object (send to SDR)
+        # @raise [NotFoundResponse] when the response is a 404 (object not found)
+        # @raise [UnexpectedResponse] when the response is not successful.
+        # @return [String] URL from Location response header if no errors
+        def preserve
+          resp = connection.post do |req|
+            req.url "#{object_path}/preserve"
+          end
+          return resp.headers['Location'] if resp.success?
+
+          raise_exception_based_on_response!(resp)
+        end
+
         # Shelve an object (send to Stacks)
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
