@@ -42,6 +42,7 @@ module Dor
 
           Moab::SignatureCatalog.parse resp.body
         end
+        deprecation_deprecate :signature_catalog
 
         # Retrieves file difference manifest for contentMetadata from SDR
         #
