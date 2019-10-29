@@ -78,6 +78,9 @@ object_client.publish
 # Shelve an object (push to Stacks)
 object_client.shelve
 
+# Preserve an object (push to SDR)
+object_client.preserve
+
 # Update the MARC record
 object_client.update_marc_record
 

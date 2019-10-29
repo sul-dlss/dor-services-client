@@ -153,6 +153,32 @@ RSpec.describe Dor::Services::Client::Object do
     end
   end
 
+  describe '#preserve' do
+    subject(:request) { client.preserve }
+
+    before do
+      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/preserve')
+        .to_return(status: status, headers: { 'Location' => 'https://dor-services.example.com/v1/background_job_results/123' })
+    end
+
+    context 'when API request succeeds' do
+      let(:status) { 200 }
+
+      it 'returns true' do
+        expect(request).to eq 'https://dor-services.example.com/v1/background_job_results/123'
+      end
+    end
+
+    context 'when API request fails' do
+      let(:status) { [500, 'internal server error'] }
+
+      it 'raises an error' do
+        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
+                                          "internal server error: 500 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+      end
+    end
+  end
+
   describe '#shelve' do
     subject(:request) { client.shelve }
 
