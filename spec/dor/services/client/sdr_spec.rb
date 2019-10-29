@@ -14,6 +14,7 @@ RSpec.describe Dor::Services::Client::SDR do
     subject(:request) { client.signature_catalog }
 
     before do
+      allow(Deprecation).to receive(:warn)
       stub_request(:get, 'https://dor-services.example.com/v1/sdr/objects/druid:1234/manifest/signatureCatalog.xml')
         .to_return(status: status, body: body)
     end
