@@ -132,9 +132,9 @@ object_client.embargo.update(embargo_date: date_string, requesting_user: usernam
 Some operations are asynchronous and they return a `Location` header that displays the
 result of the job.  These jobs can be monitored by using `AsyncResult`.
 
-```
+```ruby
 background_result_url = virtual_objects_client.create(virtual_objects: [{ parent_id: '', child_ids: [''] }])
-result = Dor::Services::Client::AsyncResult.new(url: background_result_url)
+result = virtual_objects_client.async_result(url: background_result_url)
 
 # Checks the result one time
 result.complete?
