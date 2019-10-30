@@ -10,6 +10,11 @@ module Dor
           @api_version = version
         end
 
+        # Common interface for handling asynchronous results
+        def async_result(url:)
+          AsyncResult.new(url: url)
+        end
+
         private
 
         attr_reader :connection, :api_version

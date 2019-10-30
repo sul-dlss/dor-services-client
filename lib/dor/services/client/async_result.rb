@@ -7,6 +7,8 @@ module Dor
     class Client
       # A helper for monitoring asynchonous jobs
       class AsyncResult
+        attr_reader :url
+
         # @param [String] url the url of the background result
         def initialize(url:)
           @url = url
@@ -29,8 +31,6 @@ module Dor
         def errors
           @results[:output][:errors]
         end
-
-        attr_reader :url, :seconds_between_requests, :timeout_in_seconds
 
         private
 
