@@ -127,6 +127,25 @@ object_client.workspace.reset
 object_client.embargo.update(embargo_date: date_string, requesting_user: username_string)
 ```
 
+## Asynchonous results
+
+Some operations are asynchronous and they return a `Location` header that displays the
+result of the job.  These jobs can be monitored by using `AsyncResult`.
+
+```
+background_result_url = virtual_objects_client.create(virtual_objects: [{ parent_id: '', child_ids: [''] }])
+result = AsyncResult.new(url: background_result_url)
+
+# Checks the result one time
+result.complete?
+
+# Poll until complete
+result.wait_until_complete
+
+result.errors
+# => [{ 'druid:foo' => ['druid:bar'] }]
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
