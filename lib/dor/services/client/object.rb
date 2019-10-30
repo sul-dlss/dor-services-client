@@ -72,7 +72,7 @@ module Dor
           resp = connection.post do |req|
             req.url "#{object_path}/publish"
           end
-          return true if resp.success?
+          return resp.headers['Location'] if resp.success?
 
           raise_exception_based_on_response!(resp)
         end
@@ -98,7 +98,7 @@ module Dor
           resp = connection.post do |req|
             req.url "#{object_path}/shelve"
           end
-          return true if resp.success?
+          return resp.headers['Location'] if resp.success?
 
           raise_exception_based_on_response!(resp)
         end

@@ -123,14 +123,14 @@ RSpec.describe Dor::Services::Client::Object do
 
     before do
       stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/publish')
-        .to_return(status: status)
+        .to_return(status: status, headers: { 'Location' => 'https://dor-services.example.com/v1/background_job_results/123' })
     end
 
     context 'when API request succeeds' do
       let(:status) { 200 }
 
       it 'returns true' do
-        expect(request).to be true
+        expect(request).to eq 'https://dor-services.example.com/v1/background_job_results/123'
       end
     end
 
@@ -184,14 +184,14 @@ RSpec.describe Dor::Services::Client::Object do
 
     before do
       stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/shelve')
-        .to_return(status: status)
+        .to_return(status: status, headers: { 'Location' => 'https://dor-services.example.com/v1/background_job_results/123' })
     end
 
     context 'when API request succeeds' do
       let(:status) { 204 }
 
       it 'returns true' do
-        expect(request).to be true
+        expect(request).to eq 'https://dor-services.example.com/v1/background_job_results/123'
       end
     end
 
