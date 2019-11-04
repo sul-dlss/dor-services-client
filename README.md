@@ -73,7 +73,7 @@ background_jobs_client.show(job_id: 123)
 object_client = Dor::Services::Client.object(object_identifier)
 
 # Publish an object (push to PURL)
-object_client.publish
+object_client.publish(workflow: 'releaseWF')
 
 # Shelve an object (push to Stacks)
 object_client.shelve
