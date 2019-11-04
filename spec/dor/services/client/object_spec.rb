@@ -119,10 +119,10 @@ RSpec.describe Dor::Services::Client::Object do
   end
 
   describe '#publish' do
-    subject(:request) { client.publish }
+    subject(:request) { client.publish(workflow: 'accessionWF') }
 
     before do
-      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/publish')
+      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/publish?workflow=accessionWF')
         .to_return(status: status, headers: { 'Location' => 'https://dor-services.example.com/v1/background_job_results/123' })
     end
 

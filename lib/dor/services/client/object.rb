@@ -67,10 +67,15 @@ module Dor
         # Publish an object (send to PURL)
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
+        # @param [String] workflow ('accessionWF') which workflow to callback to.
         # @return [boolean] true on success
-        def publish
+        def publish(workflow: nil)
+          unless workflow
+            workflow = 'accessionWF'
+            Deprecation.warn(self, 'calling publish without passing a workflow is deprecated and will be removed in the next major version')
+          end
           resp = connection.post do |req|
-            req.url "#{object_path}/publish"
+            req.url "#{object_path}/publish?workflow=#{workflow}"
           end
           return resp.headers['Location'] if resp.success?
 
