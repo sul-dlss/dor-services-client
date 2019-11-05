@@ -14,11 +14,16 @@ module Dor
           @url = url
         end
 
-        # @param [Integer] seconds_between_requests (3) how many seconds between polling requests
+        # Polls using exponential backoff, so as not to overrwhelm the server.
+        # @param [Float] seconds_between_requests (3.0) initially, how many seconds between polling requests
         # @param [Integer] timeout_in_seconds (180) timeout after this many seconds
+        # @param [Float] backoff_factor (2.0) how quickly to backoff.  This should be > 1.0 and probably ought to be <= 2.0
         # @return true if successful false if unsuccessful.
-        def wait_until_complete(seconds_between_requests: 3, timeout_in_seconds: 180)
-          poll_until_complete(seconds_between_requests, timeout_in_seconds)
+        def wait_until_complete(seconds_between_requests: 3.0,
+                                timeout_in_seconds: 180,
+                                backoff_factor: 2.0,
+                                max_seconds_between_requests: 60)
+          poll_until_complete(seconds_between_requests, timeout_in_seconds, backoff_factor, max_seconds_between_requests)
           errors.nil?
         end
 
@@ -34,12 +39,15 @@ module Dor
 
         private
 
-        def poll_until_complete(seconds_between_requests, timeout_in_seconds)
+        def poll_until_complete(seconds_between_requests, timeout_in_seconds, backoff_factor, max_seconds_between_requests)
+          interval = seconds_between_requests
           Timeout.timeout(timeout_in_seconds) do
             loop do
               break if complete?
 
-              sleep(seconds_between_requests)
+              sleep(interval)
+              # Exponential backoff, limited to max_seconds_between_requests
+              interval = [interval * backoff_factor, max_seconds_between_requests].min
             end
           end
         rescue Timeout::Error
