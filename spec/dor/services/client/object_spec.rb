@@ -120,9 +120,12 @@ RSpec.describe Dor::Services::Client::Object do
 
   describe '#publish' do
     subject(:request) { client.publish(workflow: 'accessionWF') }
+    subject(:no_wf_request) { client.publish }
 
     before do
       stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/publish?workflow=accessionWF')
+        .to_return(status: status, headers: { 'Location' => 'https://dor-services.example.com/v1/background_job_results/123' })
+      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/publish')
         .to_return(status: status, headers: { 'Location' => 'https://dor-services.example.com/v1/background_job_results/123' })
     end
 
@@ -131,6 +134,10 @@ RSpec.describe Dor::Services::Client::Object do
 
       it 'returns true' do
         expect(request).to eq 'https://dor-services.example.com/v1/background_job_results/123'
+      end
+
+      it 'returns true' do
+        expect(no_wf_request).to eq 'https://dor-services.example.com/v1/background_job_results/123'
       end
     end
 
@@ -141,6 +148,11 @@ RSpec.describe Dor::Services::Client::Object do
         expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse,
                                           "not found: 404 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
       end
+
+      it 'raises a NotFoundResponse exception' do
+        expect { no_wf_request }.to raise_error(Dor::Services::Client::NotFoundResponse,
+                                                "not found: 404 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+      end
     end
 
     context 'when API request fails' do
@@ -149,6 +161,11 @@ RSpec.describe Dor::Services::Client::Object do
       it 'raises an error' do
         expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
                                           "conflict: 409 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+      end
+
+      it 'raises an error' do
+        expect { no_wf_request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
+                                                "conflict: 409 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
       end
     end
   end

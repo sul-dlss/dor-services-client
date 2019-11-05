@@ -70,12 +70,10 @@ module Dor
         # @param [String] workflow ('accessionWF') which workflow to callback to.
         # @return [boolean] true on success
         def publish(workflow: nil)
-          unless workflow
-            workflow = 'accessionWF'
-            Deprecation.warn(self, 'calling publish without passing a workflow is deprecated and will be removed in the next major version')
-          end
+          publish_path = "#{object_path}/publish"
+          publish_path = "#{publish_path}?workflow=#{workflow}" if workflow
           resp = connection.post do |req|
-            req.url "#{object_path}/publish?workflow=#{workflow}"
+            req.url publish_path
           end
           return resp.headers['Location'] if resp.success?
 
