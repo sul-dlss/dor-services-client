@@ -162,11 +162,6 @@ RSpec.describe Dor::Services::Client::Object do
         expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
                                           "conflict: 409 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
       end
-
-      it 'raises an error' do
-        expect { no_wf_request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
-                                                "conflict: 409 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
-      end
     end
   end
 
