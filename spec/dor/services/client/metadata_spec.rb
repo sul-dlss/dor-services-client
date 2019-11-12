@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'active_support/core_ext/time'
+
 RSpec.describe Dor::Services::Client::Metadata do
   before do
     Dor::Services::Client.configure(url: 'https://dor-services.example.com', token: '123')
@@ -72,6 +74,38 @@ RSpec.describe Dor::Services::Client::Metadata do
       it 'raises an error' do
         expect { response }.to raise_error(Dor::Services::Client::UnexpectedResponse,
                                            'internal server error: 500 (broken) for druid:1234')
+      end
+    end
+  end
+
+  describe '#legacy_update' do
+    let(:params) { { descriptive: { updated: Time.find_zone('UTC').parse('2020-01-05'), content: '<descMetadata/>' } } }
+
+    before do
+      stub_request(:patch, 'https://dor-services.example.com/v1/objects/druid:1234/metadata/legacy')
+        .with(
+          body: '{"descriptive":{"updated":"2020-01-05T00:00:00.000Z","content":"\u003cdescMetadata/\u003e"}}',
+          headers: { 'Content-Type' => 'application/json' }
+        )
+        .to_return(status: status)
+    end
+
+    context 'when API request succeeds' do
+      let(:status) { 204 }
+
+      it 'posts params as json' do
+        expect(client.legacy_update(params)).to be_nil
+      end
+    end
+
+    context 'when API request fails' do
+      let(:status) { [404, 'not found'] }
+
+      it 'raises an error' do
+        expect { client.legacy_update(params) }.to(
+          raise_error(Dor::Services::Client::UnexpectedResponse,
+                      "not found: 404 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY}) for druid:1234")
+        )
       end
     end
   end

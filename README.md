@@ -102,6 +102,14 @@ object_client.metadata.dublin_core
 # Get the public descriptive XML representation
 object_client.metadata.descriptive
 
+# Update legacy XML representation
+object_client.metadata.legacy_update(
+  descriptive: {
+    updated: Time.now,
+    content: '<descMetadata/>'
+  }
+)
+
 # Return the Cocina metadata
 object_client.find
 

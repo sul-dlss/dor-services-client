@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'active_support/json' # required for serializing time as iso8601
+
 module Dor
   module Services
     class Client
@@ -9,6 +11,26 @@ module Dor
         def initialize(connection:, version:, object_identifier:)
           super(connection: connection, version: version)
           @object_identifier = object_identifier
+        end
+
+        # Updates using the legacy SDR/Fedora3 metadata
+        # @param [Hash<Symbol,Hash>] opts the options for legacy update
+        # @option opts [Hash] :descriptive Data for descriptive metadata
+        # @option opts [Hash] :rights Data for access rights metadata
+        # @option opts [Hash] :content Data for structural metadata
+        # @option opts [Hash] :technical Data for technical metadata
+        # @example:
+        #  legacy_update(descriptive: { updated: '2001-12-20', content: '<descMetadata />' })
+        def legacy_update(opts)
+          opts = opts.slice(:descriptive, :rights, :content, :technical)
+          resp = connection.patch do |req|
+            req.url "#{base_path}/legacy"
+            req.headers['Content-Type'] = 'application/json'
+            req.body = opts.to_json
+          end
+          return if resp.success?
+
+          raise UnexpectedResponse, ResponseErrorFormatter.format(response: resp, object_identifier: object_identifier)
         end
 
         # @return [String, NilClass] The Dublin Core XML representation of the object or nil if response is 404
