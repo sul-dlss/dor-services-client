@@ -42,7 +42,7 @@ module Dor
 
           Moab::SignatureCatalog.parse resp.body
         end
-        deprecation_deprecate :signature_catalog
+        deprecation_deprecate signature_catalog: 'use preservation-client signature_catalog instead'
 
         # Retrieves file difference manifest for contentMetadata from SDR
         #
@@ -57,6 +57,7 @@ module Dor
 
           Moab::FileInventoryDifference.parse(resp)
         end
+        deprecation_deprecate content_diff: 'use preservation-client content_inventory_diff instead'
 
         # @param [String] datastream The identifier of the metadata datastream
         # @return [String, NilClass] datastream content from previous version of the object (from SDR storage), or nil if response status is 404

@@ -122,7 +122,6 @@ object_client.files.list
 object_client.release_tags.create(release: release, what: what, to: to, who: who)
 
 # Retrieve information from SDR
-object_client.sdr.content_diff(current_content: existing_content)
 object_client.sdr.metadata(datastream: dsid)
 
 # Create, remove, and reset workspaces

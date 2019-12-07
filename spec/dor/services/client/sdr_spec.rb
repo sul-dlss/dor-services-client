@@ -105,6 +105,7 @@ RSpec.describe Dor::Services::Client::SDR do
     let(:status) { 200 }
 
     before do
+      allow(Deprecation).to receive(:warn)
       stub_request(:post, 'https://dor-services.example.com/v1/sdr/objects/druid:1234/cm-inv-diff?subset=all')
         .to_return(status: status, body: body)
     end
