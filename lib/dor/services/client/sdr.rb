@@ -6,6 +6,7 @@ require 'moab'
 module Dor
   module Services
     class Client
+      # Deprecated; remove in release 4.0
       # API calls that are about preserved objects
       class SDR < VersionedService
         extend Deprecation
@@ -32,7 +33,7 @@ module Dor
             raise MalformedResponse, "Unable to parse XML from current_version API call: #{xml}"
           end
         end
-        deprecation_deprecate current_version: 'use preservation-client current_version instead'
+        deprecation_deprecate current_version: 'use preservation-client .current_version instead'
 
         def signature_catalog
           resp = signature_catalog_response
@@ -42,7 +43,7 @@ module Dor
 
           Moab::SignatureCatalog.parse resp.body
         end
-        deprecation_deprecate signature_catalog: 'use preservation-client signature_catalog instead'
+        deprecation_deprecate signature_catalog: 'use preservation-client .signature_catalog instead'
 
         # Retrieves file difference manifest for contentMetadata from SDR
         #
@@ -57,7 +58,7 @@ module Dor
 
           Moab::FileInventoryDifference.parse(resp)
         end
-        deprecation_deprecate content_diff: 'use preservation-client content_inventory_diff instead'
+        deprecation_deprecate content_diff: 'use preservation-client .content_inventory_diff instead'
 
         # @param [String] datastream The identifier of the metadata datastream
         # @return [String, NilClass] datastream content from previous version of the object (from SDR storage), or nil if response status is 404
@@ -71,6 +72,7 @@ module Dor
 
           raise UnexpectedResponse, ResponseErrorFormatter.format(response: resp, object_identifier: object_identifier)
         end
+        deprecation_deprecate metadata: 'use preservation-client .metadata instead'
 
         private
 

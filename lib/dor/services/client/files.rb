@@ -5,6 +5,9 @@ module Dor
     class Client
       # API calls relating to files
       class Files < VersionedService
+        extend Deprecation
+        self.deprecation_horizon = 'dor-services-client version 4.0'
+
         # @param object_identifier [String] the pid for the object
         def initialize(connection:, version:, object_identifier:)
           super(connection: connection, version: version)
@@ -35,6 +38,7 @@ module Dor
 
           resp.body
         end
+        deprecation_deprecate preserved_content: 'use preservation-client .content instead'
 
         # Get the list of files in the workspace
         # @return [Array<String>] the list of filenames in the workspace
