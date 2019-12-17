@@ -3,27 +3,13 @@
 require 'active_support/core_ext/hash/indifferent_access'
 require 'active_support/core_ext/module/delegation'
 require 'active_support/core_ext/object/blank'
-require 'deprecation'
 require 'cocina/models'
 require 'faraday'
 require 'singleton'
 require 'zeitwerk'
 
-class DorServicesClientInflector < Zeitwerk::Inflector
-  def camelize(basename, _abspath)
-    case basename
-    when 'sdr'
-      'SDR'
-    when 'version'
-      'VERSION'
-    else
-      super
-    end
-  end
-end
-
 loader = Zeitwerk::Loader.new
-loader.inflector = DorServicesClientInflector.new
+loader.inflector = Zeitwerk::GemInflector.new(__FILE__)
 loader.push_dir(File.absolute_path("#{__FILE__}/../../.."))
 loader.setup
 
