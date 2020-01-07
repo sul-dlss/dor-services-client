@@ -15,10 +15,6 @@ module Dor
           @object_identifier = object_identifier
         end
 
-        def sdr
-          @sdr ||= SDR.new(parent_params)
-        end
-
         def metadata
           @metadata ||= Metadata.new(parent_params)
         end

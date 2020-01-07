@@ -66,32 +66,4 @@ RSpec.describe Dor::Services::Client::Files do
       it { is_expected.to be_nil }
     end
   end
-
-  describe '#preserved_content' do
-    subject { client.preserved_content(filename: 'olemiss1v.jp2', version: 1) }
-    before do
-      # allow(Deprecation).to receive(:warn) # it's probably better for this warning to display
-      stub_request(:get, 'https://dor-services.example.com/v1/sdr/objects/druid:ck546xs5106/content/olemiss1v.jp2?version=1')
-        .to_return(status: status, body: body)
-    end
-
-    context 'when the response is 200' do
-      let(:body) do
-        <<~BODY
-          This is all the stuff in the file
-        BODY
-      end
-
-      let(:status) { 200 }
-
-      it { is_expected.to eq "This is all the stuff in the file\n" }
-    end
-
-    context 'when the response is 404' do
-      let(:status) { 404 }
-      let(:body) { '' }
-
-      it { is_expected.to be_nil }
-    end
-  end
 end
