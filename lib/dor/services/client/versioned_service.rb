@@ -18,6 +18,11 @@ module Dor
         private
 
         attr_reader :connection, :api_version
+
+        def raise_exception_based_on_response!(response)
+          raise (response.status == 404 ? NotFoundResponse : UnexpectedResponse),
+                ResponseErrorFormatter.format(response: response)
+        end
       end
     end
   end

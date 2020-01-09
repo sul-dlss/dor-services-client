@@ -34,6 +34,16 @@ RSpec.describe Dor::Services::Client do
       end
     end
 
+    describe '.marcxml' do
+      it 'returns an instance of Client::Marcxml' do
+        expect(described_class.marcxml).to be_instance_of Dor::Services::Client::Marcxml
+      end
+
+      it 'returns the memoized instance when called again' do
+        expect(described_class.marcxml).to eq described_class.marcxml
+      end
+    end
+
     describe '.objects' do
       it 'returns an instance of Client::Objects' do
         expect(described_class.objects).to be_instance_of Dor::Services::Client::Objects

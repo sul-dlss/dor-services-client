@@ -66,6 +66,11 @@ module Dor
         @background_job_results ||= BackgroundJobResults.new(connection: connection, version: DEFAULT_VERSION)
       end
 
+      # @return [Dor::Services::Client::Marcxml] an instance of the `Client::Marcxml` class
+      def marcxml
+        @marcxml ||= Marcxml.new(connection: connection, version: DEFAULT_VERSION)
+      end
+
       class << self
         # @param [String] url the base url of the endpoint the client should connect to (required)
         # @param [String] token a bearer token for HTTP authentication (required)
@@ -79,7 +84,7 @@ module Dor
           self
         end
 
-        delegate :objects, :object, :virtual_objects, :background_job_results, to: :instance
+        delegate :background_job_results, :marcxml, :objects, :object, :virtual_objects, to: :instance
       end
 
       attr_writer :url, :token, :connection
