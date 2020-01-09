@@ -51,23 +51,29 @@ Note that the client may **not** be used without first having been configured, a
 Dor::Services:Client provides a number of methods to simplify connecting to the RESTful HTTP API of dor-services-app. In this section we list all of the available methods, reflecting how much of the API the client covers. For details see the [API docs](https://www.rubydoc.info/github/sul-dlss/dor-services-client/master/Dor/Services/Client)
 
 ```ruby
-# For performing operations on one or more objects
+# Perform operations on one or more objects
 objects_client = Dor::Services::Client.objects
 
-# For registering a non-existent object
+# Register a non-existent object
 objects_client.register(params: {})
 
-# For interacting with virtual objects
+# Interact with virtual objects
 virtual_objects_client = Dor::Services::Client.virtual_objects
 
 # Create a batch of virtual objects
 virtual_objects_client.create(virtual_objects: [{ parent_id: '', child_ids: [''] }])
 
-# For getting background job results
+# Retrieve background job results
 background_jobs_client = Dor::Services::Client.background_job_results
 
 # Show results of background job
 background_jobs_client.show(job_id: 123)
+
+# Perform MARCXML operations
+marcxml_client = Dor::Services::Client.marcxml
+
+# Retrieve a catkey for a given barcode
+marcxml_client.catkey(barcode: 'foobarcode')
 
 # For performing operations on a known, registered object
 object_client = Dor::Services::Client.object(object_identifier)

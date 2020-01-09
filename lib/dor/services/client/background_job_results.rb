@@ -22,13 +22,6 @@ module Dor
 
           raise_exception_based_on_response!(resp)
         end
-
-        private
-
-        def raise_exception_based_on_response!(response)
-          raise (response.status == 404 ? NotFoundResponse : UnexpectedResponse),
-                ResponseErrorFormatter.format(response: response)
-        end
       end
     end
   end

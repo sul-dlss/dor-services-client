@@ -85,11 +85,6 @@ module Dor
           "#{api_version}/objects/#{object_identifier}"
         end
 
-        def raise_exception_based_on_response!(response)
-          raise (response.status == 404 ? NotFoundResponse : UnexpectedResponse),
-                ResponseErrorFormatter.format(response: response)
-        end
-
         # Make request to server to open a new version
         # @param params [Hash] optional params (see dor-services-app)
         # @raise [NotFoundResponse] when the response is a 404 (object not found)

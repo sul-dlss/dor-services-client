@@ -150,11 +150,6 @@ module Dor
         def object_path
           "#{api_version}/objects/#{object_identifier}"
         end
-
-        def raise_exception_based_on_response!(response)
-          raise (response.status == 404 ? NotFoundResponse : UnexpectedResponse),
-                ResponseErrorFormatter.format(response: response)
-        end
       end
     end
   end
