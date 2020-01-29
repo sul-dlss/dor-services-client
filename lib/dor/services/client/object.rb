@@ -19,6 +19,10 @@ module Dor
           @metadata ||= Metadata.new(parent_params)
         end
 
+        def events
+          @events ||= Events.new(parent_params)
+        end
+
         def files
           @files ||= Files.new(parent_params)
         end

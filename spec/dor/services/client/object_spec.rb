@@ -64,6 +64,12 @@ RSpec.describe Dor::Services::Client::Object do
     end
   end
 
+  describe '#events' do
+    it 'returns an instance of Client::Events' do
+      expect(client.events).to be_instance_of Dor::Services::Client::Events
+    end
+  end
+
   describe '#find' do
     subject(:model) { client.find }
 

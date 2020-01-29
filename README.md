@@ -126,6 +126,9 @@ object_client.files.retrieve(filename: filename_string)
 object_client.files.list
 object_client.release_tags.create(release: release, what: what, to: to, who: who)
 
+# Get the events for the object
+object_client.events.list
+
 # Create, remove, and reset workspaces
 object_client.workspace.create(source: object_path_string)
 object_client.workspace.cleanup
