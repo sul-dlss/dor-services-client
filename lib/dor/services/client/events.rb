@@ -7,7 +7,7 @@ module Dor
     class Client
       # API calls that are about retrieving metadata
       class Events < VersionedService
-        Event = Struct.new(:event_type, :data, keyword_init: true)
+        Event = Struct.new(:event_type, :data, :timestamp, keyword_init: true)
 
         # @param object_identifier [String] the pid for the object
         def initialize(connection:, version:, object_identifier:)
@@ -32,7 +32,7 @@ module Dor
         attr_reader :object_identifier
 
         def response_to_models(resp)
-          JSON.parse(resp.body).map { |data| Event.new(event_type: data['event_type'], data: data['data']) }
+          JSON.parse(resp.body).map { |data| Event.new(event_type: data['event_type'], data: data['data'], timestamp: data['created_at']) }
         end
       end
     end
