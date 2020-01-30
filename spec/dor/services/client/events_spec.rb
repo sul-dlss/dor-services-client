@@ -20,10 +20,14 @@ RSpec.describe Dor::Services::Client::Events do
 
     context 'when the object is found' do
       let(:status) { 200 }
-      let(:body) { '[{},{}]' }
+      let(:body) do
+        '[{"event_type":"shelve_request_received","data":{"host":"http://example.com/"}},' \
+      '{"event_type":"shelve_request_received","data":{"host":"http://example.com/"}}]'
+      end
 
       it 'returns the list' do
         expect(response.size).to eq 2
+        expect(response.first.event_type).to eq 'shelve_request_received'
       end
     end
 
