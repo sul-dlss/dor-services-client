@@ -7,7 +7,7 @@ module Dor
     class Client
       # API calls that are about retrieving metadata
       class Events < VersionedService
-        Event = Struct.new(:event_type, :data)
+        Event = Struct.new(:event_type, :data, keyword_init: true)
 
         # @param object_identifier [String] the pid for the object
         def initialize(connection:, version:, object_identifier:)
