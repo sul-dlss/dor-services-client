@@ -87,7 +87,7 @@ object_client.shelve
 # Preserve an object (push to SDR)
 object_client.preserve
 
-# Update the MARC record
+# Update the MARC record (used in the releaseWF)
 object_client.update_marc_record
 
 # Copy metadata from Symphony into descMetadata
