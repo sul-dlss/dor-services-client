@@ -37,6 +37,19 @@ module Dor
         end
         # rubocop:enable Metrics/MethodLength
 
+        # List new release tags for the object
+        # @raise [UnexpectedResponse] if the request is unsuccessful.
+        # @return [Hash] (see Dor::ReleaseTags::IdentityMetadata.released_for)
+        def list
+          resp = connection.get do |req|
+            req.url "#{api_version}/objects/#{object_identifier}/release_tags"
+          end
+
+          return JSON.parse(resp.body) if resp.success?
+
+          raise_exception_based_on_response!(resp)
+        end
+
         private
 
         attr_reader :object_identifier
