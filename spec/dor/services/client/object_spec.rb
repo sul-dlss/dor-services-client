@@ -86,7 +86,12 @@ RSpec.describe Dor::Services::Client::Object do
             "externalIdentifier":"druid:12343234",
             "type":"http://cocina.sul.stanford.edu/models/book.jsonld",
             "label":"my item",
-            "version":1
+            "version":1,
+            "description":{
+              "title": [
+                { "titleFull": "hey!", "primary":true }
+              ]
+            }
           }
         JSON
       end
@@ -105,7 +110,12 @@ RSpec.describe Dor::Services::Client::Object do
             "externalIdentifier":"druid:12343234",
             "type":"http://cocina.sul.stanford.edu/models/collection.jsonld",
             "label":"my item",
-            "version":1
+            "version":1,
+            "description":{
+              "title": [
+                { "titleFull": "hey!", "primary":true }
+              ]
+            }
           }
         JSON
       end

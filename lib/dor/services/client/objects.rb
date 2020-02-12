@@ -1,15 +1,27 @@
 # frozen_string_literal: true
 
+require 'deprecation'
+require 'active_support/json'
+require 'active_support/core_ext/object/json'
+
 module Dor
   module Services
     class Client
       # API calls that are about a repository objects
       class Objects < VersionedService
         # Creates a new object in DOR
+        # @param [Hash,Cocina::Models::RequestDRO,Cocina::Models::RequestCollection,Cocina::Models::RequestAPO] passing a hash is deprecated
         # @return [HashWithIndifferentAccess] the response, which includes a :pid
         def register(params:)
-          json = register_response(params: params)
-          JSON.parse(json).with_indifferent_access
+          if params.is_a? Hash
+            Deprecation.warn(self, 'passing a Hash to register is deprecated and will ' \
+              'be removed in dor-services-client 5.0. Use a Cocina::Models object instead.')
+          end
+          json_str = register_response(params: params)
+          json = JSON.parse(json_str)
+          return json.with_indifferent_access unless json.key?('type') # Legacy return
+
+          Cocina::Models.build(json)
         end
 
         private

@@ -21,7 +21,12 @@ RSpec.describe Dor::Services::Client::Collections do
               "externalIdentifier":"druid:12343234",
               "type":"http://cocina.sul.stanford.edu/models/collection.jsonld",
               "label":"my collection",
-              "version":1
+              "version":1,
+              "description":{
+                "title": [
+                  { "titleFull": "hey!", "primary":true }
+                ]
+              }
             }]
           }
         JSON
