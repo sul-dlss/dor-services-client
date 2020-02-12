@@ -128,9 +128,13 @@ object_client.find
 # Query for an objects collections
 object_client.collections
 
+# View information about an object's files
 object_client.files.retrieve(filename: filename_string)
 object_client.files.list
+
+# Set and list an object's release tags
 object_client.release_tags.create(release: release, what: what, to: to, who: who)
+object_client.release_tags.list
 
 # Get the events for the object
 object_client.events.list

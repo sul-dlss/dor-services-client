@@ -10,6 +10,49 @@ RSpec.describe Dor::Services::Client::ReleaseTags do
 
   subject(:client) { described_class.new(connection: connection, version: 'v1', object_identifier: pid) }
 
+  describe '#list' do
+    subject(:request) { client.list }
+
+    context 'when API request succeeds' do
+      before do
+        stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:123/release_tags')
+          .to_return(status: 200, body: '{"SearchWorks":{"release":true}}')
+      end
+
+      it 'lists release tags' do
+        expect(request).to eq(
+          'SearchWorks' => {
+            'release' => true
+          }
+        )
+      end
+    end
+
+    context 'when API request fails because of not found' do
+      before do
+        stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:123/release_tags')
+          .to_return(status: [404, 'object not found'])
+      end
+
+      it 'raises an error' do
+        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse,
+                                          "object not found: 404 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+      end
+    end
+
+    context 'when API request fails due to unexpected response' do
+      before do
+        stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:123/release_tags')
+          .to_return(status: [500, 'something is amiss'])
+      end
+
+      it 'raises an error' do
+        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
+                                          "something is amiss: 500 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+      end
+    end
+  end
+
   describe '#create' do
     subject(:request) { client.create(release: true, to: 'searchworks', who: 'justin', what: 'foo') }
 
