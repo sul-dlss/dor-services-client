@@ -49,4 +49,33 @@ RSpec.describe Dor::Services::Client::Events do
       end
     end
   end
+
+  describe '#create' do
+    subject(:request) do
+      client.create(type: 'publish', data: { target: 'SearchWorks', host: 'foo.example.edu', result: 'success!' })
+    end
+
+    context 'when API request succeeds' do
+      before do
+        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/events')
+          .to_return(status: 201)
+      end
+
+      it 'posts tags' do
+        expect(request).to be true
+      end
+    end
+
+    context 'when API request fails' do
+      before do
+        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/events')
+          .to_return(status: [500, 'something is amiss'])
+      end
+
+      it 'raises an error' do
+        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
+                                          "something is amiss: 500 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY}) for druid:1234")
+      end
+    end
+  end
 end

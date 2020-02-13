@@ -132,11 +132,12 @@ object_client.collections
 object_client.files.retrieve(filename: filename_string)
 object_client.files.list
 
-# Set and list an object's release tags
+# Create and list release tags for an object
 object_client.release_tags.create(release: release, what: what, to: to, who: who)
 object_client.release_tags.list
 
-# Get the events for the object
+# Create and list events for an object
+object_client.events.create(type: type, data: data)
 object_client.events.list
 
 # Create, remove, and reset workspaces
