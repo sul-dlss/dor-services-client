@@ -49,7 +49,7 @@ RSpec.describe Dor::Services::Client::Collections do
 
       it 'raises an error' do
         expect { collections }.to raise_error(Dor::Services::Client::UnexpectedResponse,
-                                              "something is amiss: 500 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+                                              "something is amiss: 500 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY}) for druid:123")
       end
     end
   end

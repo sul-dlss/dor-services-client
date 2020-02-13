@@ -36,7 +36,7 @@ RSpec.describe Dor::Services::Client::ReleaseTags do
 
       it 'raises an error' do
         expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse,
-                                          "object not found: 404 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+                                          "object not found: 404 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY}) for druid:123")
       end
     end
 
@@ -48,7 +48,7 @@ RSpec.describe Dor::Services::Client::ReleaseTags do
 
       it 'raises an error' do
         expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
-                                          "something is amiss: 500 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+                                          "something is amiss: 500 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY}) for druid:123")
       end
     end
   end
@@ -75,7 +75,7 @@ RSpec.describe Dor::Services::Client::ReleaseTags do
 
       it 'raises an error' do
         expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
-                                          "something is amiss: 500 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+                                          "something is amiss: 500 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY}) for druid:123")
       end
     end
   end

@@ -40,7 +40,7 @@ module Dor
           end
           return resp.body if resp.success?
 
-          raise UnexpectedResponse, ResponseErrorFormatter.format(response: resp)
+          raise_exception_based_on_response!(resp)
         end
       end
     end

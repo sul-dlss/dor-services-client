@@ -16,8 +16,9 @@ module Dor
         # @param what [String]
         # @param to [String]
         # @param who [String]
-        # @raise [UnexpectedResponse] if the request is unsuccessful.
         # @return [Boolean] true if successful
+        # @raise [NotFoundResponse] when the response is a 404 (object not found)
+        # @raise [UnexpectedResponse] if the request is unsuccessful.
         # rubocop:disable Metrics/MethodLength
         def create(release:, what:, to:, who:)
           params = {
@@ -31,13 +32,14 @@ module Dor
             req.headers['Content-Type'] = 'application/json'
             req.body = params.to_json
           end
-          raise UnexpectedResponse, ResponseErrorFormatter.format(response: resp) unless resp.success?
+          raise_exception_based_on_response!(resp, object_identifier) unless resp.success?
 
           true
         end
         # rubocop:enable Metrics/MethodLength
 
         # List new release tags for the object
+        # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] if the request is unsuccessful.
         # @return [Hash] (see Dor::ReleaseTags::IdentityMetadata.released_for)
         def list
@@ -45,9 +47,9 @@ module Dor
             req.url "#{api_version}/objects/#{object_identifier}/release_tags"
           end
 
-          return JSON.parse(resp.body) if resp.success?
+          raise_exception_based_on_response!(resp, object_identifier) unless resp.success?
 
-          raise_exception_based_on_response!(resp)
+          JSON.parse(resp.body)
         end
 
         private
