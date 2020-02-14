@@ -20,7 +20,7 @@ module Dor
             req.url workspace_path
             req.params['source'] = source
           end
-          raise UnexpectedResponse, ResponseErrorFormatter.format(response: resp) unless resp.success?
+          raise_exception_based_on_response!(resp, object_identifier) unless resp.success?
         end
 
         # Cleans up a workspace
@@ -30,7 +30,7 @@ module Dor
           resp = connection.delete do |req|
             req.url workspace_path
           end
-          raise UnexpectedResponse, ResponseErrorFormatter.format(response: resp) unless resp.success?
+          raise_exception_based_on_response!(resp, object_identifier) unless resp.success?
         end
 
         # After an object has been copied to preservation the workspace can be
@@ -41,7 +41,7 @@ module Dor
           resp = connection.post do |req|
             req.url "#{workspace_path}/reset"
           end
-          raise UnexpectedResponse, ResponseErrorFormatter.format(response: resp) unless resp.success?
+          raise_exception_based_on_response!(resp, object_identifier) unless resp.success?
         end
 
         private

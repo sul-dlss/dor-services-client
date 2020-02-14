@@ -31,7 +31,7 @@ module Dor
           end
           return if resp.success?
 
-          raise UnexpectedResponse, ResponseErrorFormatter.format(response: resp, object_identifier: object_identifier)
+          raise_exception_based_on_response!(resp, object_identifier)
         end
 
         # @return [String, NilClass] The Dublin Core XML representation of the object or nil if response is 404
@@ -43,7 +43,7 @@ module Dor
           return resp.body if resp.success?
           return if resp.status == 404
 
-          raise UnexpectedResponse, ResponseErrorFormatter.format(response: resp, object_identifier: object_identifier)
+          raise_exception_based_on_response!(resp, object_identifier)
         end
 
         # @return [String, NilClass] The descriptive metadata XML representation of the object or nil if response is 404
@@ -55,7 +55,7 @@ module Dor
           return resp.body if resp.success?
           return if resp.status == 404
 
-          raise UnexpectedResponse, ResponseErrorFormatter.format(response: resp, object_identifier: object_identifier)
+          raise_exception_based_on_response!(resp, object_identifier)
         end
 
         private

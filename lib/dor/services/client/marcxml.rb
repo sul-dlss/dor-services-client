@@ -19,9 +19,11 @@ module Dor
           end
 
           return resp.body if resp.success? && resp.body.present?
-          raise NotFoundResponse if resp.success? && resp.body.blank?
 
-          raise_exception_based_on_response!(resp)
+          # This method needs its own exception handling logic due to how the endpoint service (SearchWorks) operates
+          raise NotFoundResponse, ResponseErrorFormatter.format(response: resp) if resp.success? && resp.body.blank?
+
+          raise UnexpectedResponse, ResponseErrorFormatter.format(response: resp)
         end
 
         # Gets MARCXML corresponding to a barcode or catkey
@@ -39,7 +41,12 @@ module Dor
             req.params['catkey'] = catkey unless catkey.nil?
           end
 
-          raise_exception_based_on_marcxml_response!(resp)
+          # This method needs its own exception handling logic due to how the endpoint service (Symphony) operates
+          #
+          # DOR Services App does not respond with a 404 when no match in Symphony.
+          # Rather, it responds with a 500 containing "Record not found in Symphony" in the body.
+          raise NotFoundResponse, ResponseErrorFormatter.format(response: resp) if !resp.success? && resp.body.match?(/Record not found in Symphony/)
+          raise UnexpectedResponse, ResponseErrorFormatter.format(response: resp) unless resp.success?
 
           resp.body
         end
@@ -49,14 +56,6 @@ module Dor
         def check_args(barcode, catkey)
           raise ArgumentError, 'Barcode or catkey must be provided' if barcode.nil? && catkey.nil?
           raise ArgumentError, 'Both barcode and catkey may not be provided' if !barcode.nil? && !catkey.nil?
-        end
-
-        def raise_exception_based_on_marcxml_response!(resp)
-          # DOR Services App does not respond with a 404 when no match in Symphony.
-          # Rather, it responds with a 500 containing "Record not found in Symphony" in the body.
-          raise NotFoundResponse if !resp.success? && resp.body.match?(/Record not found in Symphony/)
-
-          raise UnexpectedResponse, ResponseErrorFormatter.format(response: resp) unless resp.success?
         end
       end
     end

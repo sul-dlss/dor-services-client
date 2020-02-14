@@ -31,7 +31,7 @@ module Dor
           end
           return if resp.success?
 
-          raise UnexpectedResponse, ResponseErrorFormatter.format(response: resp, object_identifier: object_identifier)
+          raise_exception_based_on_response!(resp, object_identifier)
         end
 
         private

@@ -19,9 +19,9 @@ module Dor
 
         attr_reader :connection, :api_version
 
-        def raise_exception_based_on_response!(response)
+        def raise_exception_based_on_response!(response, object_identifier = nil)
           raise (response.status == 404 ? NotFoundResponse : UnexpectedResponse),
-                ResponseErrorFormatter.format(response: response)
+                ResponseErrorFormatter.format(response: response, object_identifier: object_identifier)
         end
       end
     end

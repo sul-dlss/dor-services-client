@@ -15,7 +15,24 @@ module Dor
           @object_identifier = object_identifier
         end
 
-        # @return [Array<Events>] The events for an object
+        # @param type [String] a type for the event, e.g., publish, shelve
+        # @param data [Hash] an unstructured hash of event data
+        # @return [Boolean] true if successful
+        # @raise [NotFoundResponse] when the response is a 404 (object not found)
+        # @raise [UnexpectedResponse] if the request is unsuccessful.
+        def create(type:, data:)
+          resp = connection.post do |req|
+            req.url "#{api_version}/objects/#{object_identifier}/events"
+            req.headers['Content-Type'] = 'application/json'
+            req.body = { event_type: type, data: data }.to_json
+          end
+
+          raise_exception_based_on_response!(resp, object_identifier) unless resp.success?
+
+          true
+        end
+
+        # @return [Array<Event>,NilClass] The events for an object or nil if 404
         # @raise [UnexpectedResponse] on an unsuccessful response from the server
         def list
           resp = connection.get do |req|
@@ -24,7 +41,7 @@ module Dor
           return response_to_models(resp) if resp.success?
           return if resp.status == 404
 
-          raise UnexpectedResponse, ResponseErrorFormatter.format(response: resp, object_identifier: object_identifier)
+          raise_exception_based_on_response!(resp, object_identifier)
         end
 
         private

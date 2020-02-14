@@ -23,7 +23,7 @@ module Dor
 
           return response_to_models(resp) if resp.success?
 
-          raise UnexpectedResponse, ResponseErrorFormatter.format(response: resp)
+          raise_exception_based_on_response!(resp, object_identifier)
         end
 
         private
