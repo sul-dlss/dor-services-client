@@ -23,14 +23,14 @@ RSpec.describe Dor::Services::Client::Objects do
       let(:status) { 200 }
       let(:expected_request) do
         '{"type":"http://cocina.sul.stanford.edu/models/object.jsonld",' \
-        '"label":"My object","version":3,"access":{},' \
+        '"label":"My object","version":3,"access":{"access":"dark"},' \
         '"administrative":{"releaseTags":[],"hasAdminPolicy":null},' \
         '"description":{"title":[]},"identification":{},"structural":{}}'
       end
       let(:body) do
         '{"externalIdentifier":"druid:bc222dfg3333",' \
         '"type":"http://cocina.sul.stanford.edu/models/object.jsonld",' \
-        '"label":"My object","version":3,"access":{},' \
+        '"label":"My object","version":3,"access":{"access":"dark"},' \
         '"administrative":{"releaseTags":[],"hasAdminPolicy":null},' \
         '"description":{"title":[]},"identification":{},"structural":{}}'
       end
