@@ -64,6 +64,13 @@ module Dor
           Collections.new(parent_params).collections
         end
 
+        # Get a list of the members
+        # @raise [UnexpectedResponse] if the request is unsuccessful.
+        # @return [Array<Members::Member>]
+        def members
+          Members.new(parent_params).members
+        end
+
         # Publish an object (send to PURL)
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.

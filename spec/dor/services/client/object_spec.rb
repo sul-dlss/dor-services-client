@@ -34,6 +34,18 @@ RSpec.describe Dor::Services::Client::Object do
     end
   end
 
+  describe '#members' do
+    let(:members) { instance_double(Dor::Services::Client::Members, members: true) }
+    before do
+      allow(Dor::Services::Client::Members).to receive(:new).and_return(members)
+    end
+
+    it 'delegates to the Client::Members' do
+      client.members
+      expect(members).to have_received(:members)
+    end
+  end
+
   describe '#release_tags' do
     it 'returns an instance of Client::ReleaseTags' do
       expect(client.release_tags).to be_instance_of Dor::Services::Client::ReleaseTags
