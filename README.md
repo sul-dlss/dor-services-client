@@ -125,8 +125,11 @@ object_client.metadata.legacy_update(
 # Return the Cocina metadata
 object_client.find
 
-# Query for an objects collections
+# Query for an object's collections
 object_client.collections
+
+# Query for a collection's members
+object_client.members
 
 # View information about an object's files
 object_client.files.retrieve(filename: filename_string)
