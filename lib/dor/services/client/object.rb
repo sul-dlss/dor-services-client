@@ -91,6 +91,26 @@ module Dor
           raise_exception_based_on_response!(resp)
         end
 
+        # Start accession on an object (start specified workflow, assemblyWF by default, and version if needed)
+        # @raise [NotFoundResponse] when the response is a 404 (object not found)
+        # @raise [UnexpectedResponse] when the response is not successful.
+        # @param [Boolean] :assume_accessioned If true, does not check whether object has been accessioned.
+        # @param [String] :significance set significance (major/minor/patch) of version change
+        # @param [String] :description set description of version change
+        # @param [String] :opening_user_name add opening username to the events datastream
+        # @param [String] :workflow the workflow to start (defaults to 'assemblyWF')
+        # @return [boolean] true on success
+        def start_accession(params = {})
+          accession_path = "#{object_path}/start_accession"
+          resp = connection.post do |req|
+            req.url accession_path
+            req.params = params
+          end
+          return true if resp.success?
+
+          raise_exception_based_on_response!(resp)
+        end
+
         # Preserve an object (send to SDR)
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.

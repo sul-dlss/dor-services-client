@@ -193,6 +193,50 @@ RSpec.describe Dor::Services::Client::Object do
     end
   end
 
+  describe '#start_accession' do
+    subject(:request) { client.start_accession }
+
+    context 'with no params' do
+      before do
+        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/start_accession')
+          .to_return(status: status)
+      end
+
+      context 'when API request succeeds' do
+        let(:status) { 201 }
+
+        it 'returns true' do
+          expect(request).to eq true
+        end
+      end
+
+      context 'when API request fails' do
+        let(:status) { [500, 'internal server error'] }
+
+        it 'raises an error' do
+          expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
+                                            "internal server error: 500 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+        end
+      end
+    end
+
+    context 'with params' do
+      before do
+        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/start_accession?workflow=accessionWF&opening_user_name=dude')
+          .to_return(status: status)
+      end
+
+      context 'when API request succeeds' do
+        let(:status) { 201 }
+        let(:params) { { opening_user_name: 'dude', workflow: 'accessionWF' } }
+
+        it 'returns true' do
+          expect(client.start_accession(params)).to eq true
+        end
+      end
+    end
+  end
+
   describe '#preserve' do
     subject(:request) { client.preserve }
 
