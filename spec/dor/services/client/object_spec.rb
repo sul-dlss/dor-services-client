@@ -52,6 +52,12 @@ RSpec.describe Dor::Services::Client::Object do
     end
   end
 
+  describe '#administrative_tags' do
+    it 'returns an instance of Client::AdministrativeTags' do
+      expect(client.administrative_tags).to be_instance_of Dor::Services::Client::AdministrativeTags
+    end
+  end
+
   describe '#metadata' do
     it 'returns an instance of Client::Metadata' do
       expect(client.metadata).to be_instance_of Dor::Services::Client::Metadata

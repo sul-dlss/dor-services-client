@@ -135,6 +135,10 @@ object_client.members
 object_client.files.retrieve(filename: filename_string)
 object_client.files.list
 
+# Create and list administrative tags for an object
+object_client.administrative_tags.create(tags: ['Tag : One', 'Tag : Two'])
+object_client.administrative_tags.list
+
 # Create and list release tags for an object
 object_client.release_tags.create(release: release, what: what, to: to, who: who)
 object_client.release_tags.list
