@@ -91,7 +91,7 @@ object_client.publish(workflow: 'releaseWF')
 object_client.shelve
 
 # Start accessioning an object (intialize assemblyWF or specified workflow, and version object if needed)
-object_client.accession
+object_client.accession.start(**versioning_params)
 
 # Preserve an object (push to SDR)
 object_client.preserve
