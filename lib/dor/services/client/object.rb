@@ -47,6 +47,10 @@ module Dor
           @embargo ||= Embargo.new(parent_params)
         end
 
+        def accession(params = {})
+          @accession ||= Accession.new(parent_params.merge(params))
+        end
+
         # Retrieves the Cocina model
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
