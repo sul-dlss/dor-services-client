@@ -5,6 +5,8 @@ module Dor
     class Client
       # API calls that are about starting accessioning on a repository object
       class Accession < VersionedService
+        # @param connection [Faraday::Connection] an HTTP connection to dor-services-app
+        # @param version [String] id for the version of the API call
         # @param object_identifier [String] the pid for the object
         def initialize(connection:, version:, object_identifier:)
           super(connection: connection, version: version)
@@ -12,13 +14,14 @@ module Dor
         end
 
         # Start accession on an object (start specified workflow, assemblyWF by default, and version if needed)
+        # @param params [Hash<Symbol,String>] optional parameter hash
+        # @option params [String] :significance set significance (major/minor/patch) of version change
+        # @option params [String] :description set description of version change
+        # @option params [String] :opening_user_name add opening username to the events datastream
+        # @option params [String] :workflow the workflow to start (defaults to 'assemblyWF')
+        # @return [Boolean] true on success
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
-        # @param [String] :significance set significance (major/minor/patch) of version change
-        # @param [String] :description set description of version change
-        # @param [String] :opening_user_name add opening username to the events datastream
-        # @param [String] :workflow the workflow to start (defaults to 'assemblyWF')
-        # @return [boolean] true on success
         def start(params = {})
           resp = connection.post do |req|
             req.url path
