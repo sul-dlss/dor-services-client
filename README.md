@@ -138,8 +138,11 @@ object_client.members
 object_client.files.retrieve(filename: filename_string)
 object_client.files.list
 
-# Create and list administrative tags for an object
+# Create, update, destroy, and list administrative tags for an object
 object_client.administrative_tags.create(tags: ['Tag : One', 'Tag : Two'])
+object_client.administrative_tags.replace(tags: ['Tag : One', 'Tag : Two']) # like #create but removes current tags first
+object_client.administrative_tags.update(current: 'Current : Tag', new: 'Replacement : Tag')
+object_client.administrative_tags.destroy(tag: 'Delete : Me')
 object_client.administrative_tags.list
 
 # Create and list release tags for an object
