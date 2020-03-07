@@ -79,13 +79,19 @@ RSpec.describe Dor::Services::Client::Metadata do
   end
 
   describe '#legacy_update' do
-    context 'for descriptive' do
-      let(:params) { { descriptive: { updated: Time.find_zone('UTC').parse('2020-01-05'), content: '<descMetadata/>' } } }
+    context 'for many datastreams' do
+      let(:params) do
+        {
+          descriptive: { updated: Time.find_zone('UTC').parse('2020-01-05'), content: '<descMetadata/>' },
+          identity: { updated: Time.find_zone('UTC').parse('2020-01-05'), content: '<identityMetadata/>' }
+        }
+      end
 
       before do
         stub_request(:patch, 'https://dor-services.example.com/v1/objects/druid:1234/metadata/legacy')
           .with(
-            body: '{"descriptive":{"updated":"2020-01-05T00:00:00.000Z","content":"\u003cdescMetadata/\u003e"}}',
+            body: '{"descriptive":{"updated":"2020-01-05T00:00:00.000Z","content":"\\u003cdescMetadata/\\u003e"},' \
+                  '"identity":{"updated":"2020-01-05T00:00:00.000Z","content":"\\u003cidentityMetadata/\\u003e"}}',
             headers: { 'Content-Type' => 'application/json' }
           )
           .to_return(status: status)
@@ -95,6 +101,7 @@ RSpec.describe Dor::Services::Client::Metadata do
         let(:status) { 204 }
 
         it 'posts params as json' do
+          # byebug
           expect(client.legacy_update(params)).to be_nil
         end
       end
