@@ -21,19 +21,8 @@ RSpec.describe Dor::Services::Client::Objects do
 
     context 'when API request succeeds with a cocina model' do
       let(:status) { 200 }
-      let(:expected_request) do
-        '{"type":"http://cocina.sul.stanford.edu/models/object.jsonld",' \
-        '"label":"My object","version":3,"access":{"access":"dark"},' \
-        '"administrative":{"releaseTags":[],"hasAdminPolicy":null},' \
-        '"description":{"title":[]},"identification":{},"structural":{}}'
-      end
-      let(:body) do
-        '{"externalIdentifier":"druid:bc222dfg3333",' \
-        '"type":"http://cocina.sul.stanford.edu/models/object.jsonld",' \
-        '"label":"My object","version":3,"access":{"access":"dark"},' \
-        '"administrative":{"releaseTags":[],"hasAdminPolicy":null},' \
-        '"description":{"title":[]},"identification":{},"structural":{}}'
-      end
+      let(:expected_request) { model.to_json }
+      let(:body) { Cocina::Models::DRO.new(model.to_h.merge(externalIdentifier: 'druid:bc222dfg3333')).to_json }
       let(:model) { Cocina::Models::RequestDRO.new(properties) }
       let(:item_type) { Cocina::Models::Vocab.object }
 
