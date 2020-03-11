@@ -23,13 +23,14 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_dependency 'activesupport', '>= 4.2', '< 7'
-  spec.add_dependency 'cocina-models', '~> 0.26.0'
+  spec.add_dependency 'cocina-models', '~> 0.28'
   spec.add_dependency 'deprecation', '>= 0'
   spec.add_dependency 'faraday', '>= 0.15', '< 2'
   spec.add_dependency 'moab-versioning', '~> 4.0'
   spec.add_dependency 'zeitwerk', '~> 2.1'
 
   spec.add_development_dependency 'bundler'
+  spec.add_development_dependency 'byebug'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 3.0'
   spec.add_development_dependency 'rubocop', '~> 0.61.0'
