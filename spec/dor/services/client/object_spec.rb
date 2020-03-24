@@ -6,7 +6,7 @@ RSpec.describe Dor::Services::Client::Object do
   end
 
   let(:connection) { Dor::Services::Client.instance.send(:connection) }
-  let(:pid) { 'druid:1234' }
+  let(:pid) { 'druid:bc123df4567' }
 
   subject(:client) { described_class.new(connection: connection, version: 'v1', object_identifier: pid) }
 
@@ -98,7 +98,7 @@ RSpec.describe Dor::Services::Client::Object do
     subject(:model) { client.find }
 
     before do
-      stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:1234')
+      stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:bc123df4567')
         .to_return(status: status,
                    body: json)
     end
@@ -107,15 +107,16 @@ RSpec.describe Dor::Services::Client::Object do
       let(:json) do
         <<~JSON
           {
-            "externalIdentifier":"druid:12343234",
+            "externalIdentifier":"druid:bc123df4567",
             "type":"http://cocina.sul.stanford.edu/models/book.jsonld",
             "label":"my item",
             "version":1,
             "description":{
               "title": [
-                { "titleFull": "hey!", "primary":true }
+                { "value": "hey!", "type": "primary" }
               ]
-            }
+            },
+            "access":{}
           }
         JSON
       end
@@ -123,7 +124,7 @@ RSpec.describe Dor::Services::Client::Object do
       let(:status) { 200 }
 
       it 'returns the cocina model' do
-        expect(model.externalIdentifier).to eq 'druid:12343234'
+        expect(model.externalIdentifier).to eq 'druid:bc123df4567'
       end
     end
 
@@ -131,15 +132,16 @@ RSpec.describe Dor::Services::Client::Object do
       let(:json) do
         <<~JSON
           {
-            "externalIdentifier":"druid:12343234",
+            "externalIdentifier":"druid:bc123df4567",
             "type":"http://cocina.sul.stanford.edu/models/collection.jsonld",
             "label":"my item",
             "version":1,
             "description":{
               "title": [
-                { "titleFull": "hey!", "primary":true }
+                { "value": "hey!", "type": "primary" }
               ]
-            }
+            },
+            "access":{}
           }
         JSON
       end
@@ -147,7 +149,7 @@ RSpec.describe Dor::Services::Client::Object do
       let(:status) { 200 }
 
       it 'returns the cocina model' do
-        expect(model.externalIdentifier).to eq 'druid:12343234'
+        expect(model.externalIdentifier).to eq 'druid:bc123df4567'
       end
     end
   end
@@ -157,9 +159,9 @@ RSpec.describe Dor::Services::Client::Object do
     subject(:no_wf_request) { client.publish }
 
     before do
-      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/publish?workflow=accessionWF')
+      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/publish?workflow=accessionWF')
         .to_return(status: status, headers: { 'Location' => 'https://dor-services.example.com/v1/background_job_results/123' })
-      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/publish')
+      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/publish')
         .to_return(status: status, headers: { 'Location' => 'https://dor-services.example.com/v1/background_job_results/123' })
     end
 
@@ -203,7 +205,7 @@ RSpec.describe Dor::Services::Client::Object do
     subject(:request) { client.preserve }
 
     before do
-      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/preserve')
+      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/preserve')
         .to_return(status: status, headers: { 'Location' => 'https://dor-services.example.com/v1/background_job_results/123' })
     end
 
@@ -229,7 +231,7 @@ RSpec.describe Dor::Services::Client::Object do
     subject(:request) { client.shelve }
 
     before do
-      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/shelve')
+      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/shelve')
         .to_return(status: status, headers: { 'Location' => 'https://dor-services.example.com/v1/background_job_results/123' })
     end
 
@@ -264,7 +266,7 @@ RSpec.describe Dor::Services::Client::Object do
     subject(:request) { client.update_marc_record }
 
     before do
-      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/update_marc_record')
+      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/update_marc_record')
         .to_return(status: status)
     end
 
@@ -299,7 +301,7 @@ RSpec.describe Dor::Services::Client::Object do
     subject(:request) { client.refresh_metadata }
 
     before do
-      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/refresh_metadata')
+      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/refresh_metadata')
         .to_return(status: status)
     end
 
@@ -334,7 +336,7 @@ RSpec.describe Dor::Services::Client::Object do
     subject(:request) { client.notify_goobi }
 
     before do
-      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/notify_goobi')
+      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/notify_goobi')
         .to_return(status: status)
     end
 
