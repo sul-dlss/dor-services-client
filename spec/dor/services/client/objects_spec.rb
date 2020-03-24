@@ -42,20 +42,6 @@ RSpec.describe Dor::Services::Client::Objects do
       end
     end
 
-    context 'when API request succeeds with a hash' do
-      before do
-        allow(Deprecation).to receive(:warn)
-      end
-      let(:params) { { foo: 'bar' } }
-      let(:expected_request) { '{"foo":"bar"}' }
-      let(:status) { 200 }
-      let(:body) { '{"pid":"druid:bc123df4567"}' }
-
-      it 'posts params as json' do
-        expect(client.register(params: params)[:pid]).to eq 'druid:bc123df4567'
-      end
-    end
-
     context 'when API request fails' do
       before do
         allow(Deprecation).to receive(:warn)
