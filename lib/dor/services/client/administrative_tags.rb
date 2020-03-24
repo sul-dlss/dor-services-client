@@ -60,6 +60,22 @@ module Dor
           JSON.parse(resp.body)
         end
 
+        # Get content type from administrative tags for an object
+        #
+        # @raise [NotFoundResponse] when the response is a 404 (object not found)
+        # @raise [UnexpectedResponse] if the request is unsuccessful.
+        # @return [String,NilClass] content type string or nil if none found
+        def content_type
+          resp = connection.get do |req|
+            req.url "#{api_version}/objects/#{object_identifier}/administrative_tags"
+            req.params['content_type_only'] = true
+          end
+
+          raise_exception_based_on_response!(resp, object_identifier) unless resp.success?
+
+          JSON.parse(resp.body).first
+        end
+
         # Updates an administrative tag for an object
         #
         # @param current [String] current tag to update

@@ -144,6 +144,7 @@ object_client.administrative_tags.replace(tags: ['Tag : One', 'Tag : Two']) # li
 object_client.administrative_tags.update(current: 'Current : Tag', new: 'Replacement : Tag')
 object_client.administrative_tags.destroy(tag: 'Delete : Me')
 object_client.administrative_tags.list
+object_client.administrative_tags.content_type
 
 # Create and list release tags for an object
 object_client.release_tags.create(release: release, what: what, to: to, who: who)
