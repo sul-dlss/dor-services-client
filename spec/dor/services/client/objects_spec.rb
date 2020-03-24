@@ -22,7 +22,10 @@ RSpec.describe Dor::Services::Client::Objects do
     context 'when API request succeeds with a cocina model' do
       let(:status) { 200 }
       let(:expected_request) { model.to_json }
-      let(:body) { Cocina::Models::DRO.new(model.to_h.merge(externalIdentifier: 'druid:bc222dfg3333')).to_json }
+      let(:body) do
+        Cocina::Models::DRO.new(model.to_h.merge(externalIdentifier: 'druid:bc123df4567',
+                                                 access: {})).to_json
+      end
       let(:model) { Cocina::Models::RequestDRO.new(properties) }
       let(:item_type) { Cocina::Models::Vocab.object }
 
@@ -30,10 +33,7 @@ RSpec.describe Dor::Services::Client::Objects do
         {
           type: item_type,
           label: 'My object',
-          version: 3,
-          description: {
-            title: []
-          }
+          version: 3
         }
       end
 
@@ -49,10 +49,10 @@ RSpec.describe Dor::Services::Client::Objects do
       let(:params) { { foo: 'bar' } }
       let(:expected_request) { '{"foo":"bar"}' }
       let(:status) { 200 }
-      let(:body) { '{"pid":"druid:123"}' }
+      let(:body) { '{"pid":"druid:bc123df4567"}' }
 
       it 'posts params as json' do
-        expect(client.register(params: params)[:pid]).to eq 'druid:123'
+        expect(client.register(params: params)[:pid]).to eq 'druid:bc123df4567'
       end
     end
 

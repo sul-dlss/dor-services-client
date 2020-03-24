@@ -18,15 +18,16 @@ RSpec.describe Dor::Services::Client::Collections do
         <<~JSON
           {
             "collections":[{
-              "externalIdentifier":"druid:12343234",
+              "externalIdentifier":"druid:bc123df4567",
               "type":"http://cocina.sul.stanford.edu/models/collection.jsonld",
               "label":"my collection",
               "version":1,
               "description":{
                 "title": [
-                  { "titleFull": "hey!", "primary":true }
+                  { "value": "hey!", "type": "primary" }
                 ]
-              }
+              },
+              "access": {}
             }]
           }
         JSON
@@ -37,7 +38,7 @@ RSpec.describe Dor::Services::Client::Collections do
       end
 
       it 'returns collections' do
-        expect(collections.first.externalIdentifier).to eq 'druid:12343234'
+        expect(collections.first.externalIdentifier).to eq 'druid:bc123df4567'
       end
     end
 
