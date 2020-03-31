@@ -9,6 +9,19 @@ RSpec.describe Dor::Services::Client::Objects do
 
   subject(:client) { described_class.new(connection: connection, version: 'v1') }
 
+  let(:model) { Cocina::Models::RequestDRO.new(properties) }
+  let(:item_type) { Cocina::Models::Vocab.object }
+
+  let(:properties) do
+    {
+      type: item_type,
+      label: 'My object',
+      version: 3
+    }
+  end
+
+  let(:expected_request) { model.to_json }
+
   describe '#register' do
     before do
       stub_request(:post, 'https://dor-services.example.com/v1/objects')
@@ -21,20 +34,9 @@ RSpec.describe Dor::Services::Client::Objects do
 
     context 'when API request succeeds with a cocina model' do
       let(:status) { 200 }
-      let(:expected_request) { model.to_json }
       let(:body) do
         Cocina::Models::DRO.new(model.to_h.merge(externalIdentifier: 'druid:bc123df4567',
                                                  access: {})).to_json
-      end
-      let(:model) { Cocina::Models::RequestDRO.new(properties) }
-      let(:item_type) { Cocina::Models::Vocab.object }
-
-      let(:properties) do
-        {
-          type: item_type,
-          label: 'My object',
-          version: 3
-        }
       end
 
       it 'posts params as json' do
@@ -43,17 +45,23 @@ RSpec.describe Dor::Services::Client::Objects do
     end
 
     context 'when API request fails' do
-      before do
-        allow(Deprecation).to receive(:warn)
-      end
-      let(:params) { { foo: 'bar' } }
-      let(:expected_request) { '{"foo":"bar"}' }
-      let(:status) { [409, 'object already exists'] }
-      let(:body) { nil }
+      context 'when an unexpected response' do
+        let(:status) { [409, 'object already exists'] }
+        let(:body) { nil }
 
-      it 'raises an error' do
-        expect { client.register(params: params) }.to raise_error(Dor::Services::Client::UnexpectedResponse,
-                                                                  "object already exists: 409 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+        it 'raises an error' do
+          expect { client.register(params: model) }.to raise_error(Dor::Services::Client::UnexpectedResponse,
+                                                                   "object already exists: 409 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+        end
+      end
+
+      context 'when an unauthorized response' do
+        let(:status) { [401, 'unauthorized'] }
+        let(:body) { nil }
+
+        it 'raises an error' do
+          expect { client.register(params: model) }.to raise_error(Dor::Services::Client::UnauthorizedResponse)
+        end
       end
     end
   end

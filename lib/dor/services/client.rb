@@ -31,6 +31,9 @@ module Dor
       # this could be any 4xx or 5xx status
       class UnexpectedResponse < Error; end
 
+      # Error that is raised when the remote server returns a 401 Unauthorized
+      class UnauthorizedResponse < UnexpectedResponse; end
+
       # Error that is raised when the remote server returns some unparsable response
       class MalformedResponse < Error; end
 

@@ -20,7 +20,15 @@ module Dor
         attr_reader :connection, :api_version
 
         def raise_exception_based_on_response!(response, object_identifier = nil)
-          raise (response.status == 404 ? NotFoundResponse : UnexpectedResponse),
+          exception_class = case response.status
+                            when 404
+                              NotFoundResponse
+                            when 401
+                              UnauthorizedResponse
+                            else
+                              UnexpectedResponse
+                            end
+          raise exception_class,
                 ResponseErrorFormatter.format(response: response, object_identifier: object_identifier)
         end
       end
