@@ -155,11 +155,11 @@ RSpec.describe Dor::Services::Client::Object do
   end
 
   describe '#publish' do
-    subject(:request) { client.publish(workflow: 'accessionWF') }
+    subject(:request) { client.publish(workflow: 'accessionWF', lane_id: 'low') }
     subject(:no_wf_request) { client.publish }
 
     before do
-      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/publish?workflow=accessionWF')
+      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/publish?workflow=accessionWF&lane-id=low')
         .to_return(status: status, headers: { 'Location' => 'https://dor-services.example.com/v1/background_job_results/123' })
       stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/publish')
         .to_return(status: status, headers: { 'Location' => 'https://dor-services.example.com/v1/background_job_results/123' })
@@ -202,10 +202,10 @@ RSpec.describe Dor::Services::Client::Object do
   end
 
   describe '#preserve' do
-    subject(:request) { client.preserve }
+    subject(:request) { client.preserve(lane_id: 'low') }
 
     before do
-      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/preserve')
+      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/preserve?lane-id=low')
         .to_return(status: status, headers: { 'Location' => 'https://dor-services.example.com/v1/background_job_results/123' })
     end
 
@@ -228,10 +228,10 @@ RSpec.describe Dor::Services::Client::Object do
   end
 
   describe '#shelve' do
-    subject(:request) { client.shelve }
+    subject(:request) { client.shelve(lane_id: 'low') }
 
     before do
-      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/shelve')
+      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/shelve?lane-id=low')
         .to_return(status: status, headers: { 'Location' => 'https://dor-services.example.com/v1/background_job_results/123' })
     end
 
