@@ -83,10 +83,15 @@ module Dor
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
         # @param [String] workflow ('accessionWF') which workflow to callback to.
+        # @param [String] lane_id for prioritization (default or low)
         # @return [boolean] true on success
-        def publish(workflow: nil)
-          publish_path = "#{object_path}/publish"
-          publish_path = "#{publish_path}?workflow=#{workflow}" if workflow
+        def publish(workflow: nil, lane_id: nil)
+          query_params = [].tap do |params|
+            params << "workflow=#{workflow}" if workflow
+            params << "lane-id=#{lane_id}" if lane_id
+          end
+          query_string = query_params.any? ? "?#{query_params.join('&')}" : ''
+          publish_path = "#{object_path}/publish#{query_string}"
           resp = connection.post do |req|
             req.url publish_path
           end
@@ -98,10 +103,12 @@ module Dor
         # Preserve an object (send to SDR)
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
+        # @param [String] lane_id for prioritization (default or low)
         # @return [String] URL from Location response header if no errors
-        def preserve
+        def preserve(lane_id: nil)
+          query_string = lane_id ? "?lane-id=#{lane_id}" : ''
           resp = connection.post do |req|
-            req.url "#{object_path}/preserve"
+            req.url "#{object_path}/preserve#{query_string}"
           end
           return resp.headers['Location'] if resp.success?
 
@@ -111,10 +118,12 @@ module Dor
         # Shelve an object (send to Stacks)
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
+        # @param [String] lane_id for prioritization (default or low)
         # @return [boolean] true on success
-        def shelve
+        def shelve(lane_id: nil)
+          query_string = lane_id ? "?lane-id=#{lane_id}" : ''
           resp = connection.post do |req|
-            req.url "#{object_path}/shelve"
+            req.url "#{object_path}/shelve#{query_string}"
           end
           return resp.headers['Location'] if resp.success?
 
