@@ -65,6 +65,25 @@ module Dor
           raise_exception_based_on_response!(resp)
         end
 
+        # Updates the object
+        # @param [Cocina::Models::RequestDRO,Cocina::Models::RequestCollection,Cocina::Models::RequestAPO] params model object
+        # @raise [NotFoundResponse] when the response is a 404 (object not found)
+        # @raise [UnexpectedResponse] when the response is not successful.
+        # @return [Cocina::Models::DRO,Cocina::Models::Collection,Cocina::Models::AdminPolicy] the returned model
+        def update(params:)
+          resp = connection.patch do |req|
+            req.url object_path
+            req.headers['Content-Type'] = 'application/json'
+            # asking the service to return JSON (else it'll be plain text)
+            req.headers['Accept'] = 'application/json'
+            req.body = params.to_json
+          end
+
+          return Cocina::Models.build(JSON.parse(resp.body)) if resp.success?
+
+          raise_exception_based_on_response!(resp)
+        end
+
         # Get a list of the collections. (Similar to Valkyrie's find_inverse_references_by)
         # @raise [UnexpectedResponse] if the request is unsuccessful.
         # @return [Array<Cocina::Models::DRO>]

@@ -84,6 +84,9 @@ marcxml_client.marcxml(catkey: '987654321')
 # For performing operations on a known, registered object
 object_client = Dor::Services::Client.object(object_identifier)
 
+# Update an object
+object_client.update(params: dro)
+
 # Publish an object (push to PURL)
 object_client.publish(workflow: 'releaseWF', lane_id: 'low')
 

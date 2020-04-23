@@ -154,6 +154,47 @@ RSpec.describe Dor::Services::Client::Object do
     end
   end
 
+  describe '#update' do
+    subject(:model) { client.update(params: dro) }
+
+    let(:dro) { Cocina::Models::DRO.new(JSON.parse(json)) }
+
+    before do
+      stub_request(:patch, 'https://dor-services.example.com/v1/objects/druid:bc123df4567')
+        .with(
+          body: dro.to_json,
+          headers: { 'Content-Type' => 'application/json', 'Accept' => 'application/json' }
+        )
+        .to_return(status: status,
+                   body: json)
+    end
+
+    context 'when API request succeeds with DRO' do
+      let(:json) do
+        <<~JSON
+          {
+            "externalIdentifier":"druid:bc123df4567",
+            "type":"http://cocina.sul.stanford.edu/models/book.jsonld",
+            "label":"my item",
+            "version":1,
+            "description":{
+              "title": [
+                { "value": "hey!", "type": "primary" }
+              ]
+            },
+            "access":{ "access": "dark", "download": "none" }
+          }
+        JSON
+      end
+
+      let(:status) { 200 }
+
+      it 'returns the cocina model' do
+        expect(model.externalIdentifier).to eq 'druid:bc123df4567'
+      end
+    end
+  end
+
   describe '#publish' do
     subject(:request) { client.publish(workflow: 'accessionWF', lane_id: 'low') }
     subject(:no_wf_request) { client.publish }
