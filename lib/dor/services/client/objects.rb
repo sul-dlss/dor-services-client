@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 require 'deprecation'
-require 'active_support/json'
-require 'active_support/core_ext/object/json'
 
 module Dor
   module Services
@@ -11,7 +9,7 @@ module Dor
       class Objects < VersionedService
         # Creates a new object in DOR
         # @param [Cocina::Models::RequestDRO,Cocina::Models::RequestCollection,Cocina::Models::RequestAPO]
-        # @return [HashWithIndifferentAccess] the response, which includes a :pid
+        # @return [Cocina::Models::RequestDRO,Cocina::Models::RequestCollection,Cocina::Models::RequestAPO] the returned model
         def register(params:)
           json_str = register_response(params: params)
           json = JSON.parse(json_str)
