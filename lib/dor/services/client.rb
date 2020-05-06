@@ -79,9 +79,11 @@ module Dor
       class << self
         # @param [String] url the base url of the endpoint the client should connect to (required)
         # @param [String] token a bearer token for HTTP authentication (required)
-        def configure(url:, token:)
+        # @param [Boolean] enable_get_retries retries get requests on errors
+        def configure(url:, token:, enable_get_retries: false)
           instance.url = url
           instance.token = token
+          instance.enable_get_retries = enable_get_retries
 
           # Force connection to be re-established when `.configure` is called
           instance.connection = nil
@@ -92,18 +94,22 @@ module Dor
         delegate :background_job_results, :marcxml, :objects, :object, :virtual_objects, to: :instance
       end
 
-      attr_writer :url, :token, :connection
+      attr_writer :url, :token, :connection, :enable_get_retries
 
       private
 
-      attr_reader :token
+      attr_reader :token, :enable_get_retries
 
       def url
         @url || raise(Error, 'url has not yet been configured')
       end
 
       def connection
-        @connection ||= Faraday.new(url) do |builder|
+        @connection ||= ConnectionWrapper.new(connection: build_connection, get_connection: build_connection(with_retries: enable_get_retries))
+      end
+
+      def build_connection(with_retries: false)
+        Faraday.new(url) do |builder|
           builder.use ErrorFaradayMiddleware
           builder.use Faraday::Request::UrlEncoded
 
@@ -113,6 +119,10 @@ module Dor
           builder.adapter Faraday.default_adapter
           builder.headers[:user_agent] = user_agent
           builder.headers[TOKEN_HEADER] = "Bearer #{token}"
+          if with_retries
+            builder.request :retry, max: 4, interval: 1,
+                                    backoff_factor: 2, exceptions: ['Faraday::Error', 'Timeout::Error']
+          end
         end
       end
 

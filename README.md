@@ -40,11 +40,16 @@ private
 
 def client
   @client ||= Dor::Services::Client.configure(url: Settings.dor_services.url,
-                                              token: Settings.dor_services.token)
+                                              token: Settings.dor_services.token,
+                                              enable_get_retries: true)
 end
 ```
 
-Note that the client may **not** be used without first having been configured, and the `url` keyword is **required**. The `token` argument is optional (though when using the client with staging and production servers, you will always need to supply it in practice). For more about dor-services-app's token-based authentication, see [its README](https://github.com/sul-dlss/dor-services-app#authentication).
+Note:
+* The client may **not** be used without first having been configured
+* The `url` keyword is **required**.
+* The `token` argument is optional (though when using the client with staging and production servers, you will always need to supply it in practice). For more about dor-services-app's token-based authentication, see [its README](https://github.com/sul-dlss/dor-services-app#authentication).
+* The `enable_get_retries` argument is optional. When enabled, it will perform retries of `GET` requests only. This should only be used in situations in which blocking is not an issue, e.g., an asynchronous job.
 
 ## API Coverage
 
