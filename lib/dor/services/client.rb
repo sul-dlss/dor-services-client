@@ -56,6 +56,11 @@ module Dor
         @object = Object.new(connection: connection, version: DEFAULT_VERSION, object_identifier: object_identifier)
       end
 
+      # @return [Dor::Services::Client::AdministrativeTagSearch] an instance of the `Client::AdministrativeTagSearch` class
+      def administrative_tags
+        @administrative_tags ||= AdministrativeTagSearch.new(connection: connection, version: DEFAULT_VERSION)
+      end
+
       # @return [Dor::Services::Client::Objects] an instance of the `Client::Objects` class
       def objects
         @objects ||= Objects.new(connection: connection, version: DEFAULT_VERSION)
@@ -91,7 +96,8 @@ module Dor
           self
         end
 
-        delegate :background_job_results, :marcxml, :objects, :object, :virtual_objects, to: :instance
+        delegate :background_job_results, :marcxml, :objects, :object,
+                 :virtual_objects, :administrative_tags, to: :instance
       end
 
       attr_writer :url, :token, :connection, :enable_get_retries

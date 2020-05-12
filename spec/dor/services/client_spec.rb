@@ -73,6 +73,15 @@ RSpec.describe Dor::Services::Client do
         expect(described_class.background_job_results).to eq described_class.background_job_results
       end
     end
+
+    describe '.administrative_tags' do
+      subject { described_class.administrative_tags }
+      it { is_expected.to be_instance_of Dor::Services::Client::AdministrativeTagSearch }
+
+      it 'returns the memoized instance when called again' do
+        expect(described_class.administrative_tags).to eq described_class.administrative_tags
+      end
+    end
   end
 
   describe '#configure' do

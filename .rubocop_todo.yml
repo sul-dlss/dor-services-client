@@ -32,5 +32,5 @@ Style/Documentation:
 # Cop supports --auto-correct.
 # Configuration parameters: AutoCorrect, AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
 # URISchemes: http, https
-Layout/LineLength:
+Metrics/LineLength:
   Max: 164

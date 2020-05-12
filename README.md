@@ -169,6 +169,9 @@ object_client.workspace.reset
 
 # Update embargo
 object_client.embargo.update(embargo_date: date_string, requesting_user: username_string)
+
+# Search for administrative tags:
+Dor::Services::Client.administrative_tags.search(q: 'Project')
 ```
 
 ## Asynchronous results
