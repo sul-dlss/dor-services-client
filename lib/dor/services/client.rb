@@ -125,10 +125,7 @@ module Dor
           builder.adapter Faraday.default_adapter
           builder.headers[:user_agent] = user_agent
           builder.headers[TOKEN_HEADER] = "Bearer #{token}"
-          if with_retries
-            builder.request :retry, max: 4, interval: 1,
-                                    backoff_factor: 2, exceptions: ['Faraday::Error', 'Timeout::Error']
-          end
+          builder.request :retry, max: 4, interval: 1, backoff_factor: 2 if with_retries
         end
       end
 
