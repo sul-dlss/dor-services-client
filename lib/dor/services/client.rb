@@ -36,6 +36,9 @@ module Dor
       # Error that is raised when the remote server returns a 401 Unauthorized
       class UnauthorizedResponse < UnexpectedResponse; end
 
+      # Error that is raised when the remote server returns a 409 Conflict
+      class ConflictResponse < UnexpectedResponse; end
+
       # Error that is raised when the remote server returns some unparsable response
       class MalformedResponse < Error; end
 

@@ -50,7 +50,7 @@ RSpec.describe Dor::Services::Client::Objects do
         let(:body) { nil }
 
         it 'raises an error' do
-          expect { client.register(params: model) }.to raise_error(Dor::Services::Client::UnexpectedResponse,
+          expect { client.register(params: model) }.to raise_error(Dor::Services::Client::ConflictResponse,
                                                                    "object already exists: 409 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
         end
       end

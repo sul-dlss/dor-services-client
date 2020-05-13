@@ -19,18 +19,22 @@ module Dor
 
         attr_reader :connection, :api_version
 
+        # rubocop:disable Metrics/MethodLength
         def raise_exception_based_on_response!(response, object_identifier = nil)
           exception_class = case response.status
                             when 404
                               NotFoundResponse
                             when 401
                               UnauthorizedResponse
+                            when 409
+                              ConflictResponse
                             else
                               UnexpectedResponse
                             end
           raise exception_class,
                 ResponseErrorFormatter.format(response: response, object_identifier: object_identifier)
         end
+        # rubocop:enable Metrics/MethodLength
       end
     end
   end
