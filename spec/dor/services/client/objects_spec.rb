@@ -16,7 +16,8 @@ RSpec.describe Dor::Services::Client::Objects do
     {
       type: item_type,
       label: 'My object',
-      version: 3
+      version: 3,
+      identification: { sourceId: 'sul:99999' }
     }
   end
 
