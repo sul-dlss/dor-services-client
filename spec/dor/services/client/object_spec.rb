@@ -16,12 +16,6 @@ RSpec.describe Dor::Services::Client::Object do
     end
   end
 
-  describe '#files' do
-    it 'returns an instance of Client::Files' do
-      expect(client.files).to be_instance_of Dor::Services::Client::Files
-    end
-  end
-
   describe '#collections' do
     let(:collections) { instance_double(Dor::Services::Client::Collections, collections: true) }
     before do

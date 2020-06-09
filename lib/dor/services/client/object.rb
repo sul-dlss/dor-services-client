@@ -23,10 +23,6 @@ module Dor
           @events ||= Events.new(**parent_params)
         end
 
-        def files
-          @files ||= Files.new(**parent_params)
-        end
-
         def workspace
           @workspace ||= Workspace.new(**parent_params)
         end

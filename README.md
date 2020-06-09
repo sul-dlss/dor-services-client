@@ -142,10 +142,6 @@ object_client.collections
 # Query for a collection's members
 object_client.members
 
-# View information about an object's files
-object_client.files.retrieve(filename: filename_string)
-object_client.files.list
-
 # Create, update, destroy, and list administrative tags for an object
 object_client.administrative_tags.create(tags: ['Tag : One', 'Tag : Two'])
 object_client.administrative_tags.replace(tags: ['Tag : One', 'Tag : Two']) # like #create but removes current tags first
