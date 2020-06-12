@@ -83,7 +83,8 @@ RSpec.describe Dor::Services::Client::Metadata do
       let(:params) do
         {
           descriptive: { updated: Time.find_zone('UTC').parse('2020-01-05'), content: '<descMetadata/>' },
-          identity: { updated: Time.find_zone('UTC').parse('2020-01-05'), content: '<identityMetadata/>' }
+          identity: { updated: Time.find_zone('UTC').parse('2020-01-05'), content: '<identityMetadata/>' },
+          geo: { updated: Time.find_zone('UTC').parse('2020-01-05'), content: '<geoMetadata/>' }
         }
       end
 
@@ -91,7 +92,8 @@ RSpec.describe Dor::Services::Client::Metadata do
         stub_request(:patch, 'https://dor-services.example.com/v1/objects/druid:1234/metadata/legacy')
           .with(
             body: '{"descriptive":{"updated":"2020-01-05T00:00:00.000Z","content":"\\u003cdescMetadata/\\u003e"},' \
-                  '"identity":{"updated":"2020-01-05T00:00:00.000Z","content":"\\u003cidentityMetadata/\\u003e"}}',
+                  '"identity":{"updated":"2020-01-05T00:00:00.000Z","content":"\\u003cidentityMetadata/\\u003e"},' \
+                  '"geo":{"updated":"2020-01-05T00:00:00.000Z","content":"\\u003cgeoMetadata/\\u003e"}}',
             headers: { 'Content-Type' => 'application/json' }
           )
           .to_return(status: status)
