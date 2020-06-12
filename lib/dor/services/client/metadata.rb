@@ -21,10 +21,11 @@ module Dor
         # @option opts [Hash] :identity Data for identity metadata
         # @option opts [Hash] :technical Data for technical metadata
         # @option opts [Hash] :provenance Data for provenance metadata
+        # @option opts [Hash] :geo Data for geographic metadata
         # @example:
         #  legacy_update(descriptive: { updated: '2001-12-20', content: '<descMetadata />' })
         def legacy_update(opts)
-          opts = opts.slice(:descriptive, :rights, :identity, :content, :technical, :provenance)
+          opts = opts.slice(:descriptive, :rights, :identity, :content, :technical, :provenance, :geo)
           resp = connection.patch do |req|
             req.url "#{base_path}/legacy"
             req.headers['Content-Type'] = 'application/json'
