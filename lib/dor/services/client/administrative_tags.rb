@@ -49,7 +49,7 @@ module Dor
         #
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] if the request is unsuccessful.
-        # @return [Hash]
+        # @return [Array<String>]
         def list
           resp = connection.get do |req|
             req.url "#{api_version}/objects/#{object_identifier}/administrative_tags"
