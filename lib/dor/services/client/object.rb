@@ -16,39 +16,39 @@ module Dor
         end
 
         def metadata
-          @metadata ||= Metadata.new(parent_params)
+          @metadata ||= Metadata.new(**parent_params)
         end
 
         def events
-          @events ||= Events.new(parent_params)
+          @events ||= Events.new(**parent_params)
         end
 
         def files
-          @files ||= Files.new(parent_params)
+          @files ||= Files.new(**parent_params)
         end
 
         def workspace
-          @workspace ||= Workspace.new(parent_params)
+          @workspace ||= Workspace.new(**parent_params)
         end
 
         def release_tags
-          @release_tags ||= ReleaseTags.new(parent_params)
+          @release_tags ||= ReleaseTags.new(**parent_params)
         end
 
         def administrative_tags
-          @administrative_tags ||= AdministrativeTags.new(parent_params)
+          @administrative_tags ||= AdministrativeTags.new(**parent_params)
         end
 
         def version
-          @version ||= ObjectVersion.new(parent_params)
+          @version ||= ObjectVersion.new(**parent_params)
         end
 
         def embargo
-          @embargo ||= Embargo.new(parent_params)
+          @embargo ||= Embargo.new(**parent_params)
         end
 
         def accession(params = {})
-          @accession ||= Accession.new(parent_params.merge(params))
+          @accession ||= Accession.new(**parent_params.merge(params))
         end
 
         # Retrieves the Cocina model
@@ -88,14 +88,14 @@ module Dor
         # @raise [UnexpectedResponse] if the request is unsuccessful.
         # @return [Array<Cocina::Models::DRO>]
         def collections
-          Collections.new(parent_params).collections
+          Collections.new(**parent_params).collections
         end
 
         # Get a list of the members
         # @raise [UnexpectedResponse] if the request is unsuccessful.
         # @return [Array<Members::Member>]
         def members
-          Members.new(parent_params).members
+          Members.new(**parent_params).members
         end
 
         # Publish an object (send to PURL)
