@@ -29,7 +29,7 @@ RSpec.describe Dor::Services::Client::Embargo do
       let(:status) { 204 }
 
       it 'posts params as json' do
-        expect(client.update(params)).to be_nil
+        expect(client.update(**params)).to be_nil
       end
     end
 
@@ -37,7 +37,7 @@ RSpec.describe Dor::Services::Client::Embargo do
       let(:status) { [404, 'not found'] }
 
       it 'raises an error' do
-        expect { client.update(params) }.to(
+        expect { client.update(**params) }.to(
           raise_error(Dor::Services::Client::NotFoundResponse,
                       "not found: 404 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY}) for druid:1234")
         )
