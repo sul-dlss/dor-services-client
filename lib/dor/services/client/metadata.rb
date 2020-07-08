@@ -16,6 +16,7 @@ module Dor
         # Updates using the legacy SDR/Fedora3 metadata
         # @param [Hash<Symbol,Hash>] opts the options for legacy update
         # @option opts [Hash] :descriptive Data for descriptive metadata
+        # @option opts [Hash] :embargo Data for embargo metadata
         # @option opts [Hash] :rights Data for access rights metadata
         # @option opts [Hash] :content Data for structural metadata
         # @option opts [Hash] :identity Data for identity metadata
@@ -25,7 +26,7 @@ module Dor
         # @example:
         #  legacy_update(descriptive: { updated: '2001-12-20', content: '<descMetadata />' })
         def legacy_update(opts)
-          opts = opts.slice(:descriptive, :rights, :identity, :content, :technical, :provenance, :geo)
+          opts = opts.slice(:descriptive, :embargo, :rights, :identity, :content, :technical, :provenance, :geo)
           resp = connection.patch do |req|
             req.url "#{base_path}/legacy"
             req.headers['Content-Type'] = 'application/json'
