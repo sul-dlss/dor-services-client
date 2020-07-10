@@ -17,6 +17,7 @@ RSpec.describe Dor::Services::Client::Objects do
       type: item_type,
       label: 'My object',
       version: 3,
+      administrative: { hasAdminPolicy: 'druid:fv123df4567' },
       identification: { sourceId: 'sul:99999' }
     }
   end

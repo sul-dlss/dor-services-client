@@ -111,6 +111,9 @@ RSpec.describe Dor::Services::Client::Object do
             "type":"http://cocina.sul.stanford.edu/models/book.jsonld",
             "label":"my item",
             "version":1,
+            "administrative":{
+              "hasAdminPolicy":"druid:fv123df4567"
+            },
             "description":{
               "title": [
                 { "value": "hey!", "type": "primary" }
@@ -177,6 +180,9 @@ RSpec.describe Dor::Services::Client::Object do
             "type":"http://cocina.sul.stanford.edu/models/book.jsonld",
             "label":"my item",
             "version":1,
+            "administrative":{
+              "hasAdminPolicy":"druid:fv123df4567"
+            },
             "description":{
               "title": [
                 { "value": "hey!", "type": "primary" }
