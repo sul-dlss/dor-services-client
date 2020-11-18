@@ -117,7 +117,7 @@ object_client.notify_goobi
 object_client.version.current
 object_client.version.openable?(**params)
 object_client.version.open(**params)
-object_client.version.close(**params)
+object_client.version.close(description: 'Changed title', significance: 'minor')
 
 # Get the Dublin Core XML representation
 object_client.metadata.dublin_core
