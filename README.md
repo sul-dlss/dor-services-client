@@ -53,7 +53,7 @@ Note:
 
 ## API Coverage
 
-Dor::Services:Client provides a number of methods to simplify connecting to the RESTful HTTP API of dor-services-app. In this section we list all of the available methods, reflecting how much of the API the client covers. For details see the [API docs](https://www.rubydoc.info/github/sul-dlss/dor-services-client/master/Dor/Services/Client)
+Dor::Services:Client provides a number of methods to simplify connecting to the RESTful HTTP API of dor-services-app. In this section we list all of the available methods, reflecting how much of the API the client covers. For details see the [API docs](https://www.rubydoc.info/github/sul-dlss/dor-services-client/main/Dor/Services/Client)
 
 ```ruby
 # Perform operations on one or more objects
