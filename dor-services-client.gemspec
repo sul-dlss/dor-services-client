@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_dependency 'activesupport', '>= 4.2', '< 7'
-  spec.add_dependency 'cocina-models', '~> 0.45.0' # leave pinned to patch level until cocina-models hits 1.0
+  spec.add_dependency 'cocina-models', '~> 0.46.0' # leave pinned to patch level until cocina-models hits 1.0
   spec.add_dependency 'deprecation', '>= 0'
   spec.add_dependency 'faraday', '>= 0.15', '< 2'
   spec.add_dependency 'moab-versioning', '~> 4.0'
