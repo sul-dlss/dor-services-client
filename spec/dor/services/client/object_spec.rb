@@ -151,6 +151,49 @@ RSpec.describe Dor::Services::Client::Object do
     end
   end
 
+  describe '#find_with_metadata' do
+    subject(:response) { client.find_with_metadata }
+
+    before do
+      stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:bc123df4567')
+        .to_return(status: status,
+                   headers: {
+                     'Last-Modified' => 'Wed, 03 Mar 2021 18:58:00 GMT',
+                     'X-Served-By' => 'Awesome webserver'
+                   },
+                   body: json)
+    end
+
+    context 'when API request succeeds with DRO' do
+      let(:json) do
+        <<~JSON
+          {
+            "externalIdentifier":"druid:bc123df4567",
+            "type":"http://cocina.sul.stanford.edu/models/book.jsonld",
+            "label":"my item",
+            "version":1,
+            "administrative":{
+              "hasAdminPolicy":"druid:fv123df4567"
+            },
+            "description":{
+              "title": [
+                { "value": "hey!", "type": "primary" }
+              ]
+            },
+            "access":{}
+          }
+        JSON
+      end
+
+      let(:status) { 200 }
+
+      it 'returns the cocina model' do
+        expect(response.first.externalIdentifier).to eq 'druid:bc123df4567'
+        expect(response[1]).to eq('Last-Modified' => 'Wed, 03 Mar 2021 18:58:00 GMT')
+      end
+    end
+  end
+
   describe '#update' do
     subject(:model) { client.update(params: dro) }
 
