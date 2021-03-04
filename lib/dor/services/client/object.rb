@@ -52,13 +52,25 @@ module Dor
         # @raise [UnexpectedResponse] when the response is not successful.
         # @return [Cocina::Models::DRO,Cocina::Models::Collection,Cocina::Models::AdminPolicy] the returned model
         def find
+          find_with_metadata.first
+        end
+
+        # Retrieves the Cocina model and response metadata
+        # @raise [NotFoundResponse] when the response is a 404 (object not found)
+        # @raise [UnexpectedResponse] when the response is not successful.
+        # @return [Array<Cocina::Models::DRO,Cocina::Models::Collection,Cocina::Models::AdminPolicy,Hash>] a tuple where
+        #          the first is the model and the second is a hash of metadata
+        def find_with_metadata
           resp = connection.get do |req|
             req.url object_path
           end
+          raise_exception_based_on_response!(resp) unless resp.success?
 
-          return Cocina::Models.build(JSON.parse(resp.body)) if resp.success?
+          model = Cocina::Models.build(JSON.parse(resp.body))
 
-          raise_exception_based_on_response!(resp)
+          # Don't use #slice here as Faraday will downcase the keys.
+          metadata = { 'Last-Modified' => resp.headers['Last-Modified'] }
+          [model, metadata]
         end
 
         # Updates the object
