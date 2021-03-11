@@ -51,11 +51,23 @@ module Dor
           raise_exception_based_on_response!(resp, object_identifier)
         end
 
-        # @return [String, NilClass] The descriptive metadata XML representation of the object or nil if response is 404
+        # @return [String, NilClass] The public descriptive metadata XML representation of the object or nil if response is 404
         # @raise [UnexpectedResponse] on an unsuccessful response from the server
         def descriptive
           resp = connection.get do |req|
             req.url "#{base_path}/descriptive"
+          end
+          return resp.body if resp.success?
+          return if resp.status == 404
+
+          raise_exception_based_on_response!(resp, object_identifier)
+        end
+
+        # @return [String, NilClass] the dor object's source MODS XML or nil if response is 404
+        # @raise [UnexpectedResponse] on an unsuccessful response from the server
+        def mods
+          resp = connection.get do |req|
+            req.url "#{base_path}/mods"
           end
           return resp.body if resp.success?
           return if resp.status == 404
