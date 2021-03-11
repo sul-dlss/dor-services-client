@@ -416,6 +416,45 @@ RSpec.describe Dor::Services::Client::Object do
     end
   end
 
+  describe '#destroy' do
+    subject(:request) { client.destroy }
+
+    context 'when API request succeeds' do
+      before do
+        stub_request(:delete, 'https://dor-services.example.com/v1/objects/druid:bc123df4567')
+          .to_return(status: 204)
+      end
+
+      it 'when API request succeeds' do
+        expect(request).to be true
+      end
+    end
+
+    context 'when API request fails because of not found' do
+      before do
+        stub_request(:delete, 'https://dor-services.example.com/v1/objects/druid:bc123df4567')
+          .to_return(status: [404, 'object not found'])
+      end
+
+      it 'raises an error' do
+        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse,
+                                          "object not found: 404 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY}) for druid:bc123df4567")
+      end
+    end
+
+    context 'when API request fails due to unexpected response' do
+      before do
+        stub_request(:delete, 'https://dor-services.example.com/v1/objects/druid:bc123df4567')
+          .to_return(status: [500, 'something is amiss'])
+      end
+
+      it 'raises an error' do
+        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
+                                          "something is amiss: 500 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY}) for druid:bc123df4567")
+      end
+    end
+  end
+
   describe '#notify_goobi' do
     subject(:request) { client.notify_goobi }
 

@@ -4,7 +4,7 @@ module Dor
   module Services
     class Client
       # API calls that are about a repository object
-      class Object < VersionedService
+      class Object < VersionedService # rubocop:disable Metrics/ClassLength
         attr_reader :object_identifier
 
         # @param object_identifier [String] the pid for the object
@@ -181,6 +181,19 @@ module Dor
           return true if resp.success?
 
           raise_exception_based_on_response!(resp)
+        end
+
+        # Destroys an object
+        # @return [Boolean] true if successful
+        # @raise [NotFoundResponse] when the response is a 404 (object not found)
+        # @raise [UnexpectedResponse] if the request is unsuccessful.
+        def destroy
+          resp = connection.delete do |req|
+            req.url object_path
+          end
+          raise_exception_based_on_response!(resp, object_identifier) unless resp.success?
+
+          true
         end
 
         # Notify the external Goobi system for a new object that was registered in DOR
