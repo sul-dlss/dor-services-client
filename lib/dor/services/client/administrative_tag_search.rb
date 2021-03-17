@@ -7,8 +7,7 @@ module Dor
     class Client
       # API calls that are about searching AdministrativeTags
       class AdministrativeTagSearch < VersionedService
-        # rubocop:disable Naming/UncommunicativeMethodParamName
-        def search(q:)
+        def search(q:) # rubocop:disable Naming/MethodParameterName
           resp = connection.get do |req|
             req.url "#{api_version}/administrative_tags/search?q=#{q}"
           end
@@ -18,7 +17,6 @@ module Dor
 
           raise_exception_based_on_response!(resp)
         end
-        # rubocop:enable Naming/UncommunicativeMethodParamName
       end
     end
   end
