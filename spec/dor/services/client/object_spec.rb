@@ -416,6 +416,41 @@ RSpec.describe Dor::Services::Client::Object do
     end
   end
 
+  describe '#apply_admin_policy_defaults' do
+    subject(:request) { client.apply_admin_policy_defaults }
+
+    before do
+      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/apply_admin_policy_defaults')
+        .to_return(status: status)
+    end
+
+    context 'when API request succeeds' do
+      let(:status) { 200 }
+
+      it 'returns true' do
+        expect(request).to be true
+      end
+    end
+
+    context 'when API request returns 404' do
+      let(:status) { [404, 'not found'] }
+
+      it 'raises a NotFoundResponse exception' do
+        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse,
+                                          "not found: 404 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+      end
+    end
+
+    context 'when API request fails' do
+      let(:status) { [401, 'unauthorized'] }
+
+      it 'raises an error' do
+        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
+                                          "unauthorized: 401 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+      end
+    end
+  end
+
   describe '#destroy' do
     subject(:request) { client.destroy }
 

@@ -11,6 +11,20 @@ module Dor
           @object_identifier = object_identifier
         end
 
+        # Copies the values from the admin policy to the item
+        # @raise [NotFoundResponse] when the response is a 404 (object not found)
+        # @raise [UnexpectedResponse] when the response is not successful.
+        # @return [boolean] true on success
+        def apply_admin_policy_defaults
+          resp = connection.post do |req|
+            req.url "#{object_path}/apply_admin_policy_defaults"
+          end
+
+          raise_exception_based_on_response!(resp) unless resp.success?
+
+          true
+        end
+
         # Updates the object
         # @param [Cocina::Models::RequestDRO,Cocina::Models::RequestCollection,Cocina::Models::RequestAPO] params model object
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
