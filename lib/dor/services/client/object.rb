@@ -97,7 +97,7 @@ module Dor
           Mutate.new(**parent_params)
         end
 
-        delegate :refresh_metadata, :update, :destroy, to: :mutate
+        delegate :refresh_metadata, :update, :destroy, :apply_admin_policy_defaults, to: :mutate
 
         # Update the marc record for the given object
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
