@@ -38,9 +38,10 @@ module Dor
 
           raise_exception_based_on_response!(resp) unless resp.success?
 
-          if resp.body == 'true'
+          case resp.body
+          when 'true'
             true
-          elsif resp.body == 'false'
+          when 'false'
             false
           else
             raise MalformedResponse, "Expected true or false, not #{resp.body}"
