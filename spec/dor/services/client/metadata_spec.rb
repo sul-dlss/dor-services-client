@@ -199,16 +199,18 @@ RSpec.describe Dor::Services::Client::Metadata do
       let(:body) do
         <<~JSON
           [
-            {"label":"descriptive metadata","dsid":"descMetadata","pid":"druid:1234","size":"14","mimeType":"application/xml"},
-            {"label":"content metadata","dsid":"contentMetadata","pid":"druid:1234","size":"22","mimeType":"application/xml"}
+            {"label":"descriptive metadata","dsid":"descMetadata","pid":"druid:1234","size":"14","mimeType":"application/xml","versionId":"v0"},
+            {"label":"content metadata","dsid":"contentMetadata","pid":"druid:1234","size":"22","mimeType":"application/xml","versionId":"v5"}
           ]
         JSON
       end
 
       it 'returns the list of versions' do
         expect(request).to eq [
-          described_class::Datastream.new(label: 'descriptive metadata', dsid: 'descMetadata', pid: 'druid:1234', size: '14', mimeType: 'application/xml'),
-          described_class::Datastream.new(label: 'content metadata', dsid: 'contentMetadata', pid: 'druid:1234', size: '22', mimeType: 'application/xml')
+          described_class::Datastream.new(label: 'descriptive metadata', dsid: 'descMetadata', pid: 'druid:1234', size: '14', versionId: 'v0',
+                                          mimeType: 'application/xml'),
+          described_class::Datastream.new(label: 'content metadata', dsid: 'contentMetadata', pid: 'druid:1234', size: '22', versionId: 'v5',
+                                          mimeType: 'application/xml')
         ]
       end
     end
