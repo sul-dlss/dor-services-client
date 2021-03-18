@@ -5,6 +5,8 @@ module Dor
     class Client
       # API calls that are about versions
       class ObjectVersion < VersionedService
+        Version = Struct.new(:versionId, :tag, :message, keyword_init: true)
+
         # @param object_identifier [String] the pid for the object
         def initialize(connection:, version:, object_identifier:)
           super(connection: connection, version: version)
@@ -17,7 +19,7 @@ module Dor
         # @return [String] the version identifier
         def current
           resp = connection.get do |req|
-            req.url "#{object_path}/versions/current"
+            req.url "#{base_path}/current"
           end
           return resp.body if resp.success?
 
@@ -32,7 +34,7 @@ module Dor
         # rubocop:disable Metrics/MethodLength
         def openable?(**params)
           resp = connection.get do |req|
-            req.url "#{object_path}/versions/openable"
+            req.url "#{base_path}/openable"
             req.params = params
           end
 
@@ -78,6 +80,17 @@ module Dor
           raise_exception_based_on_response!(resp)
         end
 
+        # @return [Array] a list of the versions
+        # @raise [UnexpectedResponse] on an unsuccessful response from the server
+        def inventory
+          resp = connection.get do |req|
+            req.url base_path
+          end
+          raise_exception_based_on_response!(resp, object_identifier) unless resp.success?
+
+          JSON.parse(resp.body).fetch('versions').map { |params| Version.new(**params) }
+        end
+
         private
 
         attr_reader :object_identifier
@@ -102,12 +115,14 @@ module Dor
           raise_exception_based_on_response!(resp)
         end
 
-        def open_new_version_path
+        def base_path
           "#{object_path}/versions"
         end
 
+        alias open_new_version_path base_path
+
         def close_version_path
-          "#{object_path}/versions/current/close"
+          "#{base_path}/current/close"
         end
       end
     end

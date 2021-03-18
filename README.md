@@ -117,6 +117,7 @@ object_client.apply_admin_policy_defaults
 object_client.notify_goobi
 
 # Manage versions
+object_client.version.inventory
 object_client.version.current
 object_client.version.openable?(**params)
 object_client.version.open(**params)
