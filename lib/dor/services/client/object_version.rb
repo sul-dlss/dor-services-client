@@ -88,7 +88,7 @@ module Dor
           end
           raise_exception_based_on_response!(resp, object_identifier) unless resp.success?
 
-          JSON.parse(resp.body).fetch('versions').map { |params| Version.new(**params) }
+          JSON.parse(resp.body).fetch('versions').map { |params| Version.new(**params.symbolize_keys!) }
         end
 
         private

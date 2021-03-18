@@ -87,7 +87,7 @@ module Dor
           end
           raise_exception_based_on_response!(resp, object_identifier) unless resp.success?
 
-          JSON.parse(resp.body).map { |params| Datastream.new(**params) }
+          JSON.parse(resp.body).map { |params| Datastream.new(**params.symbolize_keys!) }
         end
 
         # @param [String] dsid the identifier for the datastream
