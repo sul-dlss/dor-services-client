@@ -76,7 +76,7 @@ module Dor
         end
 
         # rubocop:disable Lint/StructNewOverride
-        Datastream = Struct.new(:label, :dsid, :pid, :size, :mimeType, keyword_init: true)
+        Datastream = Struct.new(:label, :dsid, :pid, :size, :mimeType, :versionId, keyword_init: true)
         # rubocop:enable Lint/StructNewOverride
 
         # @return [Array] the list of datastreams for the item
