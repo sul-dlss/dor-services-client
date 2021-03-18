@@ -75,6 +75,33 @@ module Dor
           raise_exception_based_on_response!(resp, object_identifier)
         end
 
+        # rubocop:disable Lint/StructNewOverride
+        Datastream = Struct.new(:label, :dsid, :pid, :size, :mimeType, keyword_init: true)
+        # rubocop:enable Lint/StructNewOverride
+
+        # @return [Array] the list of datastreams for the item
+        # @raise [UnexpectedResponse] on an unsuccessful response from the server
+        def datastreams
+          resp = connection.get do |req|
+            req.url "#{base_path}/datastreams"
+          end
+          raise_exception_based_on_response!(resp, object_identifier) unless resp.success?
+
+          JSON.parse(resp.body).map { |params| Datastream.new(**params) }
+        end
+
+        # @param [String] dsid the identifier for the datastream
+        # @return [String] the contents of the specified datastream
+        # @raise [UnexpectedResponse] on an unsuccessful response from the server
+        def datastream(dsid)
+          resp = connection.get do |req|
+            req.url "#{base_path}/datastreams/#{dsid}"
+          end
+          raise_exception_based_on_response!(resp, object_identifier) unless resp.success?
+
+          resp.body
+        end
+
         private
 
         attr_reader :object_identifier
