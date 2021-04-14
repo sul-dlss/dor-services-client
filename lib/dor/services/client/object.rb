@@ -39,10 +39,6 @@ module Dor
           @version ||= ObjectVersion.new(**parent_params)
         end
 
-        def embargo
-          @embargo ||= Embargo.new(**parent_params)
-        end
-
         def accession(params = {})
           @accession ||= Accession.new(**parent_params.merge(params))
         end
