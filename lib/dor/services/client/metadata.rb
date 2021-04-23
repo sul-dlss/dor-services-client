@@ -63,6 +63,18 @@ module Dor
           raise_exception_based_on_response!(resp, object_identifier)
         end
 
+        # @return [String, NilClass] The public XML representation of the object or nil if response is 404
+        # @raise [UnexpectedResponse] on an unsuccessful response from the server
+        def public_xml
+          resp = connection.get do |req|
+            req.url "#{base_path}/public_xml"
+          end
+          return resp.body if resp.success?
+          return if resp.status == 404
+
+          raise_exception_based_on_response!(resp, object_identifier)
+        end
+
         # @return [String, NilClass] the dor object's source MODS XML or nil if response is 404
         # @raise [UnexpectedResponse] on an unsuccessful response from the server
         def mods

@@ -129,6 +129,9 @@ object_client.metadata.dublin_core
 # Get the public descriptive XML representation
 object_client.metadata.descriptive
 
+# Get the public XML representation
+object_client.metadata.public_xml
+
 # Update legacy XML representation
 object_client.metadata.legacy_update(
   descriptive: {
