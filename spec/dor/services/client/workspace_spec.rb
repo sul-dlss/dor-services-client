@@ -38,11 +38,11 @@ RSpec.describe Dor::Services::Client::Workspace do
   end
 
   describe '#cleanup' do
-    subject(:request) { client.cleanup }
+    subject(:request) { client.cleanup(lane_id: 1) }
 
     context 'when API request succeeds' do
       before do
-        stub_request(:delete, 'https://dor-services.example.com/v1/objects/druid:123/workspace')
+        stub_request(:delete, 'https://dor-services.example.com/v1/objects/druid:123/workspace?lane-id=1')
           .to_return(status: 200)
       end
 
@@ -53,7 +53,7 @@ RSpec.describe Dor::Services::Client::Workspace do
 
     context 'when API request fails' do
       before do
-        stub_request(:delete, 'https://dor-services.example.com/v1/objects/druid:123/workspace')
+        stub_request(:delete, 'https://dor-services.example.com/v1/objects/druid:123/workspace?lane-id=1')
           .to_return(status: [500, 'something is amiss'])
       end
 
