@@ -25,10 +25,11 @@ module Dor
 
         # Cleans up a workspace
         # @raise [UnexpectedResponse] if the request is unsuccessful.
+        # @param [String] lane_id for prioritization (default or low)
         # @return nil
-        def cleanup
+        def cleanup(lane_id: nil)
           resp = connection.delete do |req|
-            req.url workspace_path
+            req.url workspace_path(lane_id: lane_id)
           end
           raise_exception_based_on_response!(resp, object_identifier) unless resp.success?
         end
@@ -46,8 +47,9 @@ module Dor
 
         private
 
-        def workspace_path
-          "#{api_version}/objects/#{object_identifier}/workspace"
+        def workspace_path(lane_id: nil)
+          query_string = lane_id ? "?lane-id=#{lane_id}" : ''
+          "#{api_version}/objects/#{object_identifier}/workspace#{query_string}"
         end
 
         attr_reader :object_identifier

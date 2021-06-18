@@ -159,7 +159,7 @@ object_client.events.list
 
 # Create, remove, and reset workspaces
 object_client.workspace.create(source: object_path_string)
-object_client.workspace.cleanup
+object_client.workspace.cleanup(lane_id: 'low')
 object_client.workspace.reset
 
 
