@@ -22,10 +22,12 @@ module Dor
         # rubocop:disable Metrics/MethodLength
         def raise_exception_based_on_response!(response, object_identifier = nil)
           exception_class = case response.status
-                            when 404
-                              NotFoundResponse
+                            when 400
+                              BadRequestError
                             when 401
                               UnauthorizedResponse
+                            when 404
+                              NotFoundResponse
                             when 409
                               ConflictResponse
                             else

@@ -26,11 +26,17 @@ module Dor
       # Base class for Dor::Services::Client exceptions
       class Error < StandardError; end
 
-      # Error that is raised when the remote server returns a 404 Not Found
+      # Error that is raised when the ultimate remote server returns a 404 Not Found for the id in our request (e.g. for druid, barcode, catkey)
       class NotFoundResponse < Error; end
 
+      # Error that is raised when the remote server returns some unparsable response
+      class MalformedResponse < Error; end
+
+      # Error that wraps Faraday connection exceptions
+      class ConnectionFailed < Error; end
+
       # Error that is raised when the remote server returns some unexpected response
-      # this could be any 4xx or 5xx status
+      # this could be any 4xx or 5xx status (except the ones that are direct children of the Error class above)
       class UnexpectedResponse < Error; end
 
       # Error that is raised when the remote server returns a 401 Unauthorized
@@ -39,11 +45,8 @@ module Dor
       # Error that is raised when the remote server returns a 409 Conflict
       class ConflictResponse < UnexpectedResponse; end
 
-      # Error that is raised when the remote server returns some unparsable response
-      class MalformedResponse < Error; end
-
-      # Error that wraps Faraday connection exceptions
-      class ConnectionFailed < Error; end
+      # Error that is raised when the remote server returns a 400 Bad Request; apps should not retry the request
+      class BadRequestError < UnexpectedResponse; end
 
       # @param object_identifier [String] the pid for the object
       # @raise [ArgumentError] when `object_identifier` is `nil`

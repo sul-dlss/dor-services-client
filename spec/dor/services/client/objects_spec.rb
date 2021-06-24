@@ -47,22 +47,31 @@ RSpec.describe Dor::Services::Client::Objects do
     end
 
     context 'when API request fails' do
-      context 'when an unexpected response' do
+      context 'when Conflict (409) response' do
         let(:status) { [409, 'object already exists'] }
         let(:body) { nil }
 
-        it 'raises an error' do
+        it 'raises ConflictResponse error' do
           expect { client.register(params: model) }.to raise_error(Dor::Services::Client::ConflictResponse,
                                                                    "object already exists: 409 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
         end
       end
 
-      context 'when an unauthorized response' do
+      context 'when Unauthorized (401) response' do
         let(:status) { [401, 'unauthorized'] }
         let(:body) { nil }
 
-        it 'raises an error' do
+        it 'raises UnauthorizedResponse error' do
           expect { client.register(params: model) }.to raise_error(Dor::Services::Client::UnauthorizedResponse)
+        end
+      end
+
+      context 'when Bad Request (400) response' do
+        let(:status) { [400, 'bad request'] }
+        let(:body) { 'Bad Request: 400 ({"errors":[{"status":"400","title":some reason","detail":"blah di blah blah"}]})' }
+
+        it 'raises BadRequestError error' do
+          expect { client.register(params: model) }.to raise_error(Dor::Services::Client::BadRequestError)
         end
       end
     end
