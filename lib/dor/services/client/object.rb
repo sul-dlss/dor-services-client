@@ -27,10 +27,6 @@ module Dor
           @workspace ||= Workspace.new(**parent_params)
         end
 
-        def release_tags
-          @release_tags ||= ReleaseTags.new(**parent_params)
-        end
-
         def administrative_tags
           @administrative_tags ||= AdministrativeTags.new(**parent_params)
         end
