@@ -25,8 +25,15 @@ RSpec.describe Dor::Services::Client::Objects do
   let(:expected_request) { model.to_json }
 
   describe '#register' do
+    let(:status) { 200 }
+    let(:body) do
+      Cocina::Models::DRO.new(model.to_h.merge(externalIdentifier: 'druid:bc123df4567',
+                                               access: {})).to_json
+    end
+    let(:url) { 'https://dor-services.example.com/v1/objects' }
+
     before do
-      stub_request(:post, 'https://dor-services.example.com/v1/objects')
+      stub_request(:post, url)
         .with(
           body: expected_request,
           headers: { 'Content-Type' => 'application/json', 'Accept' => 'application/json' }
@@ -35,14 +42,16 @@ RSpec.describe Dor::Services::Client::Objects do
     end
 
     context 'when API request succeeds with a cocina model' do
-      let(:status) { 200 }
-      let(:body) do
-        Cocina::Models::DRO.new(model.to_h.merge(externalIdentifier: 'druid:bc123df4567',
-                                                 access: {})).to_json
-      end
-
       it 'posts params as json' do
         expect(client.register(params: model)).to be_kind_of Cocina::Models::DRO
+      end
+    end
+
+    context 'when assigning DOI' do
+      let(:url) { 'https://dor-services.example.com/v1/objects?assign_doi=true' }
+
+      it 'posts with DOI param' do
+        client.register(params: model, assign_doi: true)
       end
     end
 
