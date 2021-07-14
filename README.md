@@ -61,6 +61,7 @@ objects_client = Dor::Services::Client.objects
 
 # Register a non-existent object
 objects_client.register(params: {})
+objects_client.register(params: {}, assign_doi: true)
 
 # Interact with virtual objects
 virtual_objects_client = Dor::Services::Client.virtual_objects
