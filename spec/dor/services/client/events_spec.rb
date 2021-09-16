@@ -22,7 +22,7 @@ RSpec.describe Dor::Services::Client::Events do
       let(:status) { 200 }
       let(:body) do
         '[{"event_type":"shelve_request_received","data":{"host":"http://example.com/"},"created_at":"2020-01-27T19:10:27.291Z"},' \
-      '{"event_type":"shelve_request_received","data":{"host":"http://example.com/"},"created_at":"2020-01-30T16:10:28.771Z"}]'
+          '{"event_type":"shelve_request_received","data":{"host":"http://example.com/"},"created_at":"2020-01-30T16:10:28.771Z"}]'
       end
 
       it 'returns the list' do
