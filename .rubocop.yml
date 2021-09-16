@@ -77,3 +77,7 @@ Style/StringChars: # (new in 1.12)
   Enabled: true
 Style/SwapValues: # (new in 1.1)
   Enabled: true
+Layout/LineEndStringConcatenationIndentation: # (new in 1.18)
+  Enabled: true
+Naming/InclusiveLanguage: # (new in 1.18)
+  Enabled: true
