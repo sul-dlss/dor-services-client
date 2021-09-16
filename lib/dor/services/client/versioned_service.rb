@@ -33,8 +33,8 @@ module Dor
                             else
                               UnexpectedResponse
                             end
-          raise exception_class,
-                ResponseErrorFormatter.format(response: response, object_identifier: object_identifier)
+
+          raise exception_class.new(response, object_identifier)
         end
         # rubocop:enable Metrics/MethodLength
       end

@@ -22,9 +22,9 @@ module Dor
 
           # This method needs its own exception handling logic due to how the endpoint service (SearchWorks) operates
           # raise a NotFoundResponse because the resource being requested was not found in the ILS (via dor-services-app)
-          raise NotFoundResponse, ResponseErrorFormatter.format(response: resp) if resp.success? && resp.body.blank?
+          raise NotFoundResponse.new(resp, barcode) if resp.success? && resp.body.blank?
 
-          raise UnexpectedResponse, ResponseErrorFormatter.format(response: resp)
+          raise UnexpectedResponse.new(resp, barcode)
         end
 
         # Gets MARCXML corresponding to a barcode or catkey
@@ -42,16 +42,16 @@ module Dor
             req.params['catkey'] = catkey unless catkey.nil?
           end
 
-          # This method needs its own exception handling logic due to how the endpoint service (Symphony) operates
+          return resp.body if resp.success?
 
+          # This method needs its own exception handling logic due to how the endpoint service (Symphony) operates
+          identifier = barcode.presence || catkey
           # DOR Services App does not respond with a 404 when no match in Symphony.
           # Rather, it responds with a 500 containing "Record not found in Symphony" in the body.
           # raise a NotFoundResponse because the resource being requested was not found in the ILS (via dor-services-app)
-          raise NotFoundResponse, ResponseErrorFormatter.format(response: resp) if !resp.success? && resp.body.match?(/Record not found in Symphony/)
+          raise NotFoundResponse.new(resp, identifier) if resp.body.match?(/Record not found in Symphony/)
 
-          raise UnexpectedResponse, ResponseErrorFormatter.format(response: resp) unless resp.success?
-
-          resp.body
+          raise UnexpectedResponse.new(resp, identifier)
         end
 
         private

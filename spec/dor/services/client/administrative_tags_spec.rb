@@ -86,6 +86,29 @@ RSpec.describe Dor::Services::Client::AdministrativeTags do
                                           "something is amiss: 500 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY}) for #{druid}")
       end
     end
+
+    context 'when API returns an request error' do
+      before do
+        stub_request(:post, "https://dor-services.example.com/v1/objects/#{druid}/administrative_tags")
+          .to_return(status: [400, 'bad request'],
+                     headers: { 'Content-Type' => 'application/vnd.api+json' },
+                     body: '{
+              "errors": [
+                {
+                  "status": "400",
+                  "title":  "Invalid Attribute",
+                  "detail": "Tag must have at least one colin."
+                }
+              ]
+            }')
+      end
+
+      it 'raises an error' do
+        request
+      rescue Dor::Services::Client::UnexpectedResponse => e
+        expect(e.json.dig('errors', 0, 'title')).to eq 'Invalid Attribute'
+      end
+    end
   end
 
   describe '#replace' do

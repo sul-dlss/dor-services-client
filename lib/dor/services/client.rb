@@ -27,7 +27,12 @@ module Dor
       class Error < StandardError; end
 
       # Error that is raised when the ultimate remote server returns a 404 Not Found for the id in our request (e.g. for druid, barcode, catkey)
-      class NotFoundResponse < Error; end
+      class NotFoundResponse < Error
+        def initialize(response, object_identifier)
+          @json = response.body
+          super ResponseErrorFormatter.format(response: response, object_identifier: object_identifier)
+        end
+      end
 
       # Error that is raised when the remote server returns some unparsable response
       class MalformedResponse < Error; end
@@ -37,7 +42,19 @@ module Dor
 
       # Error that is raised when the remote server returns some unexpected response
       # this could be any 4xx or 5xx status (except the ones that are direct children of the Error class above)
-      class UnexpectedResponse < Error; end
+      class UnexpectedResponse < Error
+        def initialize(response, object_identifier)
+          @response = response
+          super ResponseErrorFormatter.format(response: response, object_identifier: object_identifier)
+        end
+
+        def json
+          content_type = @response.headers['Content-Type']
+          return unless ['application/json', 'application/vnd.api+json'].include?(content_type)
+
+          JSON.parse(@response.body)
+        end
+      end
 
       # Error that is raised when the remote server returns a 401 Unauthorized
       class UnauthorizedResponse < UnexpectedResponse; end
