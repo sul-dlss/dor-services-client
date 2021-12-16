@@ -24,7 +24,7 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = '~> 2.6'
 
-  spec.add_dependency 'activesupport', '>= 4.2', '< 7'
+  spec.add_dependency 'activesupport', '>= 4.2', '< 8'
   spec.add_dependency 'cocina-models', '~> 0.62.0' # leave pinned to patch level until cocina-models hits 1.0
   spec.add_dependency 'deprecation', '>= 0'
   spec.add_dependency 'faraday', '>= 0.15', '< 2'
