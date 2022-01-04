@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.required_ruby_version = '~> 2.6'
+  spec.required_ruby_version = '>= 2.6', '< 4'
 
   spec.add_dependency 'activesupport', '>= 4.2', '< 8'
   spec.add_dependency 'cocina-models', '~> 0.62.0' # leave pinned to patch level until cocina-models hits 1.0
