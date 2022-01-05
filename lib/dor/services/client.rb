@@ -7,6 +7,7 @@ require 'active_support/json'
 require 'active_support/core_ext/object/json'
 require 'cocina/models'
 require 'faraday'
+require 'faraday/retry'
 require 'singleton'
 require 'zeitwerk'
 
@@ -126,8 +127,8 @@ module Dor
           builder.use Faraday::Request::UrlEncoded
 
           # @note when token & token_header are nil, this line is required else
-          #       the Faraday instance will be passed an empty block, which
-          #       causes the adapter not to be set. Thus, everything breaks.
+          #   the Faraday instance will be passed an empty block, which
+          #   causes the adapter not to be set. Thus, everything breaks.
           builder.adapter Faraday.default_adapter
           builder.headers[:user_agent] = user_agent
           builder.headers[TOKEN_HEADER] = "Bearer #{token}"
