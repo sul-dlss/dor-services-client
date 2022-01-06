@@ -15,6 +15,12 @@ orbs:
               command: bundle check || bundle install
       test:
         description: Runs rspec wrapped with code climate
+        parameters:
+          cc-test-reporter-id:
+            default: CC_TEST_REPORTER_ID
+            description: |
+              Name of environment variable storing your Code Climate reporter test id
+            type: env_var_name
         steps:
           - run:
               name: Setup Code Climate test-reporter
@@ -25,7 +31,7 @@ orbs:
           - ruby/rspec-test
           - run:
               name: upload test coverage report to Code Climate
-              command: ./cc-test-reporter after-build --coverage-input-type simplecov --exit-code $?
+              command: ./cc-test-reporter after-build --coverage-input-type simplecov --exit-code -r << parameters.cc-test-reporter-id >> $?
       validate-api:
         description: Validate openapi specification
         steps:
@@ -60,10 +66,6 @@ orbs:
             default: '2.7.5'
             description: The `cimg/ruby` Docker image version tag.
             type: string
-          # bundler-version:
-          #   default: '2.2.15'
-          #   description: Version of bundler to use.
-          #   type: string
         docker:
           - image: 'cimg/ruby:<< parameters.ruby-tag >>-node'
         environment:
