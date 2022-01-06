@@ -7,7 +7,7 @@ orbs:
       ruby: circleci/ruby@1.2.0
       browser-tools: circleci/browser-tools@1.2.3
     commands:
-      client-install-deps:
+      gem-install-deps:
         description: Install dependencies without using deployment mode (suitable for gems)
         steps:
           - run:
@@ -58,9 +58,9 @@ orbs:
           - image: 'cimg/ruby:<< parameters.ruby-tag >>-node'        
         steps:
           - checkout
-          - client-install-deps
+          - gem-install-deps
           - ruby/rubocop-check
-      test-client:
+      test-gem:
         parameters:
           ruby-tag:
             default: '2.7.5'
@@ -74,7 +74,7 @@ orbs:
         parallelism: 3
         steps:
           - checkout
-          - client-install-deps
+          - gem-install-deps
           - run:
               name: Install rspec_junit_formatter
               command: bundle add rspec_junit_formatter
@@ -179,7 +179,7 @@ workflows:
     jobs:
       - ruby-rails/lint:
           name: lint
-      - ruby-rails/test-client:
+      - ruby-rails/test-gem:
           name: test
 
 # jobs:
