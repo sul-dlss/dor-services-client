@@ -69,7 +69,7 @@ orbs:
           - checkout
           - ruby/install-deps:
               with-cache: false
-              bundler-version: '<< parameters.bundler-version >>'
+              bundler-version: '2.2.15'
           - test
       test-rails:
         parameters:
