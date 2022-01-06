@@ -15,7 +15,7 @@ orbs:
               command: bundle check || bundle install
           - run:
               name: Install rspec_junit_formatter
-              command: bundle install rspec_junit_formatter
+              command: bundle add rspec_junit_formatter
       test:
         description: Runs rspec wrapped with code climate
         steps:
