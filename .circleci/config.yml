@@ -1,35 +1,205 @@
 version: 2.1
-
-jobs:
-  build:
-    docker:
-      - image: cimg/ruby:3.0
+version: 2.1
+orbs:
+  ruby-rails:
+    orbs:
+      docker: circleci/docker@2.0.1
+      node: circleci/node@3.0
+      ruby: circleci/ruby@1.2.0
+      browser-tools: circleci/browser-tools@1.2.3
+    commands:
+      test:
+        description: Runs rspec wrapped with code climate
+        steps:
+          - run:
+              name: Setup Code Climate test-reporter
+              command: |
+                curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+                chmod +x ./cc-test-reporter
+                ./cc-test-reporter before-build
+          - ruby/rspec-test
+          - run:
+              name: upload test coverage report to Code Climate
+              command: ./cc-test-reporter after-build --coverage-input-type simplecov --exit-code $?
+      validate-api:
+        description: Validate openapi specification
+        steps:
+          - run:
+              name: Validate API specification
+              command: |
+                sudo npm install -g openapi-enforcer-cli
+                result=$(openapi-enforcer validate openapi.yml)
+                [[ $result =~ "Document is valid" ]] && {
+                echo "Validation good"
+                exit 0
+                } || {
+                echo $result
+                exit 1
+                }
+    jobs:
+      lint:
+        parameters:
+          ruby-tag:
+            default: '2.7.5'
+            description: The `cimg/ruby` Docker image version tag.
+            type: string
+        docker:
+          - image: 'cimg/ruby:<< parameters.ruby-tag >>-node'
+        steps:
+          - checkout
+          - ruby/install-deps
+          - ruby/rubocop-check
+      test-client:
+        parameters:
+          ruby-tag:
+            default: '2.7.5'
+            description: The `cimg/ruby` Docker image version tag.
+            type: string
+        docker:
+          - image: 'cimg/ruby:<< parameters.ruby-tag >>-node'
         environment:
-          CC_TEST_REPORTER_ID: 47b57fbbf65654b17f33b6ff4a108ce2abed31a86468033f20eb4d4e9e09935a
+          BUNDLE_JOBS: '3'
+          BUNDLE_RETRY: '3'
+        parallelism: 3
+        steps:
+          - checkout
+          - ruby/install-deps
+          - test
+      test-rails:
+        parameters:
+          ruby-tag:
+            default: '2.7.5'
+            description: The `cimg/ruby` Docker image version tag.
+            type: string
+          postgres-tag:
+            default: '11.13'
+            description: The `cimg/postgres` Docker image version tag.
+            type: string
+          api-only:
+            default: false
+            description: True if this is an API only Rails app.
+            type: boolean
+          install-chrome:
+            default: false
+            description: True to install Chrome
+            type: boolean
+        docker:
+          - image: 'cimg/ruby:<< parameters.ruby-tag >>-node'
+          - image: 'cimg/postgres:<< parameters.postgres-tag >>'
+            environment:
+              POSTGRES_USER: postgres
+              POSTGRES_PASSWORD: sekret
+        environment:
+          BUNDLE_JOBS: '3'
+          BUNDLE_RETRY: '3'
+          PGHOST: 127.0.0.1
+          PGPASSWORD: sekret
+          PGUSER: circleci
           RAILS_ENV: test
-    steps:
-      - checkout
-      - run:
-          name: Install Bundler
-          command: gem install bundler
-      - run:
-          name: Which bundler?
-          command: bundle -v
-      - run:
-          name: Bundle Install
-          command: bundle check || bundle install
-      - run:
-          name: Lint using rubocop
-          command: bundle exec rubocop
-      - run:
-          name: Setup Code Climate test-reporter
-          command: |
-            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-            chmod +x ./cc-test-reporter
-            ./cc-test-reporter before-build
-      - run:
-          name: rspec
-          command: bundle exec rspec
-      - run:
-          name: upload test coverage report to Code Climate
-          command: ./cc-test-reporter after-build --coverage-input-type simplecov --exit-code $?
+          PAGER: cat
+        parallelism: 3
+        steps:
+          - checkout
+          - ruby/install-deps
+          - when:
+              condition: << parameters.install-chrome >>
+              steps:
+                - browser-tools/install-chrome
+          - unless:
+              condition: << parameters.api-only >>
+              steps:
+                - node/install-packages:
+                    pkg-manager: yarn
+          - run:
+              command: 'dockerize -wait tcp://localhost:5432 -timeout 1m'
+              name: Wait for DB
+          - run:
+              name: Test prepare
+              command: bin/rails db:test:prepare
+          - test
+      validate-api:
+        description: Validate openapi specification
+        executor: node/default
+        steps:
+          - checkout
+          - validate-api
+      docker-publish:
+        description: Build and deploy a Docker image
+        executor: docker/machine
+        parameters:
+          docker-password:
+            default: DOCKER_PASS
+            description: |
+              Name of environment variable storing your Docker password
+            type: env_var_name
+          docker-username:
+            default: DOCKER_USER
+            description: |
+              Name of environment variable storing your Docker username
+            type: env_var_name
+          dockerfile:
+            default: Dockerfile
+            description: 'Name of dockerfile to use, defaults to Dockerfile'
+            type: string
+          image:
+            description: Name of image to build
+            type: string
+          tag:
+            default: latest
+            description: 'Comma-separated list of image tags, defaults to latest'
+            type: string
+        steps:
+          - checkout
+          - docker/check:
+              docker-password: <<parameters.docker-password>>
+              docker-username: <<parameters.docker-username>>
+          - docker/build:
+              dockerfile: <<parameters.dockerfile>>
+              image: <<parameters.image>>
+              tag: <<parameters.tag>>
+          - docker/push:
+              image: <<parameters.image>>
+              tag: <<parameters.tag>>
+workflows:
+  build:
+    jobs:
+      - ruby-rails/validate-api:
+          name: validate
+      - ruby-rails/lint:
+          name: lint
+      - ruby-rails/test-client:
+          name: test
+
+# jobs:
+#   build:
+#     docker:
+#       - image: circleci/ruby:2.7.1
+#         environment:
+#           CC_TEST_REPORTER_ID: 47b57fbbf65654b17f33b6ff4a108ce2abed31a86468033f20eb4d4e9e09935a
+#           RAILS_ENV: test
+#     steps:
+#       - checkout
+#       - run:
+#           name: Install Bundler
+#           command: gem install bundler
+#       - run:
+#           name: Which bundler?
+#           command: bundle -v
+#       - run:
+#           name: Bundle Install
+#           command: bundle check || bundle install
+#       - run:
+#           name: Lint using rubocop
+#           command: bundle exec rubocop
+#       - run:
+#           name: Setup Code Climate test-reporter
+#           command: |
+#             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+#             chmod +x ./cc-test-reporter
+#             ./cc-test-reporter before-build
+#       - run:
+#           name: rspec
+#           command: bundle exec rspec
+#       - run:
+#           name: upload test coverage report to Code Climate
+#           command: ./cc-test-reporter after-build --coverage-input-type simplecov --exit-code $?
