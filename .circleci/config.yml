@@ -7,6 +7,12 @@ orbs:
       ruby: circleci/ruby@1.2.0
       browser-tools: circleci/browser-tools@1.2.3
     commands:
+      client-install-deps:
+        description: Install dependencies without using deployment mode (suitable for gems)
+        steps:
+          - run:
+              name: Bundle Install
+              command: bundle check || bundle install
       test:
         description: Runs rspec wrapped with code climate
         steps:
@@ -43,13 +49,10 @@ orbs:
             description: The `cimg/ruby` Docker image version tag.
             type: string
         docker:
-          - image: 'cimg/ruby:<< parameters.ruby-tag >>-node'
-        environment:
-          APP_BUNDLER_VERSION: '2.2.15'
+          - image: 'cimg/ruby:<< parameters.ruby-tag >>-node'        
         steps:
           - checkout
-          - ruby/install-deps:
-              with-cache: false
+          - client-install-deps
           - ruby/rubocop-check
       test-client:
         parameters:
@@ -69,9 +72,7 @@ orbs:
         parallelism: 3
         steps:
           - checkout
-          - ruby/install-deps:
-              with-cache: false
-              bundler-version: '2.2.15'
+          - client-install-deps
           - test
       test-rails:
         parameters:
