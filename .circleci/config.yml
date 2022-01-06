@@ -55,6 +55,10 @@ orbs:
             default: '2.7.5'
             description: The `cimg/ruby` Docker image version tag.
             type: string
+          bundler-version:
+            default: '2.2.15'
+            description: Version of bundler to use.
+            type: string
         docker:
           - image: 'cimg/ruby:<< parameters.ruby-tag >>-node'
         environment:
