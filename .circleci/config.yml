@@ -67,6 +67,16 @@ orbs:
         parallelism: 3
         steps:
           - checkout
+          - run:
+              command: |
+                if ! [ -z <<parameters.bundler-version>> ]; then
+                  echo "Found bundler-version parameter to override"
+                  APP_BUNDLER_VERSION=<<parameters.bundler-version>>
+                fi
+                if ! [ -z << parameters.bundler-version >> ]; then
+                  echo "Found bundler-version parameter to override2"
+                  APP_BUNDLER_VERSION=<< parameters.bundler-version >>
+                fi
           - ruby/install-deps:
               with-cache: false
               bundler-version: '2.2.15'
