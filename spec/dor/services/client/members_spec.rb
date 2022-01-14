@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 RSpec.describe Dor::Services::Client::Members do
+  subject(:client) { described_class.new(connection: connection, version: 'v1', object_identifier: pid) }
+
   before do
     Dor::Services::Client.configure(url: 'https://dor-services.example.com', token: '123')
   end
 
   let(:connection) { Dor::Services::Client.instance.send(:connection) }
   let(:pid) { 'druid:123' }
-
-  subject(:client) { described_class.new(connection: connection, version: 'v1', object_identifier: pid) }
 
   describe '#members' do
     subject(:members) { client.members }
@@ -30,6 +30,7 @@ RSpec.describe Dor::Services::Client::Members do
           }
         JSON
       end
+
       before do
         stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:123/members')
           .to_return(status: 200, body: json)

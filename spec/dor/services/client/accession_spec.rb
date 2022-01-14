@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
 RSpec.describe Dor::Services::Client::Accession do
-  before do
-    Dor::Services::Client.configure(url: 'https://dor-services.example.com', token: '123')
-  end
-
-  let(:connection) { Dor::Services::Client.instance.send(:connection) }
-
   subject(:client) do
     described_class.new(connection: connection,
                         object_identifier: 'druid:1234',
                         version: 'v1')
   end
+
+  before do
+    Dor::Services::Client.configure(url: 'https://dor-services.example.com', token: '123')
+  end
+
+  let(:connection) { Dor::Services::Client.instance.send(:connection) }
 
   describe '#start' do
     context 'with no params' do

@@ -1,17 +1,15 @@
 # frozen_string_literal: true
 
 RSpec.describe Dor::Services::Client::Objects do
+  subject(:client) { described_class.new(connection: connection, version: 'v1') }
+
   before do
     Dor::Services::Client.configure(url: 'https://dor-services.example.com', token: '123')
   end
 
   let(:connection) { Dor::Services::Client.instance.send(:connection) }
-
-  subject(:client) { described_class.new(connection: connection, version: 'v1') }
-
   let(:model) { Cocina::Models::RequestDRO.new(properties) }
   let(:item_type) { Cocina::Models::Vocab.object }
-
   let(:properties) do
     {
       type: item_type,
@@ -21,7 +19,6 @@ RSpec.describe Dor::Services::Client::Objects do
       identification: { sourceId: 'sul:99999' }
     }
   end
-
   let(:expected_request) { model.to_json }
 
   describe '#register' do

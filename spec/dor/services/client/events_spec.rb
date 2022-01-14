@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 RSpec.describe Dor::Services::Client::Events do
+  subject(:client) { described_class.new(connection: connection, version: 'v1', object_identifier: pid) }
+
   before do
     Dor::Services::Client.configure(url: 'https://dor-services.example.com', token: '123')
   end
 
   let(:connection) { Dor::Services::Client.instance.send(:connection) }
   let(:pid) { 'druid:1234' }
-
-  subject(:client) { described_class.new(connection: connection, version: 'v1', object_identifier: pid) }
 
   describe '#list' do
     subject(:response) { client.list }

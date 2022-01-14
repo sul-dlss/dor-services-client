@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 RSpec.describe Dor::Services::Client::AdministrativeTags do
+  subject(:client) { described_class.new(connection: connection, version: 'v1', object_identifier: druid) }
+
   before do
     Dor::Services::Client.configure(url: 'https://dor-services.example.com', token: '123')
   end
 
   let(:connection) { Dor::Services::Client.instance.send(:connection) }
   let(:druid) { 'druid:bc123df4567' }
-
-  subject(:client) { described_class.new(connection: connection, version: 'v1', object_identifier: druid) }
 
   describe '#list' do
     subject(:request) { client.list }

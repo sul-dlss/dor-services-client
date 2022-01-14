@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.describe Dor::Services::Client::ResponseErrorFormatter do
-  let(:response) { double('http response', reason_phrase: 'Internal Server Error', status: 500, body: 'Something went badly') }
-
   subject(:formatter) { described_class.new(response: response) }
+
+  let(:response) { double('http response', reason_phrase: 'Internal Server Error', status: 500, body: 'Something went badly') }
 
   describe '.format' do
     let(:mock_instance) { double('mock instance') }

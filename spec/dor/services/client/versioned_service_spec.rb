@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe Dor::Services::Client::VersionedService do
+  subject(:client) { subclass.new(connection: connection, version: 'v1') }
+
   before do
     Dor::Services::Client.configure(url: 'https://dor-services.example.com', token: '123')
   end
@@ -9,8 +11,6 @@ RSpec.describe Dor::Services::Client::VersionedService do
     Class.new(described_class)
   end
   let(:connection) { Dor::Services::Client.instance.send(:connection) }
-
-  subject(:client) { subclass.new(connection: connection, version: 'v1') }
 
   describe '#async_result' do
     it 'creates an instance of AsyncResult' do

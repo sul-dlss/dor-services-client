@@ -14,7 +14,7 @@ RSpec.describe Dor::Services::Client::AsyncResult do
 
     before do
       allow(Dor::Services::Client.background_job_results).to receive(:show).and_return(result1, result2, result3)
-      allow_any_instance_of(Dor::Services::Client::AsyncResult).to receive(:sleep)
+      allow_any_instance_of(described_class).to receive(:sleep)
     end
 
     context 'when it completes before the timeout' do
@@ -30,6 +30,7 @@ RSpec.describe Dor::Services::Client::AsyncResult do
       before do
         allow(Timeout).to receive(:timeout).and_raise(Timeout::Error)
       end
+
       it 'sets an error' do
         output = instance.wait_until_complete
         expect(output).to be false

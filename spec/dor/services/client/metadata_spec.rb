@@ -3,14 +3,14 @@
 require 'active_support/core_ext/time'
 
 RSpec.describe Dor::Services::Client::Metadata do
+  subject(:client) { described_class.new(connection: connection, version: 'v1', object_identifier: pid) }
+
   before do
     Dor::Services::Client.configure(url: 'https://dor-services.example.com', token: '123')
   end
 
   let(:connection) { Dor::Services::Client.instance.send(:connection) }
   let(:pid) { 'druid:1234' }
-
-  subject(:client) { described_class.new(connection: connection, version: 'v1', object_identifier: pid) }
 
   describe '#dublin_core' do
     subject(:response) { client.dublin_core }
@@ -173,7 +173,7 @@ RSpec.describe Dor::Services::Client::Metadata do
   end
 
   describe '#legacy_update' do
-    context 'for many datastreams' do
+    context 'when many datastreams' do
       let(:params) do
         {
           descriptive: { updated: Time.find_zone('UTC').parse('2020-01-05'), content: '<descMetadata/>' },
@@ -214,7 +214,7 @@ RSpec.describe Dor::Services::Client::Metadata do
       end
     end
 
-    context 'for provenance' do
+    context 'with provenance' do
       let(:params) { { provenance: { updated: Time.find_zone('UTC').parse('2020-01-05'), content: '<provenanceMetadata />' } } }
 
       before do
@@ -298,6 +298,7 @@ RSpec.describe Dor::Services::Client::Metadata do
       before do
         allow_any_instance_of(Faraday::Adapter::NetHttp).to receive(:call).and_raise(Faraday::ConnectionFailed.new('end of file reached'))
       end
+
       let(:status) { 555 }
       let(:body) { '' }
 

@@ -1,7 +1,10 @@
 inherit_from: .rubocop_todo.yml
 
+require:
+  - rubocop-rspec
+
 AllCops:
-  TargetRubyVersion: 2.6
+  TargetRubyVersion: 2.7 # dor-services-app can't be 3 due to fedora3
   SuggestExtensions: false
 
 Metrics/BlockLength:
@@ -80,4 +83,48 @@ Style/SwapValues: # (new in 1.1)
 Layout/LineEndStringConcatenationIndentation: # (new in 1.18)
   Enabled: true
 Naming/InclusiveLanguage: # (new in 1.18)
+  Enabled: true
+
+Gemspec/RequireMFA: # new in 1.23
+  Enabled: true
+Lint/AmbiguousOperatorPrecedence: # new in 1.21
+  Enabled: true
+Lint/AmbiguousRange: # new in 1.19
+  Enabled: true
+Lint/IncompatibleIoSelectWithFiberScheduler: # new in 1.21
+  Enabled: true
+Lint/RequireRelativeSelfPath: # new in 1.22
+  Enabled: true
+Lint/UselessRuby2Keywords: # new in 1.23
+  Enabled: true
+Naming/BlockForwarding: # new in 1.24
+  Enabled: true
+Security/IoMethods: # new in 1.22
+  Enabled: true
+Style/FileRead: # new in 1.24
+  Enabled: true
+Style/FileWrite: # new in 1.24
+  Enabled: true
+Style/MapToHash: # new in 1.24
+  Enabled: true
+Style/NumberedParameters: # new in 1.22
+  Enabled: true
+Style/NumberedParametersLimit: # new in 1.22
+  Enabled: true
+Style/OpenStructUse: # new in 1.23
+  Enabled: true
+Style/RedundantSelfAssignmentBranch: # new in 1.19
+  Enabled: true
+Style/SelectByRegexp: # new in 1.22
+  Enabled: true
+
+RSpec/ExcessiveDocstringSpacing: # new in 2.5
+  Enabled: true
+RSpec/IdenticalEqualityAssertion: # new in 2.4
+  Enabled: true
+RSpec/SubjectDeclaration: # new in 2.5
+  Enabled: true
+RSpec/FactoryBot/SyntaxMethods: # new in 2.7
+  Enabled: true
+RSpec/Rails/AvoidSetupHook: # new in 2.4
   Enabled: true

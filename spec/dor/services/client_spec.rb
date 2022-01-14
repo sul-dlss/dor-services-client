@@ -5,7 +5,7 @@ RSpec.describe Dor::Services::Client do
     expect(Dor::Services::Client::VERSION).not_to be nil
   end
 
-  context 'once configured' do
+  context 'when configured' do
     before do
       described_class.configure(url: 'https://dor-services.example.com', token: '123')
     end
@@ -76,6 +76,7 @@ RSpec.describe Dor::Services::Client do
 
     describe '.administrative_tags' do
       subject { described_class.administrative_tags }
+
       it { is_expected.to be_instance_of Dor::Services::Client::AdministrativeTagSearch }
 
       it 'returns the memoized instance when called again' do
@@ -88,7 +89,7 @@ RSpec.describe Dor::Services::Client do
     subject(:client) { described_class.configure(url: 'https://dor-services.example.com', token: '123') }
 
     it 'returns Client class' do
-      expect(client).to eq Dor::Services::Client
+      expect(client).to eq described_class
     end
   end
 
