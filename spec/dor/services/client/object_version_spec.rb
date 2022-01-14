@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 RSpec.describe Dor::Services::Client::ObjectVersion do
+  subject(:client) { described_class.new(connection: connection, version: 'v1', object_identifier: pid) }
+
   before do
     Dor::Services::Client.configure(url: 'https://dor-services.example.com', token: '123')
   end
 
   let(:connection) { Dor::Services::Client.instance.send(:connection) }
   let(:pid) { 'druid:1234' }
-
-  subject(:client) { described_class.new(connection: connection, version: 'v1', object_identifier: pid) }
 
   describe '#current_version' do
     subject(:request) { client.current }
@@ -51,6 +51,7 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
       before do
         allow_any_instance_of(Faraday::Adapter::NetHttp).to receive(:call).and_raise(Faraday::ConnectionFailed.new('end of file reached'))
       end
+
       let(:status) { 555 }
       let(:body) { '' }
 
@@ -109,6 +110,7 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
       before do
         allow_any_instance_of(Faraday::Adapter::NetHttp).to receive(:call).and_raise(Faraday::ConnectionFailed.new('end of file reached'))
       end
+
       let(:status) { 555 }
       let(:body) { '' }
 
@@ -119,9 +121,9 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
   end
 
   describe '#open_new_version' do
-    let(:params) { {} }
-
     subject(:request) { client.open(**params) }
+
+    let(:params) { {} }
 
     before do
       stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/versions')
@@ -188,9 +190,9 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
   end
 
   describe '#close_version' do
-    let(:params) { {} }
-
     subject(:request) { client.close(**params) }
+
+    let(:params) { {} }
 
     before do
       stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/versions/current/close')
@@ -247,9 +249,9 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
   end
 
   describe '#openable?' do
-    let(:params) { {} }
-
     subject(:request) { client.openable?(assume_accessioned: true) }
+
+    let(:params) { {} }
 
     before do
       stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:1234/versions/openable?assume_accessioned=true')

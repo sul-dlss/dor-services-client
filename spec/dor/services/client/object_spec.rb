@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 RSpec.describe Dor::Services::Client::Object do
+  subject(:client) { described_class.new(connection: connection, version: 'v1', object_identifier: pid) }
+
   before do
     Dor::Services::Client.configure(url: 'https://dor-services.example.com', token: '123')
   end
 
   let(:connection) { Dor::Services::Client.instance.send(:connection) }
   let(:pid) { 'druid:bc123df4567' }
-
-  subject(:client) { described_class.new(connection: connection, version: 'v1', object_identifier: pid) }
 
   describe '#object_identifier' do
     it 'returns the injected pid' do
@@ -18,6 +18,7 @@ RSpec.describe Dor::Services::Client::Object do
 
   describe '#collections' do
     let(:collections) { instance_double(Dor::Services::Client::Collections, collections: true) }
+
     before do
       allow(Dor::Services::Client::Collections).to receive(:new).and_return(collections)
     end
@@ -30,6 +31,7 @@ RSpec.describe Dor::Services::Client::Object do
 
   describe '#members' do
     let(:members) { instance_double(Dor::Services::Client::Members, members: true) }
+
     before do
       allow(Dor::Services::Client::Members).to receive(:new).and_return(members)
     end
@@ -228,6 +230,7 @@ RSpec.describe Dor::Services::Client::Object do
 
   describe '#publish' do
     subject(:request) { client.publish(workflow: 'accessionWF', lane_id: 'low') }
+
     subject(:no_wf_request) { client.publish }
 
     before do

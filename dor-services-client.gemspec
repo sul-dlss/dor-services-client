@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.required_ruby_version = '>= 2.6', '< 4'
+  spec.required_ruby_version = '>= 3.0', '< 4'
 
   spec.add_dependency 'activesupport', '>= 4.2', '< 8'
   spec.add_dependency 'cocina-models', '~> 0.62.0' # leave pinned to patch level until cocina-models hits 1.0
@@ -35,6 +35,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rake', '>= 12.3.3'
   spec.add_development_dependency 'rspec', '~> 3.0'
   spec.add_development_dependency 'rubocop', '~> 1.0'
+  spec.add_development_dependency 'rubocop-rspec', '~> 2.1'
   spec.add_development_dependency 'simplecov', '~> 0.17.0' # CodeClimate cannot use SimpleCov >= 0.18.0 for generating test coverage
   spec.add_development_dependency 'webmock'
+  spec.metadata['rubygems_mfa_required'] = 'true'
 end
