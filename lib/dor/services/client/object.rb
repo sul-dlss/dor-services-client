@@ -83,7 +83,7 @@ module Dor
           Transfer.new(**parent_params)
         end
 
-        delegate :publish, :preserve, :shelve, to: :transfer
+        delegate :publish, :unpublish, :preserve, :shelve, to: :transfer
 
         def mutate
           Mutate.new(**parent_params)

@@ -14,9 +14,9 @@ module Dor
         # Publish an object (send to PURL)
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
-        # @param [String] workflow ('accessionWF') which workflow to callback to.
+        # @param [String] workflow (nil) which workflow to callback to.
         # @param [String] lane_id for prioritization (default or low)
-        # @return [boolean] true on success
+        # @return [String] the URL of the background job on dor-service-app
         def publish(workflow: nil, lane_id: nil)
           query_params = [].tap do |params|
             params << "workflow=#{workflow}" if workflow
@@ -26,6 +26,19 @@ module Dor
           publish_path = "#{object_path}/publish#{query_string}"
           resp = connection.post do |req|
             req.url publish_path
+          end
+          return resp.headers['Location'] if resp.success?
+
+          raise_exception_based_on_response!(resp)
+        end
+
+        # Unpublish an object (yank from to PURL)
+        # @raise [NotFoundResponse] when the response is a 404 (object not found)
+        # @raise [UnexpectedResponse] when the response is not successful.
+        # @return [String] the URL of the background job on dor-service-app
+        def unpublish
+          resp = connection.post do |req|
+            req.url "#{object_path}/unpublish"
           end
           return resp.headers['Location'] if resp.success?
 
