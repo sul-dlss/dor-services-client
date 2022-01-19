@@ -96,6 +96,9 @@ object_client.update(params: dro)
 # Publish an object (push to PURL)
 object_client.publish(workflow: 'releaseWF', lane_id: 'low')
 
+# Unpublish an object (yank from PURL)
+object_client.unpublish()
+
 # Shelve an object (push to Stacks)
 object_client.shelve(lane_id: 'low')
 
