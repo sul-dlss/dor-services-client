@@ -3,7 +3,7 @@
 module Dor
   module Services
     class Client
-      VERSION = '7.6.0'
+      VERSION = '7.7.0'
     end
   end
 end
