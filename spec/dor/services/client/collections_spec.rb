@@ -23,6 +23,7 @@ RSpec.describe Dor::Services::Client::Collections do
               "label":"my collection",
               "version":1,
               "description":{
+                "purl":"https://purl.stanford.edu/bc123df4567",
                 "title": [
                   { "value": "hey!", "type": "primary" }
                 ]

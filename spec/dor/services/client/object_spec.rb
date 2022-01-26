@@ -99,6 +99,7 @@ RSpec.describe Dor::Services::Client::Object do
               "hasAdminPolicy":"druid:fv123df4567"
             },
             "description":{
+              "purl":"https://purl.stanford.edu/bc123df4567",
               "title": [
                 { "value": "hey!", "type": "primary" }
               ]
@@ -124,6 +125,7 @@ RSpec.describe Dor::Services::Client::Object do
             "label":"my item",
             "version":1,
             "description":{
+              "purl":"https://purl.stanford.edu/bc123df4567",
               "title": [
                 { "value": "hey!", "type": "primary" }
               ]
@@ -166,6 +168,7 @@ RSpec.describe Dor::Services::Client::Object do
               "hasAdminPolicy":"druid:fv123df4567"
             },
             "description":{
+              "purl":"https://purl.stanford.edu/bc123df4567",
               "title": [
                 { "value": "hey!", "type": "primary" }
               ]
@@ -211,6 +214,7 @@ RSpec.describe Dor::Services::Client::Object do
               "hasAdminPolicy":"druid:fv123df4567"
             },
             "description":{
+              "purl":"https://purl.stanford.edu/bc123df4567",
               "title": [
                 { "value": "hey!", "type": "primary" }
               ]
