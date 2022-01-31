@@ -151,6 +151,7 @@ RSpec.describe Dor::Services::Client::Object do
         .to_return(status: status,
                    headers: {
                      'Last-Modified' => 'Wed, 03 Mar 2021 18:58:00 GMT',
+                     'X-Created-At' => 'Wed, 01 Jan 2021 12:58:00 GMT',
                      'X-Served-By' => 'Awesome webserver'
                    },
                    body: json)
@@ -182,7 +183,9 @@ RSpec.describe Dor::Services::Client::Object do
 
       it 'returns the cocina model' do
         expect(response.first.externalIdentifier).to eq 'druid:bc123df4567'
-        expect(response[1]).to eq('Last-Modified' => 'Wed, 03 Mar 2021 18:58:00 GMT')
+        metadata = response[1]
+        expect(metadata.updated_at).to eq('Wed, 03 Mar 2021 18:58:00 GMT')
+        expect(metadata.created_at).to eq('Wed, 01 Jan 2021 12:58:00 GMT')
       end
     end
   end
