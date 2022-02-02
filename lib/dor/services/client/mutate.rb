@@ -26,7 +26,7 @@ module Dor
         end
 
         # Updates the object
-        # @param [Cocina::Models::RequestDRO,Cocina::Models::RequestCollection,Cocina::Models::RequestAPO] params model object
+        # @param [Cocina::Models::DRO,Cocina::Models::Collection,Cocina::Models::AdminPolicy] params model object
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
         # @return [Cocina::Models::DRO,Cocina::Models::Collection,Cocina::Models::AdminPolicy] the returned model
