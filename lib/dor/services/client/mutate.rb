@@ -48,7 +48,7 @@ module Dor
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
         # @return [boolean] true on success
-        def refresh_metadata
+        def refresh_descriptive_metadata_from_ils
           resp = connection.post do |req|
             req.url "#{object_path}/refresh_metadata"
           end
