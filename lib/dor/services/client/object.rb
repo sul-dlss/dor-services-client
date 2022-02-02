@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
+require 'deprecation'
+
 module Dor
   module Services
     class Client
       # API calls that are about a repository object
       class Object < VersionedService
+        extend Deprecation
         attr_reader :object_identifier
 
         # @param object_identifier [String] the pid for the object
@@ -89,7 +92,10 @@ module Dor
           Mutate.new(**parent_params)
         end
 
-        delegate :refresh_metadata, :update, :destroy, :apply_admin_policy_defaults, to: :mutate
+        delegate :refresh_descriptive_metadata_from_ils, :update, :destroy, :apply_admin_policy_defaults, to: :mutate
+
+        alias refresh_metadata refresh_descriptive_metadata_from_ils
+        deprecation_deprecate refresh_metadata: 'Use refresh_descriptive_metadata_from_ils instead'
 
         # Update the marc record for the given object
         # @raise [NotFoundResponse] when the response is a 404 (object not found)

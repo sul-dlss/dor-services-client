@@ -112,7 +112,7 @@ object_client.preserve(lane_id: 'low')
 object_client.update_marc_record
 
 # Copy metadata from Symphony into descMetadata
-object_client.refresh_metadata
+object_client.refresh_descriptive_metadata_from_ils
 
 # Apply defaults from the item's AdminPolicy to the item itself
 object_client.apply_admin_policy_defaults

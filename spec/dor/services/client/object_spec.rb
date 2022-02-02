@@ -446,8 +446,8 @@ RSpec.describe Dor::Services::Client::Object do
     end
   end
 
-  describe '#refresh_metadata' do
-    subject(:request) { client.refresh_metadata }
+  describe '#refresh_descriptive_metadata_from_ils' do
+    subject(:request) { client.refresh_descriptive_metadata_from_ils }
 
     before do
       stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/refresh_metadata')
