@@ -87,6 +87,20 @@ module Dor
           raise_exception_based_on_response!(resp, object_identifier)
         end
 
+        # Update the MODS XML metadata
+        # @raise [NotFoundResponse] when the response is a 404 (object not found)
+        # @return [boolean] true on success
+        def update_mods(mods_xml)
+          resp = connection.put do |req|
+            req.url "#{base_path}/mods"
+            req.headers['Content-Type'] = 'application/xml'
+            req.body = mods_xml
+          end
+          return if resp.success?
+
+          raise_exception_based_on_response!(resp, object_identifier)
+        end
+
         # rubocop:disable Lint/StructNewOverride
         Datastream = Struct.new(:label, :dsid, :pid, :size, :mimeType, :versionId, keyword_init: true)
         # rubocop:enable Lint/StructNewOverride
