@@ -172,6 +172,34 @@ RSpec.describe Dor::Services::Client::Metadata do
     end
   end
 
+  describe '#update_mods' do
+    subject(:response) { client.update_mods(xml) }
+
+    let(:xml) { '<mods></mods>' }
+
+    before do
+      stub_request(:put, 'https://dor-services.example.com/v1/objects/druid:1234/metadata/mods')
+        .to_return(status: status, body: body)
+    end
+
+    context 'when the update is successful' do
+      let(:status) { 200 }
+      let(:body) { '' }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when there is an error' do
+      let(:status) { [500, 'internal server error'] }
+      let(:body) { 'broken' }
+
+      it 'raises an error' do
+        expect { response }.to raise_error(Dor::Services::Client::UnexpectedResponse,
+                                           'internal server error: 500 (broken) for druid:1234')
+      end
+    end
+  end
+
   describe '#legacy_update' do
     context 'when many datastreams' do
       let(:params) do
@@ -197,7 +225,6 @@ RSpec.describe Dor::Services::Client::Metadata do
         let(:status) { 204 }
 
         it 'posts params as json' do
-          # byebug
           expect(client.legacy_update(params)).to be_nil
         end
       end
