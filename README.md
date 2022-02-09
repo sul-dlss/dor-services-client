@@ -67,7 +67,7 @@ objects_client.register(params: {}, assign_doi: true)
 virtual_objects_client = Dor::Services::Client.virtual_objects
 
 # Create a batch of virtual objects
-virtual_objects_client.create(virtual_objects: [{ parent_id: '', child_ids: [''] }])
+virtual_objects_client.create(virtual_objects: [{ virtual_object_id: '', constituent_ids: [''] }])
 
 # Retrieve background job results
 background_jobs_client = Dor::Services::Client.background_job_results
