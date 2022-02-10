@@ -18,8 +18,8 @@ RSpec.describe Dor::Services::Client::VirtualObjects do
     let(:virtual_objects) do
       [
         {
-          parent_id: 'druid:1',
-          child_ids: [
+          virtual_object_id: 'druid:1',
+          constituent_ids: [
             'druid:2',
             'druid:3'
           ]
