@@ -4,7 +4,7 @@ module Dor
   module Services
     class Client
       # This wraps any faraday connection errors with dor-services-client errors
-      class ErrorFaradayMiddleware < Faraday::Response::Middleware
+      class ErrorFaradayMiddleware < Faraday::Middleware
         def call(env)
           @app.call(env)
         rescue Faraday::ConnectionFailed

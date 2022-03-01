@@ -104,12 +104,12 @@ RSpec.describe Dor::Services::Client do
     end
 
     it 'does not enable retries' do
-      expect(client.instance.send(:build_connection).builder.handlers).not_to include(Faraday::Request::Retry)
+      expect(client.instance.send(:build_connection).builder.handlers).not_to include(Faraday::Retry::Middleware)
     end
 
     context 'when with retries' do
       it 'enables retries' do
-        expect(client.instance.send(:build_connection, with_retries: true).builder.handlers).to include(Faraday::Request::Retry)
+        expect(client.instance.send(:build_connection, with_retries: true).builder.handlers).to include(Faraday::Retry::Middleware)
       end
     end
   end
