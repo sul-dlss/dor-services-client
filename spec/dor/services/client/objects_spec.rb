@@ -14,18 +14,24 @@ RSpec.describe Dor::Services::Client::Objects do
     {
       type: item_type,
       label: 'My object',
-      version: 3,
+      version: 1,
       administrative: { hasAdminPolicy: 'druid:fv123df4567' },
       identification: { sourceId: 'sul:99999' }
     }
   end
   let(:expected_request) { model.to_json }
+  let(:description_props) do
+    {
+      title: [{ value: 'Test DRO' }],
+      purl: 'https://purl.stanford.edu/bc123df4567'
+    }
+  end
 
   describe '#register' do
     let(:status) { 200 }
     let(:body) do
       Cocina::Models::DRO.new(model.to_h.merge(externalIdentifier: 'druid:bc123df4567',
-                                               access: {})).to_json
+                                               access: {}, description: description_props)).to_json
     end
     let(:url) { 'https://dor-services.example.com/v1/objects' }
 
