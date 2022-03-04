@@ -46,12 +46,6 @@ RSpec/MultipleExpectations:
     - 'spec/dor/services/client/object_spec.rb'
     - 'spec/dor/services/client/response_error_formatter_spec.rb'
 
-# Offense count: 7
-# Configuration parameters: AllowSubject, Max.
-RSpec/MultipleMemoizedHelpers:
-  Exclude:
-    - 'spec/dor/services/client/objects_spec.rb'
-
 # Offense count: 1
 # Cop supports --auto-correct.
 RSpec/MultipleSubjects:

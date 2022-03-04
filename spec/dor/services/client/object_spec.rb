@@ -84,7 +84,13 @@ RSpec.describe Dor::Services::Client::Object do
     before do
       stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:bc123df4567')
         .to_return(status: status,
-                   body: json)
+                   body: json,
+                   headers: {
+                     'Last-Modified' => 'Wed, 03 Mar 2021 18:58:00 GMT',
+                     'X-Created-At' => 'Wed, 01 Jan 2021 12:58:00 GMT',
+                     'X-Served-By' => 'Awesome webserver',
+                     'ETag' => 'W/"d41d8cd98f00b204e9800998ecf8427e"'
+                   })
     end
 
     context 'when API request succeeds with DRO' do
@@ -115,6 +121,9 @@ RSpec.describe Dor::Services::Client::Object do
 
       it 'returns the cocina model' do
         expect(model.externalIdentifier).to eq 'druid:bc123df4567'
+        expect(model.lock).to eq('W/"d41d8cd98f00b204e9800998ecf8427e"')
+        expect(model.created.to_s).to eq('2021-01-01T12:58:00+00:00')
+        expect(model.modified.to_s).to eq('2021-03-03T18:58:00+00:00')
       end
     end
 
@@ -158,7 +167,8 @@ RSpec.describe Dor::Services::Client::Object do
                    headers: {
                      'Last-Modified' => 'Wed, 03 Mar 2021 18:58:00 GMT',
                      'X-Created-At' => 'Wed, 01 Jan 2021 12:58:00 GMT',
-                     'X-Served-By' => 'Awesome webserver'
+                     'X-Served-By' => 'Awesome webserver',
+                     'ETag' => 'W/"d41d8cd98f00b204e9800998ecf8427e"'
                    },
                    body: json)
     end
@@ -198,6 +208,7 @@ RSpec.describe Dor::Services::Client::Object do
         allow(Deprecation).to receive(:warn)
         expect(metadata['Last-Modified']).to eq('Wed, 03 Mar 2021 18:58:00 GMT')
         expect(metadata['X-Created-At']).to eq('Wed, 01 Jan 2021 12:58:00 GMT')
+        expect(metadata.etag).to eq 'W/"d41d8cd98f00b204e9800998ecf8427e"'
         expect { metadata['X-Powered-By'] }.to raise_error(KeyError)
       end
       # rubocop:enable RSpec/ExampleLength
@@ -205,48 +216,103 @@ RSpec.describe Dor::Services::Client::Object do
   end
 
   describe '#update' do
-    subject(:model) { client.update(params: dro) }
+    let(:created) { DateTime.parse('Wed, 01 Jan 2021 12:58:00 GMT') }
 
-    let(:dro) { Cocina::Models::DRO.new(JSON.parse(json)) }
+    let(:modified) { DateTime.parse('Wed, 03 Mar 2021 18:58:00 GMT') }
 
-    before do
-      stub_request(:patch, 'https://dor-services.example.com/v1/objects/druid:bc123df4567')
-        .with(
-          body: dro.to_json,
-          headers: { 'Content-Type' => 'application/json', 'Accept' => 'application/json' }
-        )
-        .to_return(status: status,
-                   body: json)
+    let(:lock) { 'W/"d41d8cd98f00b204e9800998ecf8427e"' }
+
+    let(:dro) do
+      Cocina::Models::DRO.new(JSON.parse(json))
+    end
+
+    let(:dro_with_metadata) do
+      Cocina::Models.with_metadata(dro, lock, created: created, modified: modified)
+    end
+
+    let(:json) do
+      <<~JSON
+        {
+          "externalIdentifier":"druid:bc123df4567",
+          "type":"#{Cocina::Models::ObjectType.book}",
+          "label":"my item",
+          "version":1,
+          "administrative":{
+            "hasAdminPolicy":"druid:fv123df4567"
+          },
+          "description":{
+            "purl":"https://purl.stanford.edu/bc123df4567",
+            "title": [
+              { "value": "hey!" }
+            ]
+          },
+          "access":{ "view": "dark", "download": "none" },
+          "identification":{"sourceId":"sul:123"},
+          "structural":{}
+        }
+      JSON
     end
 
     context 'when API request succeeds with DRO' do
-      let(:json) do
-        <<~JSON
-          {
-            "externalIdentifier":"druid:bc123df4567",
-            "type":"#{Cocina::Models::ObjectType.book}",
-            "label":"my item",
-            "version":1,
-            "administrative":{
-              "hasAdminPolicy":"druid:fv123df4567"
-            },
-            "description":{
-              "purl":"https://purl.stanford.edu/bc123df4567",
-              "title": [
-                { "value": "hey!" }
-              ]
-            },
-            "access":{ "view": "dark", "download": "none" },
-            "identification":{"sourceId":"sul:123"},
-            "structural":{}
-          }
-        JSON
-      end
+      subject(:model) { client.update(params: dro_with_metadata) }
 
-      let(:status) { 200 }
+      before do
+        stub_request(:patch, 'https://dor-services.example.com/v1/objects/druid:bc123df4567')
+          .with(
+            body: dro.to_json,
+            headers: {
+              'If-Match' => lock,
+              'Content-Type' => 'application/json',
+              'Accept' => 'application/json'
+            }
+          )
+          .to_return(status: 200,
+                     body: json,
+                     headers: {
+                       'Last-Modified' => 'Wed, 04 Mar 2021 18:58:00 GMT',
+                       'X-Created-At' => 'Wed, 02 Jan 2021 12:58:00 GMT',
+                       'X-Served-By' => 'Awesome webserver',
+                       'ETag' => 'W/"e541d8cd98f00b204e9800998ecf8427f"'
+                     })
+      end
 
       it 'returns the cocina model' do
         expect(model.externalIdentifier).to eq 'druid:bc123df4567'
+        expect(model.lock).to eq('W/"e541d8cd98f00b204e9800998ecf8427f"')
+      end
+    end
+
+    context 'when missing lock' do
+      it 'raises' do
+        expect { client.update(params: dro) }.to raise_error(Dor::Services::Client::BadRequestError)
+      end
+    end
+
+    context 'when skipping lock' do
+      subject(:model) { client.update(params: dro, skip_lock: true) }
+
+      before do
+        stub_request(:patch, 'https://dor-services.example.com/v1/objects/druid:bc123df4567')
+          .with(
+            body: dro.to_json,
+            headers: {
+              'Content-Type' => 'application/json',
+              'Accept' => 'application/json'
+            }
+          )
+          .to_return(status: 200,
+                     body: json,
+                     headers: {
+                       'Last-Modified' => 'Wed, 04 Mar 2021 18:58:00 GMT',
+                       'X-Created-At' => 'Wed, 02 Jan 2021 12:58:00 GMT',
+                       'X-Served-By' => 'Awesome webserver',
+                       'ETag' => 'W/"e541d8cd98f00b204e9800998ecf8427f"'
+                     })
+      end
+
+      it 'returns the cocina model' do
+        expect(model.externalIdentifier).to eq 'druid:bc123df4567'
+        expect(model.lock).to eq('W/"e541d8cd98f00b204e9800998ecf8427f"')
       end
     end
   end

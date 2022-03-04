@@ -30,6 +30,8 @@ module Dor
                               NotFoundResponse
                             when 409
                               ConflictResponse
+                            when 412
+                              PreconditionFailedResponse
                             else
                               UnexpectedResponse
                             end
@@ -37,6 +39,20 @@ module Dor
                 ResponseErrorFormatter.format(response: response, object_identifier: object_identifier)
         end
         # rubocop:enable Metrics/MethodLength
+
+        def build_cocina_from_response(response)
+          cocina_object = Cocina::Models.build(JSON.parse(response.body))
+          Cocina::Models.with_metadata(cocina_object, response.headers['ETag'], created: date_from_header(response, 'X-Created-At'),
+                                                                                modified: date_from_header(response, 'Last-Modified'))
+        end
+
+        def build_json_from_cocina(cocina_object)
+          Cocina::Models.without_metadata(cocina_object).to_json
+        end
+
+        def date_from_header(response, key)
+          response.headers[key]&.to_datetime
+        end
       end
     end
   end
