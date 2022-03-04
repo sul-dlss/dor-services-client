@@ -27,15 +27,18 @@ module Dor
 
         # Updates the object
         # @param [Cocina::Models::DRO,Cocina::Models::Collection,Cocina::Models::AdminPolicy] params model object
+        # @param [String] etag if provided, send this via an If-Match header. The server will use this to know if we've started with the latest version.
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
         # @return [Cocina::Models::DRO,Cocina::Models::Collection,Cocina::Models::AdminPolicy] the returned model
-        def update(params:)
+        # rubocop:disable Metrics/AbcSize
+        def update(params:, etag: nil)
           resp = connection.patch do |req|
             req.url object_path
             req.headers['Content-Type'] = 'application/json'
             # asking the service to return JSON (else it'll be plain text)
             req.headers['Accept'] = 'application/json'
+            req.headers['If-Match'] = etag if etag
             req.body = params.to_json
           end
 
@@ -43,6 +46,7 @@ module Dor
 
           Cocina::Models.build(JSON.parse(resp.body))
         end
+        # rubocop:enable Metrics/AbcSize
 
         # Pull in metadata from Symphony and updates descriptive metadata
         # @raise [NotFoundResponse] when the response is a 404 (object not found)

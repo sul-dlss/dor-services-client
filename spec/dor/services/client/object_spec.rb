@@ -152,7 +152,8 @@ RSpec.describe Dor::Services::Client::Object do
                    headers: {
                      'Last-Modified' => 'Wed, 03 Mar 2021 18:58:00 GMT',
                      'X-Created-At' => 'Wed, 01 Jan 2021 12:58:00 GMT',
-                     'X-Served-By' => 'Awesome webserver'
+                     'X-Served-By' => 'Awesome webserver',
+                     'ETag' => 'W/"d41d8cd98f00b204e9800998ecf8427e"'
                    },
                    body: json)
     end
@@ -190,6 +191,7 @@ RSpec.describe Dor::Services::Client::Object do
         allow(Deprecation).to receive(:warn)
         expect(metadata['Last-Modified']).to eq('Wed, 03 Mar 2021 18:58:00 GMT')
         expect(metadata['X-Created-At']).to eq('Wed, 01 Jan 2021 12:58:00 GMT')
+        expect(metadata.etag).to eq 'W/"d41d8cd98f00b204e9800998ecf8427e"'
         expect { metadata['X-Powered-By'] }.to raise_error(KeyError)
       end
       # rubocop:enable RSpec/ExampleLength
@@ -205,13 +207,54 @@ RSpec.describe Dor::Services::Client::Object do
       stub_request(:patch, 'https://dor-services.example.com/v1/objects/druid:bc123df4567')
         .with(
           body: dro.to_json,
-          headers: { 'Content-Type' => 'application/json', 'Accept' => 'application/json' }
+          headers: headers
         )
         .to_return(status: status,
                    body: json)
     end
 
     context 'when API request succeeds with DRO' do
+      let(:headers) { { 'Content-Type' => 'application/json', 'Accept' => 'application/json' } }
+
+      let(:json) do
+        <<~JSON
+          {
+            "externalIdentifier":"druid:bc123df4567",
+            "type":"http://cocina.sul.stanford.edu/models/book.jsonld",
+            "label":"my item",
+            "version":1,
+            "administrative":{
+              "hasAdminPolicy":"druid:fv123df4567"
+            },
+            "description":{
+              "purl":"https://purl.stanford.edu/bc123df4567",
+              "title": [
+                { "value": "hey!", "type": "primary" }
+              ]
+            },
+            "access":{ "access": "dark", "download": "none" }
+          }
+        JSON
+      end
+
+      let(:status) { 200 }
+
+      it 'returns the cocina model' do
+        expect(model.externalIdentifier).to eq 'druid:bc123df4567'
+      end
+    end
+
+    context 'when passing an etag' do
+      subject(:model) { client.update(params: dro, etag: 'W/"d41d8cd98f00b204e9800998ecf8427e"') }
+
+      let(:headers) do
+        {
+          'Content-Type' => 'application/json',
+          'Accept' => 'application/json',
+          'If-Match' => 'W/"d41d8cd98f00b204e9800998ecf8427e"'
+        }
+      end
+
       let(:json) do
         <<~JSON
           {

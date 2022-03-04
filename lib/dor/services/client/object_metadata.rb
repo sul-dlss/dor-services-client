@@ -9,11 +9,12 @@ module Dor
       class ObjectMetadata
         extend Deprecation
 
-        attr_reader :created_at, :updated_at
+        attr_reader :created_at, :updated_at, :etag
 
-        def initialize(created_at:, updated_at:)
+        def initialize(created_at:, updated_at:, etag: nil)
           @created_at = created_at
           @updated_at = updated_at
+          @etag = etag
         end
 
         def [](key)

@@ -30,6 +30,8 @@ module Dor
                               NotFoundResponse
                             when 409
                               ConflictResponse
+                            when 412
+                              PreconditionFailedResponse
                             else
                               UnexpectedResponse
                             end

@@ -64,7 +64,9 @@ module Dor
           model = Cocina::Models.build(JSON.parse(resp.body))
 
           # Don't use #slice here as Faraday will downcase the keys.
-          metadata = ObjectMetadata.new(updated_at: resp.headers['Last-Modified'], created_at: resp.headers['X-Created-At'])
+          metadata = ObjectMetadata.new(updated_at: resp.headers['Last-Modified'],
+                                        created_at: resp.headers['X-Created-At'],
+                                        etag: resp.headers['ETag'])
           [model, metadata]
         end
 
