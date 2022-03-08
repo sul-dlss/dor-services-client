@@ -92,7 +92,7 @@ RSpec.describe Dor::Services::Client::Object do
         <<~JSON
           {
             "externalIdentifier":"druid:bc123df4567",
-            "type":"http://cocina.sul.stanford.edu/models/book.jsonld",
+            "type":"#{Cocina::Models::Vocab.book}",
             "label":"my item",
             "version":1,
             "administrative":{
@@ -121,7 +121,7 @@ RSpec.describe Dor::Services::Client::Object do
         <<~JSON
           {
             "externalIdentifier":"druid:bc123df4567",
-            "type":"http://cocina.sul.stanford.edu/models/collection.jsonld",
+            "type":"#{Cocina::Models::Vocab.collection}",
             "label":"my item",
             "version":1,
             "description":{
@@ -162,7 +162,7 @@ RSpec.describe Dor::Services::Client::Object do
         <<~JSON
           {
             "externalIdentifier":"druid:bc123df4567",
-            "type":"http://cocina.sul.stanford.edu/models/book.jsonld",
+            "type":"#{Cocina::Models::Vocab.book}",
             "label":"my item",
             "version":1,
             "administrative":{
@@ -216,7 +216,7 @@ RSpec.describe Dor::Services::Client::Object do
         <<~JSON
           {
             "externalIdentifier":"druid:bc123df4567",
-            "type":"http://cocina.sul.stanford.edu/models/book.jsonld",
+            "type":"#{Cocina::Models::Vocab.book}",
             "label":"my item",
             "version":1,
             "administrative":{
