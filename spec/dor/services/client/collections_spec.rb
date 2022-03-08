@@ -19,7 +19,7 @@ RSpec.describe Dor::Services::Client::Collections do
           {
             "collections":[{
               "externalIdentifier":"druid:bc123df4567",
-              "type":"http://cocina.sul.stanford.edu/models/collection.jsonld",
+              "type":"#{Cocina::Models::Vocab.collection}",
               "label":"my collection",
               "version":1,
               "description":{
