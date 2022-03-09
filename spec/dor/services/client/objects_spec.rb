@@ -9,7 +9,7 @@ RSpec.describe Dor::Services::Client::Objects do
 
   let(:connection) { Dor::Services::Client.instance.send(:connection) }
   let(:model) { Cocina::Models::RequestDRO.new(properties) }
-  let(:item_type) { Cocina::Models::Vocab.object }
+  let(:item_type) { Cocina::Models::ObjectType.object }
   let(:properties) do
     {
       type: item_type,

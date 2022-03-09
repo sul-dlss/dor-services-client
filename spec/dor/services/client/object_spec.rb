@@ -92,7 +92,7 @@ RSpec.describe Dor::Services::Client::Object do
         <<~JSON
           {
             "externalIdentifier":"druid:bc123df4567",
-            "type":"#{Cocina::Models::Vocab.book}",
+            "type":"#{Cocina::Models::ObjectType.book}",
             "label":"my item",
             "version":1,
             "administrative":{
@@ -121,7 +121,7 @@ RSpec.describe Dor::Services::Client::Object do
         <<~JSON
           {
             "externalIdentifier":"druid:bc123df4567",
-            "type":"#{Cocina::Models::Vocab.collection}",
+            "type":"#{Cocina::Models::ObjectType.collection}",
             "label":"my item",
             "version":1,
             "description":{
@@ -162,7 +162,7 @@ RSpec.describe Dor::Services::Client::Object do
         <<~JSON
           {
             "externalIdentifier":"druid:bc123df4567",
-            "type":"#{Cocina::Models::Vocab.book}",
+            "type":"#{Cocina::Models::ObjectType.book}",
             "label":"my item",
             "version":1,
             "administrative":{
@@ -216,7 +216,7 @@ RSpec.describe Dor::Services::Client::Object do
         <<~JSON
           {
             "externalIdentifier":"druid:bc123df4567",
-            "type":"#{Cocina::Models::Vocab.book}",
+            "type":"#{Cocina::Models::ObjectType.book}",
             "label":"my item",
             "version":1,
             "administrative":{
@@ -228,7 +228,7 @@ RSpec.describe Dor::Services::Client::Object do
                 { "value": "hey!", "type": "primary" }
               ]
             },
-            "access":{ "access": "dark", "download": "none" }
+            "access":{ "view": "dark", "download": "none" }
           }
         JSON
       end
