@@ -19,7 +19,7 @@ RSpec.describe Dor::Services::Client::Collections do
           {
             "collections":[{
               "externalIdentifier":"druid:bc123df4567",
-              "type":"#{Cocina::Models::Vocab.collection}",
+              "type":"#{Cocina::Models::ObjectType.collection}",
               "label":"my collection",
               "version":1,
               "description":{
