@@ -104,7 +104,9 @@ RSpec.describe Dor::Services::Client::Object do
                 { "value": "hey!", "type": "primary" }
               ]
             },
-            "access":{}
+            "access":{},
+            "identification":{},
+            "structural":{}
           }
         JSON
       end
@@ -130,7 +132,11 @@ RSpec.describe Dor::Services::Client::Object do
                 { "value": "hey!", "type": "primary" }
               ]
             },
-            "access":{}
+            "access":{},
+            "administrative":{
+              "hasAdminPolicy":"druid:fv123df4567"
+            },
+            "identification":{}
           }
         JSON
       end
@@ -174,7 +180,9 @@ RSpec.describe Dor::Services::Client::Object do
                 { "value": "hey!", "type": "primary" }
               ]
             },
-            "access":{}
+            "access":{},
+            "identification":{},
+            "structural":{}
           }
         JSON
       end
@@ -228,7 +236,9 @@ RSpec.describe Dor::Services::Client::Object do
                 { "value": "hey!", "type": "primary" }
               ]
             },
-            "access":{ "view": "dark", "download": "none" }
+            "access":{ "view": "dark", "download": "none" },
+            "identification":{},
+            "structural":{}
           }
         JSON
       end
