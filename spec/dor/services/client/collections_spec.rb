@@ -28,7 +28,11 @@ RSpec.describe Dor::Services::Client::Collections do
                   { "value": "hey!", "type": "primary" }
                 ]
               },
-              "access": {}
+              "access": {},
+              "administrative":{
+                "hasAdminPolicy":"druid:fv123df4567"
+              },
+              "identification":{}
             }]
           }
         JSON

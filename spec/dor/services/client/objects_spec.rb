@@ -16,7 +16,8 @@ RSpec.describe Dor::Services::Client::Objects do
       label: 'My object',
       version: 1,
       administrative: { hasAdminPolicy: 'druid:fv123df4567' },
-      identification: { sourceId: 'sul:99999' }
+      identification: { sourceId: 'sul:99999' },
+      structural: {}
     }
   end
   let(:expected_request) { model.to_json }
