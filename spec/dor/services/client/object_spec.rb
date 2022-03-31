@@ -105,7 +105,7 @@ RSpec.describe Dor::Services::Client::Object do
               ]
             },
             "access":{},
-            "identification":{},
+            "identification":{"sourceId":"sul:123"},
             "structural":{}
           }
         JSON
@@ -136,7 +136,7 @@ RSpec.describe Dor::Services::Client::Object do
             "administrative":{
               "hasAdminPolicy":"druid:fv123df4567"
             },
-            "identification":{}
+            "identification":{"sourceId":"sul:123"}
           }
         JSON
       end
@@ -181,7 +181,7 @@ RSpec.describe Dor::Services::Client::Object do
               ]
             },
             "access":{},
-            "identification":{},
+            "identification":{"sourceId":"sul:123"},
             "structural":{}
           }
         JSON
@@ -237,7 +237,7 @@ RSpec.describe Dor::Services::Client::Object do
               ]
             },
             "access":{ "view": "dark", "download": "none" },
-            "identification":{},
+            "identification":{"sourceId":"sul:123"},
             "structural":{}
           }
         JSON
