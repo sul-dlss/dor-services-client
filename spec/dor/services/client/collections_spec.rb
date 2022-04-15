@@ -25,7 +25,7 @@ RSpec.describe Dor::Services::Client::Collections do
               "description":{
                 "purl":"https://purl.stanford.edu/bc123df4567",
                 "title": [
-                  { "value": "hey!", "type": "primary" }
+                  { "value": "hey!" }
                 ]
               },
               "access": {},
