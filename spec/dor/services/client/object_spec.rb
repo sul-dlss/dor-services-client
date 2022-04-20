@@ -284,7 +284,7 @@ RSpec.describe Dor::Services::Client::Object do
 
     context 'when missing lock' do
       it 'raises' do
-        expect { client.update(params: dro) }.to raise_error(Dor::Services::Client::BadRequestError)
+        expect { client.update(params: dro) }.to raise_error(ArgumentError)
       end
     end
 

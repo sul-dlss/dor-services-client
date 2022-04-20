@@ -35,7 +35,7 @@ module Dor
         # rubocop:disable Metrics/AbcSize
         def update(params:, skip_lock: false)
           # Raised if Cocina::Models::*WithMetadata not provided.
-          raise BadRequestError, 'ETag not provided.' unless skip_lock || params.respond_to?(:lock)
+          raise ArgumentError, 'ETag not provided.' unless skip_lock || params.respond_to?(:lock)
 
           resp = connection.patch do |req|
             req.url object_path
