@@ -26,23 +26,31 @@ module Dor
         end
 
         # Updates the object
-        # @param [Cocina::Models::DRO,Cocina::Models::Collection,Cocina::Models::AdminPolicy] params model object
+        # @param [Cocina::Models::DROWithMetadata|CollectionWithMetadata|AdminPolicyWithMetadata|DRO|Collection|AdminPolicy] params model object
+        # @param [boolean] skip_lock do not provide ETag
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
-        # @return [Cocina::Models::DRO,Cocina::Models::Collection,Cocina::Models::AdminPolicy] the returned model
-        def update(params:)
+        # @raise [BadRequestError] when ETag not provided.
+        # @return [Cocina::Models::DROWithMetadata,Cocina::Models::CollectionWithMetadata,Cocina::Models::AdminPolicyWithMetadata] the returned model
+        # rubocop:disable Metrics/AbcSize
+        def update(params:, skip_lock: false)
+          # Raised if Cocina::Models::*WithMetadata not provided.
+          raise BadRequestError, 'ETag not provided.' unless skip_lock || params.respond_to?(:lock)
+
           resp = connection.patch do |req|
             req.url object_path
             req.headers['Content-Type'] = 'application/json'
             # asking the service to return JSON (else it'll be plain text)
             req.headers['Accept'] = 'application/json'
-            req.body = params.to_json
+            req.headers['If-Match'] = params[:lock] unless skip_lock
+            req.body = build_json_from_cocina(params)
           end
 
           raise_exception_based_on_response!(resp) unless resp.success?
 
-          Cocina::Models.build(JSON.parse(resp.body))
+          build_cocina_from_response(resp)
         end
+        # rubocop:enable Metrics/AbcSize
 
         # Pull in metadata from Symphony and updates descriptive metadata
         # @raise [NotFoundResponse] when the response is a 404 (object not found)

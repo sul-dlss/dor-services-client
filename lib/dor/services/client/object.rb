@@ -45,9 +45,14 @@ module Dor
         # Retrieves the Cocina model
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
-        # @return [Cocina::Models::DRO,Cocina::Models::Collection,Cocina::Models::AdminPolicy] the returned model
+        # @return [Cocina::Models::DROWithMetadata,Cocina::Models::CollectionWithMetadata,Cocina::Models::AdminPolicyWithMetadata] the returned model
         def find
-          find_with_metadata.first
+          resp = connection.get do |req|
+            req.url object_path
+          end
+          raise_exception_based_on_response!(resp) unless resp.success?
+
+          build_cocina_from_response(resp)
         end
 
         # Retrieves the Cocina model and response metadata
@@ -64,9 +69,12 @@ module Dor
           model = Cocina::Models.build(JSON.parse(resp.body))
 
           # Don't use #slice here as Faraday will downcase the keys.
-          metadata = ObjectMetadata.new(updated_at: resp.headers['Last-Modified'], created_at: resp.headers['X-Created-At'])
+          metadata = ObjectMetadata.new(updated_at: resp.headers['Last-Modified'],
+                                        created_at: resp.headers['X-Created-At'],
+                                        etag: resp.headers['ETag'])
           [model, metadata]
         end
+        deprecation_deprecate find_with_metadata: 'Use find instead with provides models with metadata.'
 
         # Get a list of the collections. (Similar to Valkyrie's find_inverse_references_by)
         # @raise [UnexpectedResponse] if the request is unsuccessful.

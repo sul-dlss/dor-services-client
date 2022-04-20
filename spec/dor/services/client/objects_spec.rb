@@ -29,7 +29,7 @@ RSpec.describe Dor::Services::Client::Objects do
   end
 
   describe '#register' do
-    let(:status) { 200 }
+    let(:status) { 201 }
     let(:body) do
       Cocina::Models::DRO.new(model.to_h.merge(externalIdentifier: 'druid:bc123df4567',
                                                access: {}, description: description_props)).to_json
@@ -42,12 +42,19 @@ RSpec.describe Dor::Services::Client::Objects do
           body: expected_request,
           headers: { 'Content-Type' => 'application/json', 'Accept' => 'application/json' }
         )
-        .to_return(status: status, body: body)
+        .to_return(status: status,
+                   body: body,
+                   headers: {
+                     'Last-Modified' => 'Wed, 04 Mar 2021 18:58:00 GMT',
+                     'X-Created-At' => 'Wed, 02 Jan 2021 12:58:00 GMT',
+                     'X-Served-By' => 'Awesome webserver',
+                     'ETag' => 'W/"e541d8cd98f00b204e9800998ecf8427f"'
+                   })
     end
 
     context 'when API request succeeds with a cocina model' do
       it 'posts params as json' do
-        expect(client.register(params: model)).to be_kind_of Cocina::Models::DRO
+        expect(client.register(params: model)).to be_kind_of Cocina::Models::DROWithMetadata
       end
     end
 

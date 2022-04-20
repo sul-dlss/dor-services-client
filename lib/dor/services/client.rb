@@ -46,6 +46,10 @@ module Dor
       # Error that is raised when the remote server returns a 409 Conflict
       class ConflictResponse < UnexpectedResponse; end
 
+      # Error that is raised when the remote server returns a 412 Precondition Failed.
+      # This occurs when you sent an etag with If-Match, but the etag didn't match the latest version
+      class PreconditionFailedResponse < UnexpectedResponse; end
+
       # Error that is raised when the remote server returns a 400 Bad Request; apps should not retry the request
       class BadRequestError < UnexpectedResponse; end
 
