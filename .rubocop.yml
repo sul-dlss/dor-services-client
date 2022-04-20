@@ -15,6 +15,9 @@ Metrics/BlockLength:
 RSpec/MultipleMemoizedHelpers:
   Max: 10
 
+RSpec/ExampleLength:
+  Max: 10
+
 Gemspec/DateAssignment: # (new in 1.10)
   Enabled: true
 Layout/SpaceBeforeBrackets: # (new in 1.7)

@@ -31,8 +31,7 @@ RSpec.describe Dor::Services::Client::AdministrativeTags do
       end
 
       it 'raises an error' do
-        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse,
-                                          "object not found: 404 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY}) for #{druid}")
+        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse)
       end
     end
 
@@ -43,8 +42,7 @@ RSpec.describe Dor::Services::Client::AdministrativeTags do
       end
 
       it 'raises an error' do
-        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
-                                          "something is amiss: 500 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY}) for #{druid}")
+        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse)
       end
     end
   end
@@ -70,8 +68,7 @@ RSpec.describe Dor::Services::Client::AdministrativeTags do
       end
 
       it 'raises an error' do
-        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
-                                          "conflict: 409 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY}) for #{druid}")
+        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse)
       end
     end
 
@@ -82,8 +79,7 @@ RSpec.describe Dor::Services::Client::AdministrativeTags do
       end
 
       it 'raises an error' do
-        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
-                                          "something is amiss: 500 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY}) for #{druid}")
+        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse)
       end
     end
   end
@@ -109,8 +105,7 @@ RSpec.describe Dor::Services::Client::AdministrativeTags do
       end
 
       it 'raises an error' do
-        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
-                                          "conflict: 409 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY}) for #{druid}")
+        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse)
       end
     end
 
@@ -121,8 +116,7 @@ RSpec.describe Dor::Services::Client::AdministrativeTags do
       end
 
       it 'raises an error' do
-        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
-                                          "something is amiss: 500 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY}) for #{druid}")
+        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse)
       end
     end
   end
@@ -151,8 +145,7 @@ RSpec.describe Dor::Services::Client::AdministrativeTags do
       end
 
       it 'raises an error' do
-        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse,
-                                          "object not found: 404 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY}) for #{druid}")
+        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse)
       end
     end
 
@@ -163,8 +156,7 @@ RSpec.describe Dor::Services::Client::AdministrativeTags do
       end
 
       it 'raises an error' do
-        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
-                                          "conflict: 409 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY}) for #{druid}")
+        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse)
       end
     end
 
@@ -175,8 +167,7 @@ RSpec.describe Dor::Services::Client::AdministrativeTags do
       end
 
       it 'raises an error' do
-        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
-                                          "something is amiss: 500 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY}) for #{druid}")
+        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse)
       end
     end
   end
@@ -204,8 +195,7 @@ RSpec.describe Dor::Services::Client::AdministrativeTags do
       end
 
       it 'raises an error' do
-        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse,
-                                          "object not found: 404 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY}) for #{druid}")
+        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse)
       end
     end
 

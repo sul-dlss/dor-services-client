@@ -5,6 +5,14 @@ module Dor
     class Client
       # @abstract API calls to a versioned endpoint
       class VersionedService
+        EXCEPTION_CLASS = {
+          400 => BadRequestError,
+          401 => UnauthorizedResponse,
+          404 => NotFoundResponse,
+          409 => ConflictResponse,
+          412 => PreconditionFailedResponse
+        }.freeze
+
         def initialize(connection:, version:)
           @connection = connection
           @api_version = version
@@ -19,26 +27,17 @@ module Dor
 
         attr_reader :connection, :api_version
 
-        # rubocop:disable Metrics/MethodLength
         def raise_exception_based_on_response!(response, object_identifier = nil)
-          exception_class = case response.status
-                            when 400
-                              BadRequestError
-                            when 401
-                              UnauthorizedResponse
-                            when 404
-                              NotFoundResponse
-                            when 409
-                              ConflictResponse
-                            when 412
-                              PreconditionFailedResponse
-                            else
-                              UnexpectedResponse
-                            end
-          raise exception_class,
-                ResponseErrorFormatter.format(response: response, object_identifier: object_identifier)
+          data = if response.headers['content-type'] == 'application/json'
+                   JSON.parse(response.body)
+                 else
+                   {}
+                 end
+          exception_class = EXCEPTION_CLASS.fetch(response.status, UnexpectedResponse)
+          raise exception_class.new(response: response,
+                                    object_identifier: object_identifier,
+                                    errors: data.fetch('errors', []))
         end
-        # rubocop:enable Metrics/MethodLength
 
         def build_cocina_from_response(response)
           cocina_object = Cocina::Models.build(JSON.parse(response.body))

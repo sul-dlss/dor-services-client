@@ -199,7 +199,6 @@ RSpec.describe Dor::Services::Client::Object do
 
       let(:status) { 200 }
 
-      # rubocop:disable RSpec/ExampleLength
       it 'returns the cocina model' do
         expect(response.first.externalIdentifier).to eq 'druid:bc123df4567'
         metadata = response[1]
@@ -211,7 +210,6 @@ RSpec.describe Dor::Services::Client::Object do
         expect(metadata.etag).to eq 'W/"d41d8cd98f00b204e9800998ecf8427e"'
         expect { metadata['X-Powered-By'] }.to raise_error(KeyError)
       end
-      # rubocop:enable RSpec/ExampleLength
     end
   end
 
@@ -345,13 +343,11 @@ RSpec.describe Dor::Services::Client::Object do
       let(:status) { [404, 'not found'] }
 
       it 'raises a NotFoundResponse exception' do
-        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse,
-                                          "not found: 404 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse)
       end
 
       it 'raises a NotFoundResponse exception' do
-        expect { no_wf_request }.to raise_error(Dor::Services::Client::NotFoundResponse,
-                                                "not found: 404 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+        expect { no_wf_request }.to raise_error(Dor::Services::Client::NotFoundResponse)
       end
     end
 
@@ -359,8 +355,7 @@ RSpec.describe Dor::Services::Client::Object do
       let(:status) { [409, 'conflict'] }
 
       it 'raises an error' do
-        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
-                                          "conflict: 409 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse)
       end
     end
   end
@@ -385,8 +380,7 @@ RSpec.describe Dor::Services::Client::Object do
       let(:status) { [404, 'not found'] }
 
       it 'raises a NotFoundResponse exception' do
-        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse,
-                                          "not found: 404 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse)
       end
     end
 
@@ -394,8 +388,7 @@ RSpec.describe Dor::Services::Client::Object do
       let(:status) { [409, 'conflict'] }
 
       it 'raises an error' do
-        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
-                                          "conflict: 409 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse)
       end
     end
   end
@@ -420,8 +413,7 @@ RSpec.describe Dor::Services::Client::Object do
       let(:status) { [500, 'internal server error'] }
 
       it 'raises an error' do
-        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
-                                          "internal server error: 500 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse)
       end
     end
   end
@@ -446,8 +438,7 @@ RSpec.describe Dor::Services::Client::Object do
       let(:status) { [404, 'not found'] }
 
       it 'raises a NotFoundResponse exception' do
-        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse,
-                                          "not found: 404 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse)
       end
     end
 
@@ -455,8 +446,7 @@ RSpec.describe Dor::Services::Client::Object do
       let(:status) { [422, 'unprocessable entity'] }
 
       it 'raises an error' do
-        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
-                                          "unprocessable entity: 422 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse)
       end
     end
   end
@@ -464,9 +454,12 @@ RSpec.describe Dor::Services::Client::Object do
   describe '#update_marc_record' do
     subject(:request) { client.update_marc_record }
 
+    let(:body) { '' }
+    let(:headers) { {} }
+
     before do
       stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/update_marc_record')
-        .to_return(status: status)
+        .to_return(status: status, body: body, headers: headers)
     end
 
     context 'when API request succeeds' do
@@ -481,17 +474,33 @@ RSpec.describe Dor::Services::Client::Object do
       let(:status) { [404, 'not found'] }
 
       it 'raises a NotFoundResponse exception' do
-        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse,
-                                          "not found: 404 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse)
       end
     end
 
     context 'when API request fails' do
-      let(:status) { [409, 'conflict'] }
+      let(:status) { [422, 'something wrong'] }
+      let(:headers) { { 'content-type' => 'application/json' } }
+      let(:body) do
+        <<~JSON
+          {"errors":
+            [{
+              "status":"422",
+              "title":"MODS validation failed",
+              "detail":"The value 'marclanguage' is not a value in an element..."
+            }]
+          }
+        JSON
+      end
 
       it 'raises an error' do
-        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
-                                          "conflict: 409 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse)
+        begin
+          request
+        rescue Dor::Services::Client::UnexpectedResponse => e
+          expect(e.errors.size).to eq 1
+          expect(e.errors.first['title']).to eq 'MODS validation failed'
+        end
       end
     end
   end
@@ -516,8 +525,7 @@ RSpec.describe Dor::Services::Client::Object do
       let(:status) { [404, 'not found'] }
 
       it 'raises a NotFoundResponse exception' do
-        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse,
-                                          "not found: 404 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse)
       end
     end
   end
@@ -542,8 +550,7 @@ RSpec.describe Dor::Services::Client::Object do
       let(:status) { [404, 'not found'] }
 
       it 'raises a NotFoundResponse exception' do
-        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse,
-                                          "not found: 404 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse)
       end
     end
 
@@ -551,8 +558,7 @@ RSpec.describe Dor::Services::Client::Object do
       let(:status) { [401, 'unauthorized'] }
 
       it 'raises an error' do
-        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
-                                          "unauthorized: 401 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse)
       end
     end
   end
@@ -577,8 +583,7 @@ RSpec.describe Dor::Services::Client::Object do
       let(:status) { [404, 'not found'] }
 
       it 'raises a NotFoundResponse exception' do
-        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse,
-                                          "not found: 404 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse)
       end
     end
 
@@ -613,8 +618,7 @@ RSpec.describe Dor::Services::Client::Object do
       end
 
       it 'raises an error' do
-        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse,
-                                          "object not found: 404 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY}) for druid:bc123df4567")
+        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse)
       end
     end
 
@@ -625,8 +629,7 @@ RSpec.describe Dor::Services::Client::Object do
       end
 
       it 'raises an error' do
-        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
-                                          "something is amiss: 500 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY}) for druid:bc123df4567")
+        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse)
       end
     end
   end
@@ -651,8 +654,7 @@ RSpec.describe Dor::Services::Client::Object do
       let(:status) { [404, 'not found'] }
 
       it 'raises a NotFoundResponse exception' do
-        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse,
-                                          "not found: 404 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse)
       end
     end
 
@@ -660,8 +662,7 @@ RSpec.describe Dor::Services::Client::Object do
       let(:status) { [401, 'unauthorized'] }
 
       it 'raises an error' do
-        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
-                                          "unauthorized: 401 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse)
       end
     end
   end

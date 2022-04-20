@@ -55,7 +55,7 @@ RSpec.describe Dor::Services::Client::BackgroundJobResults do
 
     context 'when API request fails with 400' do
       let(:status) { [400, 'bad request'] }
-      let(:body) { '{"errors":["error message here"]}' }
+      let(:body) { '{"errors":[{"title":"error message here"}]}' }
 
       it 'raises an error' do
         expect { client.show(job_id: 123) }.to raise_error(Dor::Services::Client::UnexpectedResponse,
@@ -65,11 +65,10 @@ RSpec.describe Dor::Services::Client::BackgroundJobResults do
 
     context 'when API request fails with 404' do
       let(:status) { [404, 'not found'] }
-      let(:body) { '{"errors":["error message here"]}' }
+      let(:body) { '{"errors":[{"title":"error message here"}]}' }
 
       it 'raises an error' do
-        expect { client.show(job_id: 123) }.to raise_error(Dor::Services::Client::NotFoundResponse,
-                                                           "not found: 404 (#{body})")
+        expect { client.show(job_id: 123) }.to raise_error(Dor::Services::Client::NotFoundResponse)
       end
     end
   end
