@@ -25,12 +25,6 @@ RSpec/AnyInstance:
     - 'spec/dor/services/client/metadata_spec.rb'
     - 'spec/dor/services/client/object_version_spec.rb'
 
-# Offense count: 1
-# Configuration parameters: Max, CountAsOne.
-RSpec/ExampleLength:
-  Exclude:
-    - 'spec/dor/services/client/metadata_spec.rb'
-
 # Offense count: 6
 RSpec/IdenticalEqualityAssertion:
   Exclude:

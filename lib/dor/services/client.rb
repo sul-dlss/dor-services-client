@@ -38,7 +38,26 @@ module Dor
 
       # Error that is raised when the remote server returns some unexpected response
       # this could be any 4xx or 5xx status (except the ones that are direct children of the Error class above)
-      class UnexpectedResponse < Error; end
+      class UnexpectedResponse < Error
+        # @param [Faraday::Response] response
+        # @param [String] object_identifier (nil)
+        # @param [Hash<String,Object>] errors (nil) the JSON-API errors object
+        # rubocop:disable Lint/MissingSuper
+        def initialize(response:, object_identifier: nil, errors: nil)
+          @response = response
+          @object_identifier = object_identifier
+          @errors = errors
+        end
+        # rubocop:enable Lint/MissingSuper
+
+        attr_accessor :errors
+
+        def to_s
+          return errors.map { |e| "#{e['title']} (#{e['detail']})" }.join(', ') if errors.present?
+
+          ResponseErrorFormatter.format(response: @response, object_identifier: @object_identifier)
+        end
+      end
 
       # Error that is raised when the remote server returns a 401 Unauthorized
       class UnauthorizedResponse < UnexpectedResponse; end

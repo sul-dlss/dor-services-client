@@ -233,10 +233,7 @@ RSpec.describe Dor::Services::Client::Metadata do
         let(:status) { [404, 'not found'] }
 
         it 'raises an error' do
-          expect { client.legacy_update(params) }.to(
-            raise_error(Dor::Services::Client::NotFoundResponse,
-                        "not found: 404 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY}) for druid:1234")
-          )
+          expect { client.legacy_update(params) }.to raise_error(Dor::Services::Client::NotFoundResponse)
         end
       end
     end
@@ -265,10 +262,7 @@ RSpec.describe Dor::Services::Client::Metadata do
         let(:status) { [404, 'not found'] }
 
         it 'raises an error' do
-          expect { client.legacy_update(params) }.to(
-            raise_error(Dor::Services::Client::NotFoundResponse,
-                        "not found: 404 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY}) for druid:1234")
-          )
+          expect { client.legacy_update(params) }.to raise_error(Dor::Services::Client::NotFoundResponse)
         end
       end
     end

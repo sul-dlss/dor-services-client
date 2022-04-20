@@ -32,8 +32,7 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
       let(:body) { '' }
 
       it 'raises a NotFoundResponse exception' do
-        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse,
-                                          "not found: 404 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse)
       end
     end
 
@@ -173,8 +172,7 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
       let(:body) { '' }
 
       it 'raises a NotFoundResponse exception' do
-        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse,
-                                          "not found: 404 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse)
       end
     end
 
@@ -232,8 +230,7 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
       let(:body) { '' }
 
       it 'raises a NotFoundResponse exception' do
-        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse,
-                                          "not found: 404 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse)
       end
     end
 
@@ -281,8 +278,7 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
       let(:body) { '' }
 
       it 'raises a NotFoundResponse exception' do
-        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse,
-                                          "not found: 404 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse)
       end
     end
 
