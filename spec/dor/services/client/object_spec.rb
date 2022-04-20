@@ -480,7 +480,7 @@ RSpec.describe Dor::Services::Client::Object do
 
     context 'when API request fails' do
       let(:status) { [422, 'something wrong'] }
-      let(:headers) { { 'content-type' => 'application/json' } }
+      let(:headers) { { 'content-type' => 'application/vnd.api+json' } }
       let(:body) do
         <<~JSON
           {"errors":
