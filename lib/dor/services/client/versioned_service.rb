@@ -13,6 +13,8 @@ module Dor
           412 => PreconditionFailedResponse
         }.freeze
 
+        JSON_API_MIME_TYPE = 'application/vnd.api+json'
+
         def initialize(connection:, version:)
           @connection = connection
           @api_version = version
@@ -28,7 +30,7 @@ module Dor
         attr_reader :connection, :api_version
 
         def raise_exception_based_on_response!(response, object_identifier = nil)
-          data = if response.headers['content-type'] == 'application/json'
+          data = if response.headers.fetch('content-type', '').start_with?(JSON_API_MIME_TYPE)
                    JSON.parse(response.body)
                  else
                    {}
