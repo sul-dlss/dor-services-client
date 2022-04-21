@@ -8,9 +8,9 @@ module Dor
       # API calls that are about a repository objects
       class Objects < VersionedService
         # Creates a new object in DOR
-        # @param params [Cocina::Models::RequestDRO,Cocina::Models::RequestCollection,Cocina::Models::RequestAPO]
+        # @param params [Cocina::Models::RequestDRO,Cocina::Models::RequestCollection,Cocina::Models::RequestAdminPolicy]
         # @param assign_doi [Boolean]
-        # @return [Cocina::Models::RequestDRO,Cocina::Models::RequestCollection,Cocina::Models::RequestAPO] the returned model
+        # @return [Cocina::Models::DROWithMetadata,Cocina::Models::CollectionWithMetadata,Cocina::Models::AdminPolicyWithMetadata] the returned model
         def register(params:, assign_doi: false)
           resp = connection.post do |req|
             req.url "#{api_version}/objects"

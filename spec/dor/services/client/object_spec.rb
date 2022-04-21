@@ -280,6 +280,12 @@ RSpec.describe Dor::Services::Client::Object do
       end
     end
 
+    context 'when provided a hash' do
+      it 'raises' do
+        expect { client.update(params: dro_with_metadata.to_h) }.to raise_error(ArgumentError)
+      end
+    end
+
     context 'when missing lock' do
       it 'raises' do
         expect { client.update(params: dro) }.to raise_error(ArgumentError)

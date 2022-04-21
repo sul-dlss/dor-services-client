@@ -33,7 +33,10 @@ module Dor
         # @raise [BadRequestError] when ETag not provided.
         # @return [Cocina::Models::DROWithMetadata,Cocina::Models::CollectionWithMetadata,Cocina::Models::AdminPolicyWithMetadata] the returned model
         # rubocop:disable Metrics/AbcSize
+        # rubocop:disable Metrics/MethodLength
         def update(params:, skip_lock: false)
+          raise ArgumentError, 'Cocina object not provided.' unless params.respond_to?(:externalIdentifier)
+
           # Raised if Cocina::Models::*WithMetadata not provided.
           raise ArgumentError, 'ETag not provided.' unless skip_lock || params.respond_to?(:lock)
 
@@ -42,7 +45,7 @@ module Dor
             req.headers['Content-Type'] = 'application/json'
             # asking the service to return JSON (else it'll be plain text)
             req.headers['Accept'] = 'application/json'
-            req.headers['If-Match'] = params[:lock] unless skip_lock
+            req.headers['If-Match'] = params.lock unless skip_lock
             req.body = build_json_from_cocina(params)
           end
 
@@ -51,6 +54,7 @@ module Dor
           build_cocina_from_response(resp)
         end
         # rubocop:enable Metrics/AbcSize
+        # rubocop:enable Metrics/MethodLength
 
         # Pull in metadata from Symphony and updates descriptive metadata
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
