@@ -124,46 +124,78 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
 
     let(:params) { {} }
 
+    let(:created) { DateTime.parse('Wed, 01 Jan 2021 12:58:00 GMT') }
+
+    let(:modified) { DateTime.parse('Wed, 03 Mar 2021 18:58:00 GMT') }
+
+    let(:lock) { 'W/"d41d8cd98f00b204e9800998ecf8427e"' }
+
+    let(:dro) do
+      Cocina::Models::DRO.new(
+        {
+          externalIdentifier: 'druid:bc123df4567',
+          type: Cocina::Models::ObjectType.book,
+          label: 'test object',
+          version: 1,
+          administrative: {
+            hasAdminPolicy: 'druid:fv123df4567'
+          },
+          description: {
+            purl: 'https://purl.stanford.edu/bc123df4567',
+            title: [
+              { value: 'test object' }
+            ]
+          },
+          access: { view: 'dark', download: 'none' },
+          identification: { sourceId: 'sul:123' },
+          structural: {}
+        }
+      )
+    end
+
+    let(:dro_with_metadata) do
+      Cocina::Models.with_metadata(dro, lock, created: created, modified: modified)
+    end
+
+    let(:headers) do
+      {
+        'Last-Modified' => 'Wed, 03 Mar 2021 18:58:00 GMT',
+        'X-Created-At' => 'Wed, 01 Jan 2021 12:58:00 GMT',
+        'ETag' => 'W/"d41d8cd98f00b204e9800998ecf8427e"'
+      }
+    end
+
+    let(:body) { dro.to_json }
+
     before do
       stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/versions')
         .with(headers: { 'Content-Type' => 'application/json' })
-        .to_return(status: status, body: body)
+        .to_return(status: status, body: body,
+                   headers: headers)
     end
 
     context 'with additional params' do
       let(:status) { 200 }
-      let(:body) { '2' }
       let(:params) { { foo: 'bar' } }
 
       before do
         # The `.with(body: ...)` is what tests that params are passed through as json
         stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/versions')
           .with(headers: { 'Content-Type' => 'application/json' },
-                body: params.to_json)
-          .to_return(status: status, body: body)
+                body: dro.to_json)
+          .to_return(status: status, body: body, headers: headers)
       end
 
-      it 'returns version string' do
-        expect(request).to eq '2'
+      it 'returns cocina model with metadata' do
+        expect(request).to eq dro_with_metadata
       end
     end
 
     context 'when API request succeeds' do
       let(:status) { 200 }
-      let(:body) { '2' }
 
-      it 'returns version string' do
-        expect(request).to eq '2'
-      end
-    end
-
-    context 'when API request responds with blank text' do
-      let(:status) { 200 }
-      let(:body) { '' }
-
-      it 'raises a MalformedResponse error' do
-        expect { request }.to raise_error(Dor::Services::Client::MalformedResponse,
-                                          'Version of druid:1234 is empty')
+      it 'returns cocina model with metadata' do
+        expect(request).to eq dro_with_metadata
       end
     end
 

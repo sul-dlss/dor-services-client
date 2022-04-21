@@ -13,7 +13,7 @@ Metrics/BlockLength:
     - 'spec/**/*'
 
 RSpec/MultipleMemoizedHelpers:
-  Max: 10
+  Enabled: false
 
 RSpec/ExampleLength:
   Max: 10
