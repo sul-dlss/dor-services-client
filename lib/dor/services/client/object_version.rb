@@ -53,15 +53,19 @@ module Dor
 
         # Open new version for an object
         # @param params [Hash] optional params (see dor-services-app)
-        # @raise [MalformedResponse] when the response is not parseable.
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
-        # @return [String] the current version
+        # @return [Cocina::Models::DROWithMetadata|CollectionWithMetadata|AdminPolicyWithMetadata] cocina model with updated version
         def open(**params)
-          version = open_new_version_response(**params)
-          raise MalformedResponse, "Version of #{object_identifier} is empty" if version.empty?
+          resp = connection.post do |req|
+            req.url open_new_version_path
+            req.headers['Content-Type'] = 'application/json'
+            req.body = params.to_json if params.any?
+          end
 
-          version
+          raise_exception_based_on_response!(resp) unless resp.success?
+
+          build_cocina_from_response(resp)
         end
 
         # Close current version for an object
@@ -97,22 +101,6 @@ module Dor
 
         def object_path
           "#{api_version}/objects/#{object_identifier}"
-        end
-
-        # Make request to server to open a new version
-        # @param params [Hash] optional params (see dor-services-app)
-        # @raise [NotFoundResponse] when the response is a 404 (object not found)
-        # @raise [UnexpectedResponse] on an unsuccessful response from the server
-        # @return [String] the plain text from the server
-        def open_new_version_response(**params)
-          resp = connection.post do |req|
-            req.url open_new_version_path
-            req.headers['Content-Type'] = 'application/json'
-            req.body = params.to_json if params.any?
-          end
-          return resp.body if resp.success?
-
-          raise_exception_based_on_response!(resp)
         end
 
         def base_path
