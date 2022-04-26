@@ -278,12 +278,12 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
   end
 
   describe '#openable?' do
-    subject(:request) { client.openable?(assume_accessioned: true) }
+    subject(:request) { client.openable? }
 
     let(:params) { {} }
 
     before do
-      stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:1234/versions/openable?assume_accessioned=true')
+      stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:1234/versions/openable')
         .to_return(status: status, body: body)
     end
 
