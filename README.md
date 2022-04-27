@@ -123,9 +123,11 @@ object_client.notify_goobi
 # Manage versions
 object_client.version.inventory
 object_client.version.current
-object_client.version.openable?(**params)
-object_client.version.open(**params)
-object_client.version.close(description: 'Changed title', significance: 'minor')
+object_client.version.openable?
+# see dor-services-app openapi.yml for optional params
+object_client.version.open(description: 'Changed title', significance: 'minor')
+# see dor-services-app openapi.yml for optional params
+object_client.version.close
 
 # Get the Dublin Core XML representation
 object_client.metadata.dublin_core

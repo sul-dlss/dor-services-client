@@ -27,15 +27,13 @@ module Dor
         end
 
         # Determines if a new version can be opened for a DOR object.
-        # @param params [Hash] optional params (see dor-services-app)
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
         # @return [Boolean] true if a new version can be opened
         # rubocop:disable Metrics/MethodLength
-        def openable?(**params)
+        def openable?
           resp = connection.get do |req|
             req.url "#{base_path}/openable"
-            req.params = params
           end
 
           raise_exception_based_on_response!(resp) unless resp.success?
@@ -52,7 +50,10 @@ module Dor
         # rubocop:enable Metrics/MethodLength
 
         # Open new version for an object
-        # @param params [Hash] optional params (see dor-services-app)
+        # @param description [String] a description of the object version being opened - required
+        # @param significance [String] 'major' 'minor' or 'admin' - required
+        # @param opening_user_name [String] sunetid - defaults to nil
+        # @param assume_accessioned [Boolean] if true, does not check whether object has been accessioned; defaults to false
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
         # @return [Cocina::Models::DROWithMetadata|CollectionWithMetadata|AdminPolicyWithMetadata] cocina model with updated version
@@ -69,7 +70,10 @@ module Dor
         end
 
         # Close current version for an object
-        # @param params [Hash] optional params (see dor-services-app)
+        # @param description [String] (optional) - a description of the object version being opened
+        # @param significance [String] (optional) - 'major' 'minor' or 'admin'
+        # @param user_name [String] (optional) - sunetid
+        # @param start_accession [Boolean] (optional) - whether to start accessioning workflow; defaults to true
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
         # @return [String] a message confirming successful closing
