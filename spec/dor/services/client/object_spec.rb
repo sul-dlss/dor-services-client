@@ -158,61 +158,6 @@ RSpec.describe Dor::Services::Client::Object do
     end
   end
 
-  describe '#find_with_metadata' do
-    subject(:response) { client.find_with_metadata }
-
-    before do
-      stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:bc123df4567')
-        .to_return(status: status,
-                   headers: {
-                     'Last-Modified' => 'Wed, 03 Mar 2021 18:58:00 GMT',
-                     'X-Created-At' => 'Wed, 01 Jan 2021 12:58:00 GMT',
-                     'X-Served-By' => 'Awesome webserver',
-                     'ETag' => 'W/"d41d8cd98f00b204e9800998ecf8427e"'
-                   },
-                   body: json)
-    end
-
-    context 'when API request succeeds with DRO' do
-      let(:json) do
-        <<~JSON
-          {
-            "externalIdentifier":"druid:bc123df4567",
-            "type":"#{Cocina::Models::ObjectType.book}",
-            "label":"my item",
-            "version":1,
-            "administrative":{
-              "hasAdminPolicy":"druid:fv123df4567"
-            },
-            "description":{
-              "purl":"https://purl.stanford.edu/bc123df4567",
-              "title": [
-                { "value": "hey!" }
-              ]
-            },
-            "access":{},
-            "identification":{"sourceId":"sul:123"},
-            "structural":{}
-          }
-        JSON
-      end
-
-      let(:status) { 200 }
-
-      it 'returns the cocina model' do
-        expect(response.first.externalIdentifier).to eq 'druid:bc123df4567'
-        metadata = response[1]
-        expect(metadata.updated_at).to eq('Wed, 03 Mar 2021 18:58:00 GMT')
-        expect(metadata.created_at).to eq('Wed, 01 Jan 2021 12:58:00 GMT')
-        allow(Deprecation).to receive(:warn)
-        expect(metadata['Last-Modified']).to eq('Wed, 03 Mar 2021 18:58:00 GMT')
-        expect(metadata['X-Created-At']).to eq('Wed, 01 Jan 2021 12:58:00 GMT')
-        expect(metadata.etag).to eq 'W/"d41d8cd98f00b204e9800998ecf8427e"'
-        expect { metadata['X-Powered-By'] }.to raise_error(KeyError)
-      end
-    end
-  end
-
   describe '#update' do
     let(:created) { DateTime.parse('Wed, 01 Jan 2021 12:58:00 GMT') }
 
