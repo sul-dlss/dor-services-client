@@ -17,23 +17,9 @@ RSpec.describe Dor::Services::Client::Collections do
       let(:json) do
         <<~JSON
           {
-            "collections":[{
-              "externalIdentifier":"druid:bc123df4567",
-              "type":"#{Cocina::Models::ObjectType.collection}",
-              "label":"my collection",
-              "version":1,
-              "description":{
-                "purl":"https://purl.stanford.edu/bc123df4567",
-                "title": [
-                  { "value": "hey!" }
-                ]
-              },
-              "access": {},
-              "administrative":{
-                "hasAdminPolicy":"druid:fv123df4567"
-              },
-              "identification":{}
-            }]
+            "collections":[
+              #{build(:collection, id: 'druid:bc123df4567').to_json}
+            ]
           }
         JSON
       end

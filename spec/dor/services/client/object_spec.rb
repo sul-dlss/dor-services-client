@@ -95,26 +95,7 @@ RSpec.describe Dor::Services::Client::Object do
 
     context 'when API request succeeds with DRO' do
       let(:json) do
-        <<~JSON
-          {
-            "externalIdentifier":"druid:bc123df4567",
-            "type":"#{Cocina::Models::ObjectType.book}",
-            "label":"my item",
-            "version":1,
-            "administrative":{
-              "hasAdminPolicy":"druid:fv123df4567"
-            },
-            "description":{
-              "purl":"https://purl.stanford.edu/bc123df4567",
-              "title": [
-                { "value": "hey!" }
-              ]
-            },
-            "access":{},
-            "identification":{"sourceId":"sul:123"},
-            "structural":{}
-          }
-        JSON
+        build(:dro, id: 'druid:bc123df4567').to_json
       end
 
       let(:status) { 200 }
@@ -129,25 +110,7 @@ RSpec.describe Dor::Services::Client::Object do
 
     context 'when API request succeeds with Collection' do
       let(:json) do
-        <<~JSON
-          {
-            "externalIdentifier":"druid:bc123df4567",
-            "type":"#{Cocina::Models::ObjectType.collection}",
-            "label":"my item",
-            "version":1,
-            "description":{
-              "purl":"https://purl.stanford.edu/bc123df4567",
-              "title": [
-                { "value": "hey!" }
-              ]
-            },
-            "access":{},
-            "administrative":{
-              "hasAdminPolicy":"druid:fv123df4567"
-            },
-            "identification":{"sourceId":"sul:123"}
-          }
-        JSON
+        build(:collection, id: 'druid:bc123df4567').to_json
       end
 
       let(:status) { 200 }
@@ -166,7 +129,7 @@ RSpec.describe Dor::Services::Client::Object do
     let(:lock) { 'W/"d41d8cd98f00b204e9800998ecf8427e"' }
 
     let(:dro) do
-      Cocina::Models::DRO.new(JSON.parse(json))
+      build(:dro, id: 'druid:bc123df4567')
     end
 
     let(:dro_with_metadata) do
@@ -174,26 +137,7 @@ RSpec.describe Dor::Services::Client::Object do
     end
 
     let(:json) do
-      <<~JSON
-        {
-          "externalIdentifier":"druid:bc123df4567",
-          "type":"#{Cocina::Models::ObjectType.book}",
-          "label":"my item",
-          "version":1,
-          "administrative":{
-            "hasAdminPolicy":"druid:fv123df4567"
-          },
-          "description":{
-            "purl":"https://purl.stanford.edu/bc123df4567",
-            "title": [
-              { "value": "hey!" }
-            ]
-          },
-          "access":{ "view": "dark", "download": "none" },
-          "identification":{"sourceId":"sul:123"},
-          "structural":{}
-        }
-      JSON
+      dro.to_json
     end
 
     context 'when API request succeeds with DRO' do
@@ -202,7 +146,7 @@ RSpec.describe Dor::Services::Client::Object do
       before do
         stub_request(:patch, 'https://dor-services.example.com/v1/objects/druid:bc123df4567')
           .with(
-            body: dro.to_json,
+            body: json,
             headers: {
               'If-Match' => lock,
               'Content-Type' => 'application/json',
@@ -243,7 +187,7 @@ RSpec.describe Dor::Services::Client::Object do
       before do
         stub_request(:patch, 'https://dor-services.example.com/v1/objects/druid:bc123df4567')
           .with(
-            body: dro.to_json,
+            body: json,
             headers: {
               'Content-Type' => 'application/json',
               'Accept' => 'application/json'

@@ -8,11 +8,10 @@ RSpec.describe Dor::Services::Client::Objects do
   end
 
   let(:connection) { Dor::Services::Client.instance.send(:connection) }
-  let(:model) { Cocina::Models::RequestDRO.new(properties) }
-  let(:item_type) { Cocina::Models::ObjectType.object }
+  let(:request_dro) { Cocina::Models::RequestDRO.new(properties) }
   let(:properties) do
     {
-      type: item_type,
+      type: Cocina::Models::ObjectType.object,
       label: 'My object',
       version: 1,
       administrative: { hasAdminPolicy: 'druid:fv123df4567' },
@@ -20,7 +19,7 @@ RSpec.describe Dor::Services::Client::Objects do
       structural: {}
     }
   end
-  let(:expected_request) { model.to_json }
+  let(:expected_request) { request_dro.to_json }
   let(:description_props) do
     {
       title: [{ value: 'Test DRO' }],
@@ -31,8 +30,8 @@ RSpec.describe Dor::Services::Client::Objects do
   describe '#register' do
     let(:status) { 201 }
     let(:body) do
-      Cocina::Models::DRO.new(model.to_h.merge(externalIdentifier: 'druid:bc123df4567',
-                                               access: {}, description: description_props)).to_json
+      Cocina::Models::DRO.new(request_dro.to_h.merge(externalIdentifier: 'druid:bc123df4567',
+                                                     access: {}, description: description_props)).to_json
     end
     let(:url) { 'https://dor-services.example.com/v1/objects' }
 
@@ -52,9 +51,9 @@ RSpec.describe Dor::Services::Client::Objects do
                    })
     end
 
-    context 'when API request succeeds with a cocina model' do
+    context 'when API request succeeds with a cocina request_dro' do
       it 'posts params as json' do
-        expect(client.register(params: model)).to be_kind_of Cocina::Models::DROWithMetadata
+        expect(client.register(params: request_dro)).to be_kind_of Cocina::Models::DROWithMetadata
       end
     end
 
@@ -62,7 +61,7 @@ RSpec.describe Dor::Services::Client::Objects do
       let(:url) { 'https://dor-services.example.com/v1/objects?assign_doi=true' }
 
       it 'posts with DOI param' do
-        client.register(params: model, assign_doi: true)
+        client.register(params: request_dro, assign_doi: true)
       end
     end
 
@@ -72,8 +71,9 @@ RSpec.describe Dor::Services::Client::Objects do
         let(:body) { nil }
 
         it 'raises ConflictResponse error' do
-          expect { client.register(params: model) }.to raise_error(Dor::Services::Client::ConflictResponse,
-                                                                   "object already exists: 409 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+          expect { client.register(params: request_dro) }.to raise_error(Dor::Services::Client::ConflictResponse,
+                                                                         'object already exists: 409 ' \
+                                                                         "(#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
         end
       end
 
@@ -82,7 +82,7 @@ RSpec.describe Dor::Services::Client::Objects do
         let(:body) { nil }
 
         it 'raises UnauthorizedResponse error' do
-          expect { client.register(params: model) }.to raise_error(Dor::Services::Client::UnauthorizedResponse)
+          expect { client.register(params: request_dro) }.to raise_error(Dor::Services::Client::UnauthorizedResponse)
         end
       end
 
@@ -91,7 +91,7 @@ RSpec.describe Dor::Services::Client::Objects do
         let(:body) { 'Bad Request: 400 ({"errors":[{"status":"400","title":some reason","detail":"blah di blah blah"}]})' }
 
         it 'raises BadRequestError error' do
-          expect { client.register(params: model) }.to raise_error(Dor::Services::Client::BadRequestError)
+          expect { client.register(params: request_dro) }.to raise_error(Dor::Services::Client::BadRequestError)
         end
       end
     end
