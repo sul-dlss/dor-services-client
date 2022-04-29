@@ -2,7 +2,7 @@
 
 RSpec.describe Dor::Services::Client do
   it 'has a version number' do
-    expect(Dor::Services::Client::VERSION).not_to be nil
+    expect(Dor::Services::Client::VERSION).not_to be_nil
   end
 
   context 'when configured' do

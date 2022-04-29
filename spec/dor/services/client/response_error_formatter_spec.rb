@@ -31,7 +31,7 @@ RSpec.describe Dor::Services::Client::ResponseErrorFormatter do
     end
 
     it 'has an object_identifier attribute' do
-      expect(formatter.object_identifier).to eq(nil)
+      expect(formatter.object_identifier).to be_nil
     end
 
     context 'with a blank body' do

@@ -24,7 +24,7 @@ RSpec.describe Dor::Services::Client::Accession do
         let(:status) { 201 }
 
         it 'returns true' do
-          expect(client.start).to eq true
+          expect(client.start).to be true
         end
       end
 
@@ -49,7 +49,7 @@ RSpec.describe Dor::Services::Client::Accession do
         let(:params) { { opening_user_name: 'dude', workflow: 'accessionWF' } }
 
         it 'returns true' do
-          expect(client.start(params)).to eq true
+          expect(client.start(params)).to be true
         end
       end
     end
