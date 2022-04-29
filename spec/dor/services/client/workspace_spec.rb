@@ -20,7 +20,7 @@ RSpec.describe Dor::Services::Client::Workspace do
       end
 
       it 'posts params' do
-        expect(request).to be nil
+        expect(request).to be_nil
       end
     end
 
@@ -47,7 +47,7 @@ RSpec.describe Dor::Services::Client::Workspace do
       end
 
       it 'raises no errors' do
-        expect(request).to be nil
+        expect(request).to be_nil
       end
     end
 
@@ -74,7 +74,7 @@ RSpec.describe Dor::Services::Client::Workspace do
       end
 
       it 'raises no errors' do
-        expect(request).to be nil
+        expect(request).to be_nil
       end
     end
 
