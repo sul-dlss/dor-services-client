@@ -7,6 +7,7 @@ end
 
 require 'bundler/setup'
 require 'dor/services/client'
+require 'cocina/rspec'
 require 'webmock/rspec'
 require 'byebug'
 

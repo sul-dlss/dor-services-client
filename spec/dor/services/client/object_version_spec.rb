@@ -131,26 +131,7 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
     let(:lock) { 'W/"d41d8cd98f00b204e9800998ecf8427e"' }
 
     let(:dro) do
-      Cocina::Models::DRO.new(
-        {
-          externalIdentifier: 'druid:bc123df4567',
-          type: Cocina::Models::ObjectType.book,
-          label: 'test object',
-          version: 1,
-          administrative: {
-            hasAdminPolicy: 'druid:fv123df4567'
-          },
-          description: {
-            purl: 'https://purl.stanford.edu/bc123df4567',
-            title: [
-              { value: 'test object' }
-            ]
-          },
-          access: { view: 'dark', download: 'none' },
-          identification: { sourceId: 'sul:123' },
-          structural: {}
-        }
-      )
+      build(:dro, id: 'druid:bc123df4567')
     end
 
     let(:dro_with_metadata) do
