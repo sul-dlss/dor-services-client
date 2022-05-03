@@ -17,7 +17,7 @@ module Dor
         # @param params [Hash<Symbol,String>] optional parameter hash
         # @option params [String] :significance set significance (major/minor/patch) of version change - required
         # @option params [String] :description set description of version change - required
-        # @option params [String] :opening_user_name add opening username to the events datastream - optional
+        # @option params [String] :opening_user_name add opening username to the event - optional
         # @option params [String] :workflow the workflow to start - defaults to 'assemblyWF'
         # @return [Boolean] true on success
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
