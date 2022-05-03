@@ -138,14 +138,6 @@ object_client.metadata.descriptive
 # Get the public XML representation
 object_client.metadata.public_xml
 
-# Update legacy XML representation
-object_client.metadata.legacy_update(
-  descriptive: {
-    updated: Time.now,
-    content: '<descMetadata/>'
-  }
-)
-
 # Return the Cocina metadata
 object_client.find
 

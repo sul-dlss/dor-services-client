@@ -13,32 +13,6 @@ module Dor
           @object_identifier = object_identifier
         end
 
-        # Updates using the legacy SDR/Fedora3 metadata
-        # @param [Hash<Symbol,Hash>] opts the options for legacy update
-        # @option opts [Hash] :administrative Data for administrative metadata
-        # @option opts [Hash] :content Data for structural metadata
-        # @option opts [Hash] :descriptive Data for descriptive metadata
-        # @option opts [Hash] :geo Data for geographic metadata
-        # @option opts [Hash] :identity Data for identity metadata
-        # @option opts [Hash] :provenance Data for provenance metadata
-        # @option opts [Hash] :relationships Data for RELS-EXT metadata
-        # @option opts [Hash] :rights Data for access rights metadata
-        # @option opts [Hash] :technical Data for technical metadata
-        # @option opts [Hash] :version Data for version metadata
-        # @example:
-        #  legacy_update(descriptive: { updated: '2001-12-20', content: '<descMetadata />' })
-        def legacy_update(opts)
-          opts = opts.slice(:administrative, :content, :descriptive, :geo, :identity, :provenance, :relationships, :rights, :technical, :version)
-          resp = connection.patch do |req|
-            req.url "#{base_path}/legacy"
-            req.headers['Content-Type'] = 'application/json'
-            req.body = opts.to_json
-          end
-          return if resp.success?
-
-          raise_exception_based_on_response!(resp, object_identifier)
-        end
-
         # @return [String, NilClass] The Dublin Core XML representation of the object or nil if response is 404
         # @raise [UnexpectedResponse] on an unsuccessful response from the server
         def dublin_core
