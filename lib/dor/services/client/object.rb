@@ -43,16 +43,17 @@ module Dor
         end
 
         # Retrieves the Cocina model
+        # @param [boolean] validate validate the response object
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
         # @return [Cocina::Models::DROWithMetadata,Cocina::Models::CollectionWithMetadata,Cocina::Models::AdminPolicyWithMetadata] the returned model
-        def find
+        def find(validate: false)
           resp = connection.get do |req|
             req.url object_path
           end
           raise_exception_based_on_response!(resp) unless resp.success?
 
-          build_cocina_from_response(resp)
+          build_cocina_from_response(resp, validate: validate)
         end
 
         # Get a list of the collections. (Similar to Valkyrie's find_inverse_references_by)

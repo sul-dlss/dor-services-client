@@ -10,8 +10,9 @@ module Dor
         # Creates a new object in DOR
         # @param params [Cocina::Models::RequestDRO,Cocina::Models::RequestCollection,Cocina::Models::RequestAdminPolicy]
         # @param assign_doi [Boolean]
+        # @param [boolean] validate validate the response object
         # @return [Cocina::Models::DROWithMetadata,Cocina::Models::CollectionWithMetadata,Cocina::Models::AdminPolicyWithMetadata] the returned model
-        def register(params:, assign_doi: false)
+        def register(params:, assign_doi: false, validate: false)
           resp = connection.post do |req|
             req.url "#{api_version}/objects"
             req.headers['Content-Type'] = 'application/json'
@@ -23,7 +24,7 @@ module Dor
 
           raise_exception_based_on_response!(resp) unless resp.success?
 
-          build_cocina_from_response(resp)
+          build_cocina_from_response(resp, validate: validate)
         end
       end
     end

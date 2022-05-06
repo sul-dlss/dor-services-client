@@ -41,8 +41,8 @@ module Dor
                                     errors: data.fetch('errors', []))
         end
 
-        def build_cocina_from_response(response)
-          cocina_object = Cocina::Models.build(JSON.parse(response.body))
+        def build_cocina_from_response(response, validate: false)
+          cocina_object = Cocina::Models.build(JSON.parse(response.body), validate: validate)
           Cocina::Models.with_metadata(cocina_object, response.headers['ETag'], created: date_from_header(response, 'X-Created-At'),
                                                                                 modified: date_from_header(response, 'Last-Modified'))
         end
