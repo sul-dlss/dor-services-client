@@ -79,12 +79,18 @@ RSpec.describe Dor::Services::Client::Object do
   end
 
   describe '#find' do
-    subject(:model) { client.find }
+    subject(:model) { client.find(validate: validate) }
+
+    let(:cocina) { build(:dro, id: 'druid:bc123df4567') }
+
+    let(:validate) { false }
+
+    let(:status) { 200 }
 
     before do
       stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:bc123df4567')
         .to_return(status: status,
-                   body: json,
+                   body: cocina.to_json,
                    headers: {
                      'Last-Modified' => 'Wed, 03 Mar 2021 18:58:00 GMT',
                      'X-Created-At' => 'Wed, 01 Jan 2021 12:58:00 GMT',
@@ -94,12 +100,6 @@ RSpec.describe Dor::Services::Client::Object do
     end
 
     context 'when API request succeeds with DRO' do
-      let(:json) do
-        build(:dro, id: 'druid:bc123df4567').to_json
-      end
-
-      let(:status) { 200 }
-
       it 'returns the cocina model' do
         expect(model.externalIdentifier).to eq 'druid:bc123df4567'
         expect(model.lock).to eq('W/"d41d8cd98f00b204e9800998ecf8427e"')
@@ -109,14 +109,34 @@ RSpec.describe Dor::Services::Client::Object do
     end
 
     context 'when API request succeeds with Collection' do
-      let(:json) do
-        build(:collection, id: 'druid:bc123df4567').to_json
-      end
-
-      let(:status) { 200 }
+      let(:cocina) { build(:collection, id: 'druid:bc123df4567') }
 
       it 'returns the cocina model' do
         expect(model.externalIdentifier).to eq 'druid:bc123df4567'
+      end
+    end
+
+    context 'when validating' do
+      let(:validate) { true }
+
+      before do
+        allow(Cocina::Models).to receive(:build).and_return(cocina)
+      end
+
+      it 'validates' do
+        model
+        expect(Cocina::Models).to have_received(:build).with(cocina.to_h.deep_stringify_keys, validate: true)
+      end
+    end
+
+    context 'when not validating' do
+      before do
+        allow(Cocina::Models).to receive(:build).and_return(cocina)
+      end
+
+      it 'validates' do
+        model
+        expect(Cocina::Models).to have_received(:build).with(cocina.to_h.deep_stringify_keys, validate: false)
       end
     end
   end
