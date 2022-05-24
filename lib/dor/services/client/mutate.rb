@@ -72,12 +72,15 @@ module Dor
         end
 
         # Destroys an object
+        # @param [String] user_name (nil) the user name of the user doing the destroy
         # @return [Boolean] true if successful
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] if the request is unsuccessful.
-        def destroy
+        def destroy(user_name: nil)
+          path = object_path
+          path += "?user_name=#{user_name}" if user_name
           resp = connection.delete do |req|
-            req.url object_path
+            req.url path
           end
           raise_exception_based_on_response!(resp, object_identifier) unless resp.success?
 
