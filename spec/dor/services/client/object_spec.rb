@@ -515,9 +515,22 @@ RSpec.describe Dor::Services::Client::Object do
   describe '#destroy' do
     subject(:request) { client.destroy }
 
-    context 'when API request succeeds' do
+    context 'when API request succeeds with no user name' do
       before do
         stub_request(:delete, 'https://dor-services.example.com/v1/objects/druid:bc123df4567')
+          .to_return(status: 204)
+      end
+
+      it 'when API request succeeds' do
+        expect(request).to be true
+      end
+    end
+
+    context 'when API request succeeds with a username' do
+      subject(:request) { client.destroy(user_name: 'sandimetz') }
+
+      before do
+        stub_request(:delete, 'https://dor-services.example.com/v1/objects/druid:bc123df4567?user_name=sandimetz')
           .to_return(status: 204)
       end
 
