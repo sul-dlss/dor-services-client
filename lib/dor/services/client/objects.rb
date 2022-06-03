@@ -26,6 +26,17 @@ module Dor
 
           build_cocina_from_response(resp, validate: validate)
         end
+
+        def to_index
+          resp = connection.get do |req|
+            req.url "#{api_version}/druid_list"
+            req.headers['Accept'] = 'text/plain'
+          end
+
+          raise_exception_based_on_response!(resp) unless resp.success?
+
+          resp.body
+        end
       end
     end
   end
