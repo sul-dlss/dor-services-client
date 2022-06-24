@@ -2,11 +2,11 @@
 
 lib = File.expand_path('lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'dor/services/client/version'
+require 'dor/services/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'dor-services-client'
-  spec.version       = Dor::Services::Client::VERSION
+  spec.version       = Dor::Services::VERSION
   spec.authors       = ['Justin Coyne', 'Michael Giarlo']
   spec.email         = ['jcoyne@justincoyne.com', 'leftwing@alumni.rutgers.edu']
 
@@ -25,6 +25,7 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = '>= 2.7', '< 4' # dor-services-app needs 2.7 due to fedora3
 
   spec.add_dependency 'activesupport', '>= 4.2', '< 8'
+  spec.add_dependency 'bunny', '~> 2.17' # Send messages to RabbitMQ
   spec.add_dependency 'cocina-models', '~> 0.82.0' # leave pinned to patch level until cocina-models hits 1.0
   spec.add_dependency 'deprecation', '>= 0'
   spec.add_dependency 'faraday', '~> 2.0'
