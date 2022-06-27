@@ -149,7 +149,6 @@ module Dor
       attr_reader :token, :enable_get_retries, :url, :hostname, :vhost, :username, :password
 
       def connection
-        # @connection ||= ConnectionWrapper.new(connection: build_connection, get_connection: build_connection(with_retries: enable_get_retries))
         # Note that since this is a singleton, there will be only one connection created.
         @connection ||= HttpConnectionFactory.new(url: url, token: token, enable_get_retries: enable_get_retries)
       end
