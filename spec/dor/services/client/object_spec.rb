@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Dor::Services::Client::Object do
-  subject(:client) { described_class.new(connection: connection, version: 'v1', object_identifier: pid) }
+  subject(:client) { described_class.new(connection: connection, version: 'v1', object_identifier: pid, channel: nil) }
 
   before do
     Dor::Services::Client.configure(url: 'https://dor-services.example.com', token: '123')

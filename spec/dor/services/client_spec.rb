@@ -93,24 +93,11 @@ RSpec.describe Dor::Services::Client do
     end
   end
 
-  describe '#build_connection' do
-    subject(:client) { described_class.configure(url: 'https://dor-services.example.com', token: '123', enable_get_retries: true) }
+  describe '#configure_rabbit' do
+    subject(:client) { described_class.configure_rabbit(hostname: 'localhost', vhost: '/', username: 'guest', password: 'guest') }
 
-    it 'sets the token on the connection using the default authorization header' do
-      expect(client.instance.send(:build_connection).headers).to include(
-        described_class::TOKEN_HEADER => 'Bearer 123',
-        'User-Agent' => /dor-services-client \d+\.\d+\.\d+/
-      )
-    end
-
-    it 'does not enable retries' do
-      expect(client.instance.send(:build_connection).builder.handlers).not_to include(Faraday::Retry::Middleware)
-    end
-
-    context 'when with retries' do
-      it 'enables retries' do
-        expect(client.instance.send(:build_connection, with_retries: true).builder.handlers).to include(Faraday::Retry::Middleware)
-      end
+    it 'returns Client class' do
+      expect(client).to eq described_class
     end
   end
 end

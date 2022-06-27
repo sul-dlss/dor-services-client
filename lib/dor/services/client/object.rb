@@ -11,10 +11,10 @@ module Dor
         attr_reader :object_identifier
 
         # @param object_identifier [String] the pid for the object
-        def initialize(connection:, version:, object_identifier:)
+        def initialize(connection:, version:, channel:, object_identifier:)
           raise ArgumentError, "The `object_identifier` parameter must be an identifier string: #{object_identifier.inspect}" unless object_identifier.is_a?(String)
 
-          super(connection: connection, version: version)
+          super(connection: connection, version: version, channel: channel)
           @object_identifier = object_identifier
         end
 
@@ -23,7 +23,7 @@ module Dor
         end
 
         def events
-          @events ||= Events.new(**parent_params)
+          @events ||= Events.new(**parent_params_with_channel)
         end
 
         def workspace
@@ -127,6 +127,10 @@ module Dor
 
         def parent_params
           { connection: connection, version: api_version, object_identifier: object_identifier }
+        end
+
+        def parent_params_with_channel
+          parent_params.merge(channel: channel)
         end
 
         def object_path

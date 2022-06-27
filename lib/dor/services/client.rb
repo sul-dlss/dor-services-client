@@ -5,6 +5,7 @@ require 'active_support/core_ext/module/delegation'
 require 'active_support/core_ext/object/blank'
 require 'active_support/json'
 require 'active_support/core_ext/object/json'
+require 'bunny'
 require 'cocina/models'
 require 'faraday'
 require 'faraday/retry'
@@ -22,7 +23,6 @@ module Dor
       include Singleton
 
       DEFAULT_VERSION = 'v1'
-      TOKEN_HEADER = 'Authorization'
 
       # Base class for Dor::Services::Client exceptions
       class Error < StandardError; end
@@ -83,7 +83,7 @@ module Dor
         # opening up stubbing without requiring `any_instance_of`
         return @object if @object&.object_identifier == object_identifier
 
-        @object = Object.new(connection: connection, version: DEFAULT_VERSION, object_identifier: object_identifier)
+        @object = Object.new(connection: connection, version: DEFAULT_VERSION, object_identifier: object_identifier, channel: channel)
       end
 
       # @return [Dor::Services::Client::AdministrativeTagSearch] an instance of the `Client::AdministrativeTagSearch` class
@@ -126,41 +126,36 @@ module Dor
           self
         end
 
+        def configure_rabbit(hostname:, vhost:, username:, password:)
+          instance.hostname = hostname
+          instance.vhost = vhost
+          instance.username = username
+          instance.password = password
+
+          # Force channel to be re-established when `.configure_rabbit` is called
+          instance.channel = nil
+
+          self
+        end
+
         delegate :background_job_results, :marcxml, :objects, :object,
                  :virtual_objects, :administrative_tags, to: :instance
       end
 
-      attr_writer :url, :token, :connection, :enable_get_retries
+      attr_writer :url, :token, :connection, :enable_get_retries, :hostname, :vhost, :username, :password, :channel
 
       private
 
-      attr_reader :token, :enable_get_retries
-
-      def url
-        @url || raise(Error, 'url has not yet been configured')
-      end
+      attr_reader :token, :enable_get_retries, :url, :hostname, :vhost, :username, :password
 
       def connection
-        @connection ||= ConnectionWrapper.new(connection: build_connection, get_connection: build_connection(with_retries: enable_get_retries))
+        # @connection ||= ConnectionWrapper.new(connection: build_connection, get_connection: build_connection(with_retries: enable_get_retries))
+        # Note that since this is a singleton, there will be only one connection created.
+        @connection ||= HttpConnectionFactory.new(url: url, token: token, enable_get_retries: enable_get_retries)
       end
 
-      def build_connection(with_retries: false)
-        Faraday.new(url) do |builder|
-          builder.use ErrorFaradayMiddleware
-          builder.use Faraday::Request::UrlEncoded
-
-          # @note when token & token_header are nil, this line is required else
-          #   the Faraday instance will be passed an empty block, which
-          #   causes the adapter not to be set. Thus, everything breaks.
-          builder.adapter Faraday.default_adapter
-          builder.headers[:user_agent] = user_agent
-          builder.headers[TOKEN_HEADER] = "Bearer #{token}"
-          builder.request :retry, max: 4, interval: 1, backoff_factor: 2 if with_retries
-        end
-      end
-
-      def user_agent
-        "dor-services-client #{Dor::Services::Client::VERSION}"
+      def channel
+        @channel ||= RabbitChannelFactory.new(hostname: hostname, vhost: vhost, username: username, password: password)
       end
     end
   end

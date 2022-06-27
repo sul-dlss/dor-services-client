@@ -15,9 +15,10 @@ module Dor
 
         JSON_API_MIME_TYPE = 'application/vnd.api+json'
 
-        def initialize(connection:, version:)
+        def initialize(connection:, version:, channel: nil)
           @connection = connection
           @api_version = version
+          @channel = channel
         end
 
         # Common interface for handling asynchronous results
@@ -27,7 +28,7 @@ module Dor
 
         private
 
-        attr_reader :connection, :api_version
+        attr_reader :connection, :api_version, :channel
 
         def raise_exception_based_on_response!(response, object_identifier = nil)
           data = if response.headers.fetch('content-type', '').start_with?(JSON_API_MIME_TYPE)

@@ -1,14 +1,15 @@
 # frozen_string_literal: true
 
 RSpec.describe Dor::Services::Client::Events do
-  subject(:client) { described_class.new(connection: connection, version: 'v1', object_identifier: pid) }
+  subject(:client) { described_class.new(connection: connection, version: 'v1', object_identifier: pid, channel: channel) }
+
+  let(:channel) { instance_double(Dor::Services::Client::RabbitChannelFactory) }
+  let(:connection) { Dor::Services::Client.instance.send(:connection) }
+  let(:pid) { 'druid:1234' }
 
   before do
     Dor::Services::Client.configure(url: 'https://dor-services.example.com', token: '123')
   end
-
-  let(:connection) { Dor::Services::Client.instance.send(:connection) }
-  let(:pid) { 'druid:1234' }
 
   describe '#list' do
     subject(:response) { client.list }
@@ -52,8 +53,10 @@ RSpec.describe Dor::Services::Client::Events do
 
   describe '#create' do
     subject(:request) do
-      client.create(type: 'publish', data: { target: 'SearchWorks', host: 'foo.example.edu', result: 'success!' })
+      client.create(type: 'publish', data: { target: 'SearchWorks', host: 'foo.example.edu', result: 'success!' }, async: async)
     end
+
+    let(:async) { false }
 
     context 'when API request succeeds' do
       before do
@@ -75,6 +78,23 @@ RSpec.describe Dor::Services::Client::Events do
       it 'raises an error' do
         expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
                                           "something is amiss: 500 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY}) for druid:1234")
+      end
+    end
+
+    context 'when async' do
+      let(:async) { true }
+      let(:topic) { instance_double(Bunny::Exchange, publish: true) }
+      let(:msg) do
+        '{"druid":"druid:1234","event_type":"publish","data":{"target":"SearchWorks","host":"foo.example.edu","result":"success!"}}'
+      end
+
+      before do
+        allow(channel).to receive(:topic).and_return(topic)
+      end
+
+      it 'sends message' do
+        expect(request).to be true
+        expect(topic).to have_received(:publish).with(msg, routing_key: 'publish')
       end
     end
   end
