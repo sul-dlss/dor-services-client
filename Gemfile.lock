@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    dor-services-client (12.4.0)
+    dor-services-client (12.5.0)
       activesupport (>= 4.2, < 8)
       cocina-models (~> 0.82.0)
       deprecation
@@ -154,6 +154,7 @@ GEM
 
 PLATFORMS
   x86_64-darwin-19
+  x86_64-darwin-20
   x86_64-darwin-21
 
 DEPENDENCIES
