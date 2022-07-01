@@ -63,6 +63,9 @@ objects_client = Dor::Services::Client.objects
 objects_client.register(params: {})
 objects_client.register(params: {}, assign_doi: true)
 
+# Find object by source ID
+objects_client.find(source_id: 'sul:abc123')
+
 # Interact with virtual objects
 virtual_objects_client = Dor::Services::Client.virtual_objects
 

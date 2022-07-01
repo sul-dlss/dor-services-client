@@ -14,7 +14,7 @@ module Dor
         # @return [Cocina::Models::DROWithMetadata,Cocina::Models::CollectionWithMetadata,Cocina::Models::AdminPolicyWithMetadata] the returned model
         def register(params:, assign_doi: false, validate: false)
           resp = connection.post do |req|
-            req.url "#{api_version}/objects"
+            req.url objects_path
             req.headers['Content-Type'] = 'application/json'
             # asking the service to return JSON (else it'll be plain text)
             req.headers['Accept'] = 'application/json'
@@ -25,6 +25,27 @@ module Dor
           raise_exception_based_on_response!(resp) unless resp.success?
 
           build_cocina_from_response(resp, validate: validate)
+        end
+
+        # Find an object by source ID
+        # @param [boolean] validate validate the response object
+        # @raise [NotFoundResponse] when the response is a 404 (object not found)
+        # @raise [UnexpectedResponse] when the response is not successful.
+        # @return [Cocina::Models::DROWithMetadata,Cocina::Models::CollectionWithMetadata] the returned object
+        def find(source_id:, validate: false)
+          resp = connection.get do |req|
+            req.url "#{objects_path}/find"
+            req.params['sourceId'] = source_id
+          end
+          raise_exception_based_on_response!(resp) unless resp.success?
+
+          build_cocina_from_response(resp, validate: validate)
+        end
+
+        private
+
+        def objects_path
+          "#{api_version}/objects"
         end
       end
     end
