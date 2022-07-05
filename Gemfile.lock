@@ -81,11 +81,14 @@ GEM
     i18n (1.10.0)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
+    json (2.6.2)
     jsonpath (1.1.2)
       multi_json
-    minitest (5.16.1)
+    minitest (5.16.2)
     multi_json (1.15.0)
     nokogiri (1.13.6-x86_64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.13.6-x86_64-linux)
       racc (~> 1.4)
     openapi3_parser (0.9.2)
       commonmarker (~> 0.17)
@@ -117,7 +120,8 @@ GEM
     rspec-support (3.11.0)
     rss (0.2.9)
       rexml
-    rubocop (1.31.0)
+    rubocop (1.31.1)
+      json (~> 2.3)
       parallel (~> 1.10)
       parser (>= 3.1.0.0)
       rainbow (>= 2.2.2, < 4.0)
@@ -128,8 +132,8 @@ GEM
       unicode-display_width (>= 1.4.0, < 3.0)
     rubocop-ast (1.18.0)
       parser (>= 3.1.1.0)
-    rubocop-rspec (2.11.1)
-      rubocop (~> 1.19)
+    rubocop-rspec (2.12.1)
+      rubocop (~> 1.31)
     ruby-progressbar (1.11.0)
     ruby2_keywords (0.0.5)
     simplecov (0.21.2)
@@ -156,6 +160,7 @@ PLATFORMS
   x86_64-darwin-19
   x86_64-darwin-20
   x86_64-darwin-21
+  x86_64-linux
 
 DEPENDENCIES
   bundler
@@ -169,4 +174,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   2.3.4
+   2.3.17
