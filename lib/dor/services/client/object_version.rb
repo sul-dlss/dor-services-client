@@ -13,7 +13,7 @@ module Dor
           @object_identifier = object_identifier
         end
 
-        # Get the current version for a DOR object. This comes from Dor::VersionMetadataDS
+        # Get the current version for a DOR object. This comes from ObjectVersion table in the DSA
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
         # @return [String] the version identifier
