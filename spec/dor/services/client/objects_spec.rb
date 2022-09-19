@@ -54,7 +54,7 @@ RSpec.describe Dor::Services::Client::Objects do
 
     context 'when API request succeeds with a cocina request_dro' do
       it 'posts params as json' do
-        expect(client.register(params: request_dro)).to be_kind_of Cocina::Models::DROWithMetadata
+        expect(client.register(params: request_dro)).to be_a Cocina::Models::DROWithMetadata
       end
     end
 
@@ -62,7 +62,7 @@ RSpec.describe Dor::Services::Client::Objects do
       let(:url) { 'https://dor-services.example.com/v1/objects?assign_doi=true' }
 
       it 'posts with DOI param' do
-        client.register(params: request_dro, assign_doi: true)
+        expect { client.register(params: request_dro, assign_doi: true) }.not_to raise_error
       end
     end
 
