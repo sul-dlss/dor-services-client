@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.required_ruby_version = '>= 2.7', '< 4' # dor-services-app needs 2.7 due to fedora3
+  spec.required_ruby_version = '>= 3.0', '< 4'
 
   spec.add_dependency 'activesupport', '>= 4.2', '< 8'
   spec.add_dependency 'cocina-models', '~> 0.84.0'
