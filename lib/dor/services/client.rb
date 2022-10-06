@@ -153,6 +153,8 @@ module Dor
           #   the Faraday instance will be passed an empty block, which
           #   causes the adapter not to be set. Thus, everything breaks.
           builder.adapter Faraday.default_adapter
+          # 5 minutes read timeout for very large cocina (eg. many files) object create/update (default if none set is 60 seconds)
+          builder.options[:timeout] = 300
           builder.headers[:user_agent] = user_agent
           builder.headers[TOKEN_HEADER] = "Bearer #{token}"
           builder.request :retry, max: 4, interval: 1, backoff_factor: 2 if with_retries
