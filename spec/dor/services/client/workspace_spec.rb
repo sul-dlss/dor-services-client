@@ -38,16 +38,22 @@ RSpec.describe Dor::Services::Client::Workspace do
   end
 
   describe '#cleanup' do
-    subject(:request) { client.cleanup }
+    subject(:request) { client.cleanup(workflow: workflow, lane_id: lane_id) }
+
+    let(:workflow) { nil }
+    let(:lane_id) { nil }
 
     context 'when API request succeeds' do
+      let(:workflow) { 'accessionWF' }
+      let(:lane_id) { 'low' }
+
       before do
-        stub_request(:delete, 'https://dor-services.example.com/v1/objects/druid:123/workspace')
-          .to_return(status: 200)
+        stub_request(:delete, 'https://dor-services.example.com/v1/objects/druid:123/workspace?workflow=accessionWF&lane-id=low')
+          .to_return(status: 200, headers: { 'Location' => 'https://dor-services.example.com/v1/background_job_results/123' })
       end
 
-      it 'raises no errors' do
-        expect(request).to be_nil
+      it 'returns a url' do
+        expect(request).to eq 'https://dor-services.example.com/v1/background_job_results/123'
       end
     end
 
