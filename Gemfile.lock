@@ -12,7 +12,7 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (7.0.4.1)
+    activesupport (7.0.4.2)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
@@ -37,8 +37,8 @@ GEM
       super_diff
       thor
       zeitwerk (~> 2.1)
-    commonmarker (0.23.6)
-    concurrent-ruby (1.1.10)
+    commonmarker (0.23.7)
+    concurrent-ruby (1.2.0)
     crack (0.4.5)
       rexml
     deprecation (1.1.0)
@@ -117,7 +117,7 @@ GEM
     rspec-support (3.12.0)
     rss (0.2.9)
       rexml
-    rubocop (1.43.0)
+    rubocop (1.44.1)
       json (~> 2.3)
       parallel (~> 1.10)
       parser (>= 3.2.0.0)
@@ -147,7 +147,7 @@ GEM
       diff-lcs
       patience_diff
     thor (1.2.1)
-    tzinfo (2.0.5)
+    tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.4.2)
     webmock (3.18.1)
