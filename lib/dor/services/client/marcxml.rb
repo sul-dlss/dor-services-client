@@ -5,26 +5,6 @@ module Dor
     class Client
       # API calls around MARCXML-based operations from dor-services-app
       class Marcxml < VersionedService
-        # Get a catkey corresponding to a barcode
-        # @param barcode [String] required string representing a barcode
-        # @raise [NotFoundResponse] when the response is a 404 (object not found)
-        # @raise [UnexpectedResponse] on an unsuccessful response from the server
-        # @return [String] catkey
-        def catkey(barcode:)
-          resp = connection.get do |req|
-            req.url "#{api_version}/catalog/catkey"
-            req.params['barcode'] = barcode
-          end
-
-          return resp.body if resp.success? && resp.body.present?
-
-          # This method needs its own exception handling logic due to how the endpoint service (SearchWorks) operates
-          # raise a NotFoundResponse because the resource being requested was not found in the ILS (via dor-services-app)
-          raise NotFoundResponse.new(response: resp) if resp.success? && resp.body.blank?
-
-          raise UnexpectedResponse.new(response: resp)
-        end
-
         # Gets MARCXML corresponding to a barcode or catkey
         # @param barcode [String] required string representing a barcode
         # @param catkey [String] required string representing a catkey

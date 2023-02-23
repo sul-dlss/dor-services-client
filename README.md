@@ -81,9 +81,6 @@ background_jobs_client.show(job_id: 123)
 # Perform MARCXML operations
 marcxml_client = Dor::Services::Client.marcxml
 
-# Retrieve a catkey for a given barcode
-marcxml_client.catkey(barcode: '123456789')
-
 # Retrieve MARCXML for a given barcode
 marcxml_client.marcxml(barcode: '123456789')
 
