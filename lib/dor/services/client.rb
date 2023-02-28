@@ -27,7 +27,7 @@ module Dor
       # Base class for Dor::Services::Client exceptions
       class Error < StandardError; end
 
-      # Error that is raised when the ultimate remote server returns a 404 Not Found for the id in our request (e.g. for druid, barcode, catkey)
+      # Error that is raised when the ultimate remote server returns a 404 Not Found for the id in our request (e.g. druid, barcode, catkey, folio_instance_hrid)
       class NotFoundResponse < Error; end
 
       # Error that is raised when the remote server returns some unparsable response
