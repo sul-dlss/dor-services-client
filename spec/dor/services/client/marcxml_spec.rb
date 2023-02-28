@@ -12,9 +12,8 @@ RSpec.describe Dor::Services::Client::Marcxml do
 
   describe '#marcxml' do
     let(:catkey) { '12345678' }
-
+    let(:folio_instance_hrid) { 'in000123' }
     let(:status) { 200 }
-
     let(:body) do
       <<-EOXML
       <?xml version="1.0"?>
@@ -46,6 +45,11 @@ RSpec.describe Dor::Services::Client::Marcxml do
           query: { 'catkey' => catkey }
         )
         .to_return(status: status, body: body)
+      stub_request(:get, 'https://dor-services.example.com/v1/catalog/marcxml')
+        .with(
+          query: { 'folio_instance_hrid' => folio_instance_hrid }
+        )
+        .to_return(status: status, body: body)
     end
 
     context 'when API request succeeds with barcode and there is a body' do
@@ -60,9 +64,15 @@ RSpec.describe Dor::Services::Client::Marcxml do
       end
     end
 
-    context 'when API request fails with 500 (Record not found in Symphony)' do
+    context 'when API request succeeds with folio_instance_hrid and there is a body' do
+      it 'returns the MARCXML' do
+        expect(client.marcxml(folio_instance_hrid: folio_instance_hrid)).to eq(body)
+      end
+    end
+
+    context 'when API request fails with 500 (Record not found in catalog)' do
       let(:status) { 500 }
-      let(:body) { 'Record not found in Symphony: ' }
+      let(:body) { 'Record not found in catalog: ' }
 
       it 'raises a NotFoundResponse error' do
         expect { client.marcxml(barcode: barcode) }.to raise_error(Dor::Services::Client::NotFoundResponse)
@@ -79,7 +89,7 @@ RSpec.describe Dor::Services::Client::Marcxml do
       end
     end
 
-    context 'when barcode or catkey not provided' do
+    context 'when barcode or catkey or folio instance hrid not provided' do
       it 'raises ArgumentError' do
         expect { client.marcxml }.to raise_error(ArgumentError)
       end
@@ -88,6 +98,12 @@ RSpec.describe Dor::Services::Client::Marcxml do
     context 'when both barcode and catkey provided' do
       it 'raises ArgumentError' do
         expect { client.marcxml(barcode: barcode, catkey: catkey) }.to raise_error(ArgumentError)
+      end
+    end
+
+    context 'when both barcode and folio instance hrid provided' do
+      it 'raises ArgumentError' do
+        expect { client.marcxml(barcode: barcode, folio_instance_hrid: folio_instance_hrid) }.to raise_error(ArgumentError)
       end
     end
   end

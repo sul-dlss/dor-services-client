@@ -87,6 +87,9 @@ marcxml_client.marcxml(barcode: '123456789')
 # Retrieve MARCXML for a given catkey
 marcxml_client.marcxml(catkey: '987654321')
 
+# Retrieve MARCXML for a given FOLIO instance HRID
+marcxml_client.marcxml(folio_instance_hrid: 'in000123')
+
 # For performing operations on a known, registered object
 object_client = Dor::Services::Client.object(object_identifier)
 
