@@ -138,9 +138,6 @@ object_client.metadata.dublin_core
 # Get the public descriptive XML representation
 object_client.metadata.descriptive
 
-# Get the public XML representation
-object_client.metadata.public_xml
-
 # Return the Cocina metadata
 object_client.find
 
