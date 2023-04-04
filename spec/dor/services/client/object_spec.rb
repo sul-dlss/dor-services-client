@@ -54,12 +54,6 @@ RSpec.describe Dor::Services::Client::Object do
     end
   end
 
-  describe '#metadata' do
-    it 'returns an instance of Client::Metadata' do
-      expect(client.metadata).to be_instance_of Dor::Services::Client::Metadata
-    end
-  end
-
   describe '#workspace' do
     it 'returns an instance of Client::Workspace' do
       expect(client.workspace).to be_instance_of Dor::Services::Client::Workspace

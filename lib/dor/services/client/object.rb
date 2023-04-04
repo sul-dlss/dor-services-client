@@ -18,10 +18,6 @@ module Dor
           @object_identifier = object_identifier
         end
 
-        def metadata
-          @metadata ||= Metadata.new(**parent_params)
-        end
-
         def events
           @events ||= Events.new(**parent_params)
         end
