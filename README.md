@@ -132,12 +132,6 @@ object_client.version.open(description: 'Changed title', significance: 'minor')
 # see dor-services-app openapi.yml for optional params
 object_client.version.close
 
-# Get the Dublin Core XML representation
-object_client.metadata.dublin_core
-
-# Get the public descriptive XML representation
-object_client.metadata.descriptive
-
 # Return the Cocina metadata
 object_client.find
 
