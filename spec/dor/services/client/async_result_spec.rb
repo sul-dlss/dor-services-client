@@ -8,9 +8,11 @@ RSpec.describe Dor::Services::Client::AsyncResult do
   describe '#wait_until_complete' do
     subject(:instance) { described_class.new(url: 'not evaluated') }
 
+    # rubocop:disable RSpec/IndexedLet
     let(:result1) { { status: 'pending', output: {} } }
     let(:result2) { { status: 'processing', output: {} } }
     let(:result3) { { status: 'complete', output: { errors: [{ 'druid:foo' => ['druid:bar'] }] } } }
+    # rubocop:enable RSpec/IndexedLet
 
     before do
       allow(Dor::Services::Client.background_job_results).to receive(:show).and_return(result1, result2, result3)
