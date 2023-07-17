@@ -439,6 +439,31 @@ RSpec.describe Dor::Services::Client::Object do
     end
   end
 
+  describe '#update_orcid_work' do
+    subject(:request) { client.update_orcid_work }
+
+    before do
+      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/update_orcid_work')
+        .to_return(status: status)
+    end
+
+    context 'when API request succeeds' do
+      let(:status) { 202 }
+
+      it 'returns true' do
+        expect(request).to be true
+      end
+    end
+
+    context 'when API request returns 404' do
+      let(:status) { [404, 'not found'] }
+
+      it 'raises a NotFoundResponse exception' do
+        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse)
+      end
+    end
+  end
+
   describe '#refresh_descriptive_metadata_from_ils' do
     subject(:request) { client.refresh_descriptive_metadata_from_ils }
 
