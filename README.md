@@ -114,6 +114,12 @@ object_client.preserve(lane_id: 'low')
 # Update the MARC record (used in the releaseWF)
 object_client.update_marc_record
 
+# Update the DOI metadata (used by robot)
+object_client.update_doi_metadata
+
+# Update the Orcid work (used by robot)
+object_client.update_orcid_work
+
 # Copy metadata from Symphony into descMetadata
 object_client.refresh_descriptive_metadata_from_ils
 
