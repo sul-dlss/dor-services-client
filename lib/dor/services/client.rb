@@ -43,17 +43,21 @@ module Dor
         # @param [Faraday::Response] response
         # @param [String] object_identifier (nil)
         # @param [Hash<String,Object>] errors (nil) the JSON-API errors object
+        # @param [Hash<String,Object>] graphql_errors (nil) the GraphQL errors object
         # rubocop:disable Lint/MissingSuper
-        def initialize(response:, object_identifier: nil, errors: nil)
+        def initialize(response:, object_identifier: nil, errors: nil, graphql_errors: nil)
           @response = response
           @object_identifier = object_identifier
           @errors = errors
+          @graphql_errors = graphql_errors
         end
         # rubocop:enable Lint/MissingSuper
 
-        attr_accessor :errors
+        attr_accessor :errors, :graphql_errors
 
         def to_s
+          # For GraphQL errors, see https://graphql-ruby.org/errors/execution_errors
+          return graphql_errors.map { |e| e['message'] }.join(', ') if graphql_errors.present?
           return errors.map { |e| "#{e['title']} (#{e['detail']})" }.join(', ') if errors.present?
 
           ResponseErrorFormatter.format(response: @response, object_identifier: @object_identifier)

@@ -6,7 +6,7 @@ module Dor
   module Services
     class Client
       # API calls that are about a repository object
-      class Object < VersionedService
+      class Object < VersionedService # rubocop:disable Metrics/ClassLength
         extend Deprecation
         attr_reader :object_identifier
 
@@ -51,6 +51,35 @@ module Dor
 
           build_cocina_from_response(resp, validate: validate)
         end
+
+        BASE_ALLOWED_FIELDS = %i[external_identifier cocina_version label version administrative description].freeze
+        DRO_ALLOWED_FIELDS = BASE_ALLOWED_FIELDS + %i[content_type access identification structural geographic]
+
+        # rubocop:disable Metrics/MethodLength
+        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable Metrics/CyclomaticComplexity
+        # rubocop:disable Metrics/ParameterLists
+        def find_lite(administrative: true, description: true, access: true, structural: true, identification: true, geographic: true)
+          fields = []
+          fields << :administrative if administrative
+          fields << :description if description
+          fields << :access if access
+          fields << :structural if structural
+          fields << :identification if identification
+          fields << :geographic if geographic
+
+          resp = connection.post '/graphql', query(fields),
+                                 'Content-Type' => 'application/json'
+          raise_exception_based_on_response!(resp) unless resp.success?
+          resp_json = JSON.parse(resp.body)
+          # GraphQL returns 200 even when an error
+          raise_graphql_exception(resp, resp_json)
+          Cocina::Models.build_lite(resp_json['data']['cocinaObject'])
+        end
+        # rubocop:enable Metrics/MethodLength
+        # rubocop:enable Metrics/AbcSize
+        # rubocop:enable Metrics/CyclomaticComplexity
+        # rubocop:enable Metrics/ParameterLists
 
         # Get a list of the collections. (Similar to Valkyrie's find_inverse_references_by)
         # @raise [UnexpectedResponse] if the request is unsuccessful.
@@ -139,6 +168,35 @@ module Dor
 
         def object_path
           "#{api_version}/objects/#{object_identifier}"
+        end
+
+        DEFAULT_FIELDS = %i[externalIdentifier type version label cocinaVersion].freeze
+
+        def query(fields)
+          all_fields = DEFAULT_FIELDS + fields
+          {
+            query:
+          <<~GQL
+            {
+              cocinaObject(externalIdentifier: "#{object_identifier}") {
+                #{all_fields.join("\n")}
+              }
+            }
+          GQL
+          }.to_json
+        end
+
+        def raise_graphql_exception(resp, resp_json)
+          return unless resp_json['errors'].present?
+
+          exception_class = not_found_exception?(resp_json['errors'].first) ? NotFoundResponse : UnexpectedResponse
+          raise exception_class.new(response: resp,
+                                    object_identifier: object_identifier,
+                                    graphql_errors: resp_json['errors'])
+        end
+
+        def not_found_exception?(error)
+          error['message'] == 'Cocina object not found'
         end
       end
     end
