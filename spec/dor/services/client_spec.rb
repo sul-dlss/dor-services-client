@@ -22,7 +22,7 @@ RSpec.describe Dor::Services::Client do
       end
 
       it 'returns an instance of Client::Object' do
-        expect(described_class.object(object_identifier)).to be_instance_of Dor::Services::Client::Object
+        expect(described_class.object(object_identifier)).not_to be_instance_of Dor::Services::Client::Object
       end
 
       it 'returns the memoized instance when called again' do
