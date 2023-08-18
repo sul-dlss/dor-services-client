@@ -50,6 +50,9 @@ commands:
                     chmod +x ./cc-test-reporter
                     ./cc-test-reporter before-build
                 name: Setup Code Climate test-reporter
+            - run:
+                command: gem install rspec_junit_formatter
+                name: Install Rspec Junit Formatter gem            
             - ruby/rspec-test:
                 rerun-fail: true
             - run:
