@@ -160,10 +160,8 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
       let(:params) { { foo: 'bar' } }
 
       before do
-        # The `.with(body: ...)` is what tests that params are passed through as json
-        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/versions')
-          .with(headers: { 'Content-Type' => 'application/json' },
-                body: dro.to_json)
+        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/versions?foo=bar')
+          .with(headers: { 'Content-Type' => 'application/json' })
           .to_return(status: status, body: body, headers: headers)
       end
 
@@ -217,10 +215,8 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
       let(:params) { { foo: 'bar' } }
 
       before do
-        # The `.with(body: ...)` is what tests that params are passed through as json
-        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/versions/current/close')
-          .with(headers: { 'Content-Type' => 'application/json' },
-                body: params.to_json)
+        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/versions/current/close?foo=bar')
+          .with(headers: { 'Content-Type' => 'application/json' })
           .to_return(status: status, body: body)
       end
 

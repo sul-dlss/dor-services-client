@@ -34,7 +34,7 @@ RSpec.describe Dor::Services::Client::Objects do
       Cocina::Models::DRO.new(request_dro.to_h.merge(externalIdentifier: 'druid:bc123df4567',
                                                      access: {}, description: description_props)).to_json
     end
-    let(:url) { 'https://dor-services.example.com/v1/objects' }
+    let(:url) { 'https://dor-services.example.com/v1/objects?assign_doi=false' }
 
     before do
       stub_request(:post, url)

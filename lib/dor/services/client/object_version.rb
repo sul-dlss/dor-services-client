@@ -59,9 +59,8 @@ module Dor
         # @return [Cocina::Models::DROWithMetadata|CollectionWithMetadata|AdminPolicyWithMetadata] cocina model with updated version
         def open(**params)
           resp = connection.post do |req|
-            req.url open_new_version_path
+            req.url with_querystring(url: open_new_version_path, params: params)
             req.headers['Content-Type'] = 'application/json'
-            req.body = params.to_json if params.any?
           end
 
           raise_exception_based_on_response!(resp) unless resp.success?
@@ -79,9 +78,8 @@ module Dor
         # @return [String] a message confirming successful closing
         def close(**params)
           resp = connection.post do |req|
-            req.url close_version_path
+            req.url with_querystring(url: close_version_path, params: params)
             req.headers['Content-Type'] = 'application/json'
-            req.body = params.to_json if params.any?
           end
           return resp.body if resp.success?
 

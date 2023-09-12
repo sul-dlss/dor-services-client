@@ -14,11 +14,10 @@ module Dor
         # @return [Cocina::Models::DROWithMetadata,Cocina::Models::CollectionWithMetadata,Cocina::Models::AdminPolicyWithMetadata] the returned model
         def register(params:, assign_doi: false, validate: false)
           resp = connection.post do |req|
-            req.url objects_path
+            req.url with_querystring(url: objects_path, params: { assign_doi: assign_doi })
             req.headers['Content-Type'] = 'application/json'
             # asking the service to return JSON (else it'll be plain text)
             req.headers['Accept'] = 'application/json'
-            req.params[:assign_doi] = true if assign_doi
             req.body = params.to_json
           end
 
