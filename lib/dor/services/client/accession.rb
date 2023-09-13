@@ -24,8 +24,7 @@ module Dor
         # @raise [UnexpectedResponse] when the response is not successful.
         def start(params = {})
           resp = connection.post do |req|
-            req.url path
-            req.params = params
+            req.url with_querystring(url: path, params: params)
           end
           return true if resp.success?
 

@@ -25,6 +25,12 @@ module Dor
           AsyncResult.new(url: url)
         end
 
+        def with_querystring(url:, params:)
+          return url if params.blank?
+
+          "#{url}?#{params.to_query}"
+        end
+
         private
 
         attr_reader :connection, :api_version
