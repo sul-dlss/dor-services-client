@@ -141,6 +141,9 @@ object_client.version.close
 # Return the Cocina metadata
 object_client.find
 
+# Returns "lite" Cocina metadata (excluding specified attributes)
+object_client.find_lite(structural: false, geographic: false)
+
 # Query for an object's collections
 object_client.collections
 

@@ -1,18 +1,18 @@
 # frozen_string_literal: true
 
 RSpec.describe Dor::Services::Client::Object do
-  subject(:client) { described_class.new(connection: connection, version: 'v1', object_identifier: pid) }
+  subject(:client) { described_class.new(connection: connection, version: 'v1', object_identifier: druid) }
 
   before do
     Dor::Services::Client.configure(url: 'https://dor-services.example.com', token: '123')
   end
 
   let(:connection) { Dor::Services::Client.instance.send(:connection) }
-  let(:pid) { 'druid:bc123df4567' }
+  let(:druid) { 'druid:bc123df4567' }
 
   describe '#object_identifier' do
-    it 'returns the injected pid' do
-      expect(client.object_identifier).to eq pid
+    it 'returns the injected druid' do
+      expect(client.object_identifier).to eq druid
     end
   end
 
@@ -131,6 +131,154 @@ RSpec.describe Dor::Services::Client::Object do
       it 'validates' do
         model
         expect(Cocina::Models).to have_received(:build).with(cocina.to_h.deep_stringify_keys, validate: false)
+      end
+    end
+  end
+
+  describe '#find_lite' do
+    subject(:model) { client.find_lite(structural: false, geographic: false, description: false) }
+
+    before do
+      stub_request(:post, 'https://dor-services.example.com/graphql')
+        .with(
+          body: '{"query":"{\\n  cocinaObject(externalIdentifier: \"druid:bc123df4567\") {\\n    ' \
+                'externalIdentifier\\ntype\\nversion\\nlabel\\ncocinaVersion\\nadministrative\\naccess\\n' \
+                'identification\\n  }\\n}\\n"}',
+          headers: {
+            'Authorization' => 'Bearer 123',
+            'Content-Type' => 'application/json'
+          }
+        )
+        .to_return(status: 200, body: body, headers: {})
+    end
+
+    context 'when API request succeeds with a DRO' do
+      let(:body) do
+        {
+          data: {
+            cocinaObject: {
+              externalIdentifier: druid,
+              type: 'https://cocina.sul.stanford.edu/models/object',
+              version: 1,
+              label: 'factory DRO label',
+              cocinaVersion: '0.90.0',
+              administrative: {
+                releaseTags: [],
+                hasAdminPolicy: 'druid:hv992ry2431'
+              },
+              access: {
+                view: 'dark',
+                download: 'none',
+                controlledDigitalLending: false
+              },
+              identification: {
+                sourceId: 'sul:1234',
+                catalogLinks: []
+              }
+            }
+          }
+        }.to_json
+      end
+
+      it 'returns the cocina lite model' do
+        expect(model).to be_instance_of Cocina::Models::DROLite
+        expect(model.externalIdentifier).to eq druid
+        expect(model.description).to be_nil
+        expect(model.access.to_h).to eq(
+          {
+            view: 'dark',
+            download: 'none',
+            controlledDigitalLending: false
+          }
+        )
+      end
+    end
+
+    context 'when API request succeeds with an AdminPolicy' do
+      # AdminPolicy has fewer fields than a DRO. This tests that extra fields returned by
+      # GraphQL are ignored.
+      let(:body) do
+        {
+          data: {
+            cocinaObject: {
+              externalIdentifier: druid,
+              type: 'https://cocina.sul.stanford.edu/models/admin_policy',
+              version: 1,
+              label: 'factory APO label',
+              cocinaVersion: '0.90.0',
+              administrative: {
+                roles: [],
+                hasAgreement: 'druid:hp308wm0436',
+                accessTemplate: {
+                  view: 'world',
+                  download: 'world',
+                  controlledDigitalLending: false
+                },
+                hasAdminPolicy: 'druid:hv992ry2431',
+                registrationWorkflow: [],
+                collectionsForRegistration: []
+              },
+              access: nil,
+              identification: nil
+            }
+          }
+        }.to_json
+      end
+
+      it 'returns the cocina lite model' do
+        expect(model).to be_instance_of Cocina::Models::AdminPolicyLite
+      end
+    end
+
+    context 'when API request succeeds with not found' do
+      let(:body) do
+        {
+          data: nil,
+          errors: [
+            {
+              message: 'Cocina object not found',
+              locations: [
+                {
+                  line: 2,
+                  column: 3
+                }
+              ],
+              path: [
+                'cocinaObject'
+              ]
+            }
+          ]
+        }.to_json
+      end
+
+      it 'raises NotFoundResponse' do
+        expect { model }.to raise_error(Dor::Services::Client::NotFoundResponse)
+      end
+    end
+
+    context 'when API request succeeds with other error' do
+      let(:body) do
+        {
+          data: nil,
+          errors: [
+            {
+              message: 'Uggh, something went wrong',
+              locations: [
+                {
+                  line: 2,
+                  column: 3
+                }
+              ],
+              path: [
+                'cocinaObject'
+              ]
+            }
+          ]
+        }.to_json
+      end
+
+      it 'raises UnexpectedResponse' do
+        expect { model }.to raise_error(Dor::Services::Client::UnexpectedResponse)
       end
     end
   end
