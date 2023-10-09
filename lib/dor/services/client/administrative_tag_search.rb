@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'active_support/json' # required for serializing time as iso8601
-
 module Dor
   module Services
     class Client

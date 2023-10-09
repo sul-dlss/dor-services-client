@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
+require 'active_support'
 require 'active_support/core_ext/hash/indifferent_access'
 require 'active_support/core_ext/module/delegation'
 require 'active_support/core_ext/object/blank'
-require 'active_support/json'
 require 'active_support/core_ext/object/json'
 require 'active_support/core_ext/object/to_query'
+require 'active_support/json'
 require 'cocina/models'
 require 'faraday'
 require 'faraday/retry'
