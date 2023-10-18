@@ -71,11 +71,17 @@ RSpec.describe Dor::Services::Client::Workspace do
   end
 
   describe '#reset' do
-    subject(:request) { client.reset }
+    subject(:request) { client.reset(workflow: workflow, lane_id: lane_id) }
+
+    let(:workflow) { nil }
+    let(:lane_id) { nil }
 
     context 'when API request succeeds' do
+      let(:workflow) { 'accessionWF' }
+      let(:lane_id) { 'low' }
+
       before do
-        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:123/workspace/reset')
+        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:123/workspace/reset?workflow=accessionWF&lane-id=low')
           .to_return(status: 200)
       end
 
