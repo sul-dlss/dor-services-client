@@ -30,11 +30,8 @@ module Dor
         # @param [String] lane_id for prioritization (default or low)
         # @return [String] the URL of the background job on dor-service-app
         def cleanup(workflow: nil, lane_id: nil)
-          query_params = query_params_for(workflow, lane_id)
-          query_string = query_params.any? ? "?#{query_params.join('&')}" : ''
-          cleanup_path = "#{workspace_path}#{query_string}"
           resp = connection.delete do |req|
-            req.url cleanup_path
+            req.url with_query_params(workspace_path, workflow, lane_id)
           end
           return resp.headers['Location'] if resp.success?
 
@@ -43,11 +40,13 @@ module Dor
 
         # After an object has been copied to preservation the workspace can be
         # reset. This is called by the reset-workspace step of the accessionWF
+        # @param [String] workflow (nil) which workflow to callback to.
+        # @param [String] lane_id for prioritization (default or low)
         # @raise [UnexpectedResponse] if the request is unsuccessful.
         # @return nil
-        def reset
+        def reset(workflow: nil, lane_id: nil)
           resp = connection.post do |req|
-            req.url "#{workspace_path}/reset"
+            req.url with_query_params("#{workspace_path}/reset", workflow, lane_id)
           end
           raise_exception_based_on_response!(resp, object_identifier) unless resp.success?
         end
@@ -63,6 +62,13 @@ module Dor
             params << "workflow=#{workflow}" if workflow
             params << "lane-id=#{lane_id}" if lane_id
           end
+        end
+
+        def with_query_params(url, workflow, lane_id)
+          query_params = query_params_for(workflow, lane_id)
+          return url unless query_params.any?
+
+          "#{url}?#{query_params.join('&')}"
         end
 
         attr_reader :object_identifier
