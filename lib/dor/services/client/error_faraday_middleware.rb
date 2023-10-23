@@ -7,8 +7,8 @@ module Dor
       class ErrorFaradayMiddleware < Faraday::Middleware
         def call(env)
           @app.call(env)
-        rescue Faraday::ConnectionFailed
-          raise ConnectionFailed, 'unable to reach dor-services-app'
+        rescue Faraday::ConnectionFailed => e
+          raise ConnectionFailed, "unable to reach dor-services-app: #{e}", e.backtrace
         end
       end
     end
