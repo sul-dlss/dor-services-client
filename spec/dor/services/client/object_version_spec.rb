@@ -55,7 +55,7 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
       let(:body) { '' }
 
       it 'raises an error' do
-        expect { request }.to raise_error(Dor::Services::Client::ConnectionFailed, 'unable to reach dor-services-app')
+        expect { request }.to raise_error(Dor::Services::Client::ConnectionFailed, 'unable to reach dor-services-app: end of file reached')
       end
     end
   end
@@ -114,7 +114,7 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
       let(:body) { '' }
 
       it 'raises an error' do
-        expect { request }.to raise_error(Dor::Services::Client::ConnectionFailed, 'unable to reach dor-services-app')
+        expect { request }.to raise_error(Dor::Services::Client::ConnectionFailed, 'unable to reach dor-services-app: end of file reached')
       end
     end
   end
