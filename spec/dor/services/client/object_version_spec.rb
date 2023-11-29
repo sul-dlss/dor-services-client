@@ -4,7 +4,7 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
   subject(:client) { described_class.new(connection: connection, version: 'v1', object_identifier: pid) }
 
   before do
-    Dor::Services::Client.configure(url: 'https://dor-services.example.com', token: '123')
+    Dor::Services::Client.configure(url: 'https://dor-services.example.com', token: '123', enable_get_retries: false)
   end
 
   let(:connection) { Dor::Services::Client.instance.send(:connection) }
@@ -17,6 +17,9 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
       stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:1234/versions/current')
         .to_return(status: status, body: body)
     end
+
+    let(:status) { [0, 'overwritten below when necessary'] }
+    let(:body) { 'overwritten below when necessary' }
 
     context 'when API request succeeds' do
       let(:status) { 200 }
@@ -48,14 +51,30 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
 
     context 'when connection fails' do
       before do
-        allow_any_instance_of(Faraday::Adapter::NetHttp).to receive(:call).and_raise(Faraday::ConnectionFailed.new('end of file reached'))
+        stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:1234/versions/current')
+          .to_raise(Faraday::ConnectionFailed.new('end of file reached'))
       end
-
-      let(:status) { 555 }
-      let(:body) { '' }
 
       it 'raises an error' do
         expect { request }.to raise_error(Dor::Services::Client::ConnectionFailed, 'unable to reach dor-services-app: end of file reached')
+      end
+    end
+
+    context 'when retriable error' do
+      let(:logger) { instance_double(Logger, info: nil) }
+
+      before do
+        Dor::Services::Client.configure(url: 'https://dor-services.example.com', token: '123', logger: logger)
+
+        stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:1234/versions/current')
+          .to_return(status: 503, body: '')
+          .then.to_return(status: 200, body: '2')
+      end
+
+      it 'logs retries' do
+        expect(request).to eq '2'
+        expect(logger).to have_received(:info)
+          .with('Retry 1 for https://dor-services.example.com/v1/objects/druid:1234/versions/current due to Faraday::RetriableResponse ()')
       end
     end
   end

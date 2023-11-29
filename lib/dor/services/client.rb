@@ -116,10 +116,12 @@ module Dor
         # @param [String] url the base url of the endpoint the client should connect to (required)
         # @param [String] token a bearer token for HTTP authentication (required)
         # @param [Boolean] enable_get_retries retries get requests on errors
-        def configure(url:, token:, enable_get_retries: false)
+        # @param [Logger,nil] logger for logging retry attempts
+        def configure(url:, token:, enable_get_retries: true, logger: nil)
           instance.url = url
           instance.token = token
           instance.enable_get_retries = enable_get_retries
+          instance.logger = logger
 
           # Force connection to be re-established when `.configure` is called
           instance.connection = nil
@@ -130,21 +132,21 @@ module Dor
         delegate :background_job_results, :objects, :object, :virtual_objects, :administrative_tags, to: :instance
       end
 
-      attr_writer :url, :token, :connection, :enable_get_retries
+      attr_writer :url, :token, :connection, :enable_get_retries, :logger
 
       private
 
-      attr_reader :token, :enable_get_retries
+      attr_reader :token, :enable_get_retries, :logger
 
       def url
         @url || raise(Error, 'url has not yet been configured')
       end
 
       def connection
-        @connection ||= ConnectionWrapper.new(connection: build_connection, get_connection: build_connection(with_retries: enable_get_retries))
+        @connection ||= build_connection(with_retries: enable_get_retries, logger: logger)
       end
 
-      def build_connection(with_retries: false)
+      def build_connection(with_retries: false, logger: nil)
         Faraday.new(url) do |builder|
           builder.use ErrorFaradayMiddleware
           builder.use Faraday::Request::UrlEncoded
@@ -157,8 +159,24 @@ module Dor
           builder.options[:timeout] = 300
           builder.headers[:user_agent] = user_agent
           builder.headers[TOKEN_HEADER] = "Bearer #{token}"
-          builder.request :retry, max: 4, interval: 1, backoff_factor: 2 if with_retries
+          builder.request :retry, retry_options(logger) if with_retries
         end
+      end
+
+      def retry_options(logger) # rubocop:disable Metrics/MethodLength
+        {
+          max: 4,
+          interval: 1,
+          backoff_factor: 2,
+          exceptions: Faraday::Retry::Middleware::DEFAULT_EXCEPTIONS + [Faraday::ConnectionFailed],
+          methods: %i[get],
+          retry_statuses: [503],
+          # rubocop:disable Lint/UnusedBlockArgument
+          retry_block: lambda { |env:, options:, retry_count:, exception:, will_retry_in:|
+                         logger&.info("Retry #{retry_count + 1} for #{env.url} due to #{exception.class} (#{exception.message})")
+                       }
+          # rubocop:enable Lint/UnusedBlockArgument
+        }
       end
 
       def user_agent
