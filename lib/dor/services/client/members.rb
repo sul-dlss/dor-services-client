@@ -5,7 +5,7 @@ module Dor
     class Client
       # API call that queries the members of a collection.
       class Members < VersionedService
-        Member = Struct.new(:externalIdentifier, :type, keyword_init: true)
+        Member = Struct.new(:externalIdentifier, :version, keyword_init: true)
 
         # @param object_identifier [String] the pid for the object
         def initialize(connection:, version:, object_identifier:)

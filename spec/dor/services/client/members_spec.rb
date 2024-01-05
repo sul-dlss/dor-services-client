@@ -20,11 +20,11 @@ RSpec.describe Dor::Services::Client::Members do
             "members":[
               {
                 "externalIdentifier":"druid:12343234",
-                "type":"collection"
+                "version":1
               },
               {
                 "externalIdentifier":"druid:jg192kl9900",
-                "type":"item"
+                "version":2
               }
             ]
           }
@@ -38,6 +38,7 @@ RSpec.describe Dor::Services::Client::Members do
 
       it 'returns members' do
         expect(members.first.externalIdentifier).to eq 'druid:12343234'
+        expect(members.last.version).to eq 2
       end
     end
 
