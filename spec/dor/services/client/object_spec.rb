@@ -48,6 +48,12 @@ RSpec.describe Dor::Services::Client::Object do
     end
   end
 
+  describe '#release_tags' do
+    it 'returns an instance of Client::ReleaseTags' do
+      expect(client.release_tags).to be_instance_of Dor::Services::Client::ReleaseTags
+    end
+  end
+
   describe '#accession' do
     it 'returns an instance of Client::Accession' do
       expect(client.accession).to be_instance_of Dor::Services::Client::Accession

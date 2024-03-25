@@ -145,6 +145,10 @@ object_client.administrative_tags.update(current: 'Current : Tag', new: 'Replace
 object_client.administrative_tags.destroy(tag: 'Delete : Me')
 object_client.administrative_tags.list
 
+# Create and list release tags for an object
+object_client.release_tags.create(tag: Cocina::Models::Tag.new(to: 'Searchworks'))
+object_client.release_tags.list
+
 # Create and list events for an object
 object_client.events.create(type: type, data: data)
 object_client.events.list

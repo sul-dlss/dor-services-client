@@ -30,6 +30,10 @@ module Dor
           @administrative_tags ||= AdministrativeTags.new(**parent_params)
         end
 
+        def release_tags
+          @release_tags ||= ReleaseTags.new(**parent_params)
+        end
+
         def version
           @version ||= ObjectVersion.new(**parent_params)
         end
