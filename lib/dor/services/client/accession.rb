@@ -15,7 +15,6 @@ module Dor
 
         # Start accession on an object (start specified workflow, assemblyWF by default, and version if needed)
         # @param params [Hash<Symbol,String>] optional parameter hash
-        # @option params [String] :significance set significance (major/minor/patch) of version change - required
         # @option params [String] :description set description of version change - required
         # @option params [String] :opening_user_name add opening username to the event - optional
         # @option params [String] :workflow the workflow to start - defaults to 'assemblyWF'

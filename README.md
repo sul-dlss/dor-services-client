@@ -122,7 +122,7 @@ object_client.version.inventory
 object_client.version.current
 object_client.version.openable?
 # see dor-services-app openapi.yml for optional params
-object_client.version.open(description: 'Changed title', significance: 'minor')
+object_client.version.open(description: 'Changed title')
 # see dor-services-app openapi.yml for optional params
 object_client.version.close
 

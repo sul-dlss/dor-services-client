@@ -51,7 +51,6 @@ module Dor
 
         # Open new version for an object
         # @param description [String] a description of the object version being opened - required
-        # @param significance [String] 'major' 'minor' or 'admin' - required
         # @param opening_user_name [String] sunetid - defaults to nil
         # @param assume_accessioned [Boolean] if true, does not check whether object has been accessioned; defaults to false
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
@@ -70,7 +69,6 @@ module Dor
 
         # Close current version for an object
         # @param description [String] (optional) - a description of the object version being opened
-        # @param significance [String] (optional) - 'major' 'minor' or 'admin'
         # @param user_name [String] (optional) - sunetid
         # @param start_accession [Boolean] (optional) - whether to start accessioning workflow; defaults to true
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
