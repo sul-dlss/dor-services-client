@@ -16,11 +16,11 @@ RSpec.describe Dor::Services::Client::ReleaseTags do
     context 'when API request succeeds' do
       before do
         stub_request(:get, "https://dor-services.example.com/v1/objects/#{druid}/release_tags")
-          .to_return(status: 200, body: '[{"to":"Searchworks"},{"to":"Earthworks"}]')
+          .to_return(status: 200, body: '[{"to":"Searchworks","what":"self"},{"to":"Earthworks","what":"self"}]')
       end
 
       it 'lists administrative tags' do
-        expect(request.map(&:to_h)).to eq([{ to: 'Searchworks', release: false }, { to: 'Earthworks', release: false }])
+        expect(request.map(&:to_h)).to eq([{ to: 'Searchworks', release: false, what: 'self' }, { to: 'Earthworks', release: false, what: 'self' }])
       end
     end
 
@@ -51,7 +51,7 @@ RSpec.describe Dor::Services::Client::ReleaseTags do
     subject(:request) { client.create(tag: tag) }
 
     let(:tag) do
-      Cocina::Models::ReleaseTag.new
+      Cocina::Models::ReleaseTag.new(what: 'self')
     end
 
     context 'when API request succeeds' do
