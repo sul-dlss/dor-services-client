@@ -318,4 +318,64 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
       end
     end
   end
+
+  describe '#status' do
+    subject(:request) { client.status }
+
+    before do
+      stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:1234/versions/status')
+        .to_return(status: status, body: body)
+    end
+
+    context 'when API request succeeds' do
+      let(:status) { 200 }
+
+      let(:body) do
+        <<~JSON
+          {"versionId":1,"open":true,"openable":false,"assembling":true,"accessioning":false,"closeable":true}
+        JSON
+      end
+
+      it 'returns the list of versions' do
+        expect(request).to eq described_class::VersionStatus.new(versionId: 1, open: true, openable: false, assembling: true, accessioning: false, closeable: true)
+        expect(request.open?).to be true
+        expect(request.openable?).to be false
+        expect(request.assembling?).to be true
+        expect(request.accessioning?).to be false
+        expect(request.closed?).to be false
+        expect(request.closeable?).to be true
+      end
+    end
+
+    context 'when API request returns 404' do
+      let(:status) { [404, 'not found'] }
+      let(:body) { '' }
+
+      it 'raises a NotFoundResponse exception' do
+        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse)
+      end
+    end
+
+    context 'when API request fails' do
+      let(:status) { [401, 'unauthorized'] }
+      let(:body) { '' }
+
+      it 'raises an error' do
+        expect { request }.to raise_error(Dor::Services::Client::UnauthorizedResponse)
+      end
+    end
+
+    context 'when connection fails' do
+      before do
+        allow_any_instance_of(Faraday::Adapter::NetHttp).to receive(:call).and_raise(Faraday::ConnectionFailed.new('end of file reached'))
+      end
+
+      let(:status) { 555 }
+      let(:body) { '' }
+
+      it 'raises an error' do
+        expect { request }.to raise_error(Dor::Services::Client::ConnectionFailed, 'unable to reach dor-services-app: end of file reached')
+      end
+    end
+  end
 end
