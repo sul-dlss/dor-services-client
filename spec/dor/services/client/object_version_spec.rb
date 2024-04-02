@@ -338,12 +338,12 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
 
       it 'returns the list of versions' do
         expect(request).to eq described_class::VersionStatus.new(versionId: 1, open: true, openable: false, assembling: true, accessioning: false, closeable: true)
-        expect(request.open?).to be true
-        expect(request.openable?).to be false
-        expect(request.assembling?).to be true
-        expect(request.accessioning?).to be false
-        expect(request.closed?).to be false
-        expect(request.closeable?).to be true
+        expect(request).to be_open
+        expect(request).not_to be_openable
+        expect(request).to be_assembling
+        expect(request).not_to be_accessioning
+        expect(request).not_to be_closed
+        expect(request).to be_closeable
       end
     end
 
