@@ -6,6 +6,31 @@ module Dor
       # API calls that are about versions
       class ObjectVersion < VersionedService
         Version = Struct.new(:versionId, :tag, :message, keyword_init: true)
+        VersionStatus = Struct.new(:versionId, :open, :openable, :assembling, :accessioning, :closeable, keyword_init: true) do
+          def open?
+            open
+          end
+
+          def openable?
+            openable
+          end
+
+          def assembling?
+            assembling
+          end
+
+          def accessioning?
+            accessioning
+          end
+
+          def closed?
+            !open
+          end
+
+          def closeable?
+            closeable
+          end
+        end
 
         # @param object_identifier [String] the pid for the object
         def initialize(connection:, version:, object_identifier:)
@@ -93,6 +118,17 @@ module Dor
           raise_exception_based_on_response!(resp, object_identifier) unless resp.success?
 
           JSON.parse(resp.body).fetch('versions').map { |params| Version.new(**params.symbolize_keys!) }
+        end
+
+        # @return [VersionStatus] status of the version
+        # @raise [UnexpectedResponse] on an unsuccessful response from the server
+        def status
+          resp = connection.get do |req|
+            req.url "#{base_path}/status"
+          end
+          raise_exception_based_on_response!(resp, object_identifier) unless resp.success?
+
+          VersionStatus.new(JSON.parse(resp.body).symbolize_keys!)
         end
 
         private
