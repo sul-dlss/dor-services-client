@@ -7,6 +7,8 @@ module Dor
       class ObjectVersion < VersionedService
         Version = Struct.new(:versionId, :tag, :message, keyword_init: true)
         VersionStatus = Struct.new(:versionId, :open, :openable, :assembling, :accessioning, :closeable, keyword_init: true) do
+          alias_method :version, :versionId
+
           def open?
             open
           end
