@@ -92,16 +92,16 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
       let(:body) do
         <<~JSON
           {"versions":[
-            {"versionId":1,"tag":"1.0.0","message":"Initial version"},
-            {"versionId":2,"tag":"2.0.0","message":"Updated"}
+            {"versionId":1,"message":"Initial version"},
+            {"versionId":2,"message":"Updated"}
           ]}
         JSON
       end
 
       it 'returns the list of versions' do
         expect(request).to eq [
-          described_class::Version.new(versionId: 1, tag: '1.0.0', message: 'Initial version'),
-          described_class::Version.new(versionId: 2, tag: '2.0.0', message: 'Updated')
+          described_class::Version.new(versionId: 1, message: 'Initial version'),
+          described_class::Version.new(versionId: 2, message: 'Updated')
         ]
       end
     end
