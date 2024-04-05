@@ -5,7 +5,7 @@ module Dor
     class Client
       # API calls that are about versions
       class ObjectVersion < VersionedService
-        Version = Struct.new(:versionId, :tag, :message, keyword_init: true)
+        Version = Struct.new(:versionId, :message, keyword_init: true)
         VersionStatus = Struct.new(:versionId, :open, :openable, :assembling, :accessioning, :closeable, keyword_init: true) do
           alias_method :version, :versionId
 
