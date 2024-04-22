@@ -161,6 +161,9 @@ object_client.workspace.create(source: object_path_string)
 object_client.workspace.cleanup
 object_client.workspace.reset
 
+# Reindex
+object_client.reindex
+
 # Search for administrative tags:
 Dor::Services::Client.administrative_tags.search(q: 'Project')
 ```
