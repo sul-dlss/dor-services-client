@@ -108,7 +108,7 @@ GEM
     openapi_parser (1.0.0)
     optimist (3.1.0)
     parallel (1.24.0)
-    parser (3.3.0.5)
+    parser (3.3.1.0)
       ast (~> 2.4.1)
       racc
     patience_diff (1.2.0)
@@ -134,7 +134,7 @@ GEM
     rspec-support (3.13.1)
     rss (0.3.0)
       rexml
-    rubocop (1.63.2)
+    rubocop (1.63.4)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
@@ -165,7 +165,7 @@ GEM
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.12.3)
     simplecov_json_formatter (0.1.4)
-    super_diff (0.11.0)
+    super_diff (0.12.1)
       attr_extras (>= 6.2.4)
       diff-lcs
       patience_diff
