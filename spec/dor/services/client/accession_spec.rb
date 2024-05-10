@@ -12,12 +12,14 @@ RSpec.describe Dor::Services::Client::Accession do
   end
 
   let(:connection) { Dor::Services::Client.instance.send(:connection) }
+  let(:headers) { { 'Authorization' => 'Bearer 123', 'Content-Type' => 'application/json' } }
+  let(:body) { '' }
 
   describe '#start' do
     context 'with no params' do
       before do
         stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/accession')
-          .to_return(status: status)
+          .with(body: body, headers: headers).to_return(status: status)
       end
 
       context 'when API request succeeds' do
@@ -41,7 +43,7 @@ RSpec.describe Dor::Services::Client::Accession do
     context 'with params' do
       before do
         stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/accession?workflow=accessionWF&opening_user_name=dude')
-          .to_return(status: status)
+          .with(body: body, headers: headers).to_return(status: status)
       end
 
       context 'when API request succeeds' do
@@ -50,6 +52,15 @@ RSpec.describe Dor::Services::Client::Accession do
 
         it 'returns true' do
           expect(client.start(params)).to be true
+        end
+
+        context 'with context' do
+          let(:body) { '{"context":{"requireOCR":true}}' }
+          let(:params) { { opening_user_name: 'dude', workflow: 'accessionWF', context: { 'requireOCR' => true } } }
+
+          it 'returns true' do
+            expect(client.start(params)).to be true
+          end
         end
       end
     end

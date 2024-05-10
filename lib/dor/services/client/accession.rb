@@ -18,12 +18,16 @@ module Dor
         # @option params [String] :description set description of version change - required
         # @option params [String] :opening_user_name add opening username to the event - optional
         # @option params [String] :workflow the workflow to start - defaults to 'assemblyWF'
+        # @option params [Hash] :context the workflow context - optional
         # @return [Boolean] true on success
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
         def start(params = {})
+          body = params[:context] ? { 'context' => params[:context] }.to_json : ''
           resp = connection.post do |req|
-            req.url with_querystring(url: path, params: params)
+            req.url with_querystring(url: path, params: params.except(:context))
+            req.headers['Content-Type'] = 'application/json'
+            req.body = body
           end
           return true if resp.success?
 
