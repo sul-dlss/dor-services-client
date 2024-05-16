@@ -38,6 +38,10 @@ module Dor
           @version ||= ObjectVersion.new(**parent_params)
         end
 
+        def user_version
+          @user_version ||= UserVersion.new(**parent_params)
+        end
+
         def accession(params = {})
           @accession ||= Accession.new(**parent_params.merge(params))
         end
