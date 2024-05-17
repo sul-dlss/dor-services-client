@@ -72,6 +72,12 @@ RSpec.describe Dor::Services::Client::Object do
     end
   end
 
+  describe '#user_version' do
+    it 'returns an instance of Client::UserVersion' do
+      expect(client.user_version).to be_instance_of Dor::Services::Client::UserVersion
+    end
+  end
+
   describe '#events' do
     it 'returns an instance of Client::Events' do
       expect(client.events).to be_instance_of Dor::Services::Client::Events
