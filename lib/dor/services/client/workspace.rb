@@ -12,14 +12,16 @@ module Dor
         end
 
         # Initializes a new workspace
-        # @param source [String] the path to the object
+        # @param source [String] the path to the object (optional)
         # @raise [UnexpectedResponse] if the request is unsuccessful.
-        # @return nil
-        def create(source:)
+        # @return [String] the path to the directory created
+        def create(source: nil)
           resp = connection.post do |req|
             req.url workspace_path
-            req.params['source'] = source
+            req.params['source'] = source if source
           end
+          return resp.headers['Location'] if resp.success?
+
           raise_exception_based_on_response!(resp, object_identifier) unless resp.success?
         end
 

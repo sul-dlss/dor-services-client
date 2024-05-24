@@ -11,22 +11,40 @@ RSpec.describe Dor::Services::Client::Workspace do
   let(:pid) { 'druid:123' }
 
   describe '#create' do
-    subject(:request) { client.create(source: 'abd/cwef/vwef/content') }
+    let(:path_to_workspace) { '/dor/workspace/123' }
+    let(:source) { 'abd/cwef/vwef/content' }
 
-    context 'when API request succeeds' do
+    context 'when API request succeeds with source param' do
+      subject(:request) { client.create(source: source) }
+
       before do
-        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:123/workspace?source=abd/cwef/vwef/content')
-          .to_return(status: 200)
+        stub_request(:post, "https://dor-services.example.com/v1/objects/druid:123/workspace?source=#{source}")
+          .to_return(status: 200, headers: { 'Location' => path_to_workspace })
       end
 
-      it 'posts params' do
-        expect(request).to be_nil
+      it 'posts params and returns directory' do
+        expect(request).to eq path_to_workspace
+      end
+    end
+
+    context 'when API request succeeds without source param' do
+      subject(:request) { client.create }
+
+      before do
+        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:123/workspace')
+          .to_return(status: 200, headers: { 'Location' => path_to_workspace })
+      end
+
+      it 'posts params and returns directory' do
+        expect(request).to eq path_to_workspace
       end
     end
 
     context 'when API request fails' do
+      subject(:request) { client.create(source: source) }
+
       before do
-        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:123/workspace?source=abd/cwef/vwef/content')
+        stub_request(:post, "https://dor-services.example.com/v1/objects/druid:123/workspace?source=#{source}")
           .to_return(status: [500, 'something is amiss'])
       end
 
