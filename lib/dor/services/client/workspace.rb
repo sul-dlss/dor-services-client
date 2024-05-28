@@ -13,12 +13,16 @@ module Dor
 
         # Initializes a new workspace
         # @param source [String] the path to the object (optional)
+        # @param content [Boolean] determines if the content directory should be created (defaults to false)
+        # @param metadata [Boolean] determines if the metadata directory should be created (defaults to false)
         # @raise [UnexpectedResponse] if the request is unsuccessful.
         # @return [String] the path to the directory created
-        def create(source: nil)
+        def create(source: nil, content: false, metadata: false)
           resp = connection.post do |req|
             req.url workspace_path
             req.params['source'] = source if source
+            req.params['content'] = content
+            req.params['metadata'] = metadata
           end
           return JSON.parse(resp.body)['path'] if resp.success?
 
