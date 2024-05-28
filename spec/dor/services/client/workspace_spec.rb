@@ -18,7 +18,7 @@ RSpec.describe Dor::Services::Client::Workspace do
       subject(:request) { client.create(source: source) }
 
       before do
-        stub_request(:post, "https://dor-services.example.com/v1/objects/druid:123/workspace?source=#{source}")
+        stub_request(:post, "https://dor-services.example.com/v1/objects/druid:123/workspace?source=#{source}&metadata=false&content=false")
           .to_return(status: 201, body: { path: path_to_workspace }.to_json)
       end
 
@@ -31,7 +31,46 @@ RSpec.describe Dor::Services::Client::Workspace do
       subject(:request) { client.create }
 
       before do
-        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:123/workspace')
+        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:123/workspace?metadata=false&content=false')
+          .to_return(status: 201, body: { path: path_to_workspace }.to_json)
+      end
+
+      it 'posts params and returns directory' do
+        expect(request).to eq path_to_workspace
+      end
+    end
+
+    context 'when API request succeeds without source param and with content param' do
+      subject(:request) { client.create(content: true) }
+
+      before do
+        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:123/workspace?metadata=false&content=true')
+          .to_return(status: 201, body: { path: path_to_workspace }.to_json)
+      end
+
+      it 'posts params and returns directory' do
+        expect(request).to eq path_to_workspace
+      end
+    end
+
+    context 'when API request succeeds without source param and with metadata param' do
+      subject(:request) { client.create(metadata: true) }
+
+      before do
+        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:123/workspace?metadata=true&content=false')
+          .to_return(status: 201, body: { path: path_to_workspace }.to_json)
+      end
+
+      it 'posts params and returns directory' do
+        expect(request).to eq path_to_workspace
+      end
+    end
+
+    context 'when API request succeeds without source param and with content and metadata params' do
+      subject(:request) { client.create(content: true, metadata: true) }
+
+      before do
+        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:123/workspace?metadata=true&content=true')
           .to_return(status: 201, body: { path: path_to_workspace }.to_json)
       end
 
@@ -44,7 +83,7 @@ RSpec.describe Dor::Services::Client::Workspace do
       subject(:request) { client.create(source: source) }
 
       before do
-        stub_request(:post, "https://dor-services.example.com/v1/objects/druid:123/workspace?source=#{source}")
+        stub_request(:post, "https://dor-services.example.com/v1/objects/druid:123/workspace?source=#{source}&metadata=false&content=false")
           .to_return(status: [500, 'something is amiss'])
       end
 

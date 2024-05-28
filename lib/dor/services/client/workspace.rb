@@ -17,6 +17,7 @@ module Dor
         # @param metadata [Boolean] determines if the metadata directory should be created (defaults to false)
         # @raise [UnexpectedResponse] if the request is unsuccessful.
         # @return [String] the path to the directory created
+        # rubocop:disable Metrics/AbcSize
         def create(source: nil, content: false, metadata: false)
           resp = connection.post do |req|
             req.url workspace_path
@@ -28,6 +29,7 @@ module Dor
 
           raise_exception_based_on_response!(resp, object_identifier) unless resp.success?
         end
+        # rubocop:enable Metrics/AbcSize
 
         # Cleans up a workspace
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
