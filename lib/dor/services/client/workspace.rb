@@ -20,7 +20,7 @@ module Dor
             req.url workspace_path
             req.params['source'] = source if source
           end
-          return resp.headers['Location'] if resp.success?
+          return JSON.parse(resp.body)['path'] if resp.success?
 
           raise_exception_based_on_response!(resp, object_identifier) unless resp.success?
         end

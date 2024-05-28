@@ -19,7 +19,7 @@ RSpec.describe Dor::Services::Client::Workspace do
 
       before do
         stub_request(:post, "https://dor-services.example.com/v1/objects/druid:123/workspace?source=#{source}")
-          .to_return(status: 200, headers: { 'Location' => path_to_workspace })
+          .to_return(status: 201, body: { path: path_to_workspace }.to_json)
       end
 
       it 'posts params and returns directory' do
@@ -32,7 +32,7 @@ RSpec.describe Dor::Services::Client::Workspace do
 
       before do
         stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:123/workspace')
-          .to_return(status: 200, headers: { 'Location' => path_to_workspace })
+          .to_return(status: 201, body: { path: path_to_workspace }.to_json)
       end
 
       it 'posts params and returns directory' do
@@ -67,7 +67,7 @@ RSpec.describe Dor::Services::Client::Workspace do
 
       before do
         stub_request(:delete, 'https://dor-services.example.com/v1/objects/druid:123/workspace?workflow=accessionWF&lane-id=low')
-          .to_return(status: 200, headers: { 'Location' => 'https://dor-services.example.com/v1/background_job_results/123' })
+          .to_return(status: 201, headers: { 'Location' => 'https://dor-services.example.com/v1/background_job_results/123' })
       end
 
       it 'returns a url' do
@@ -100,7 +100,7 @@ RSpec.describe Dor::Services::Client::Workspace do
 
       before do
         stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:123/workspace/reset?workflow=accessionWF&lane-id=low')
-          .to_return(status: 200)
+          .to_return(status: 201)
       end
 
       it 'raises no errors' do
