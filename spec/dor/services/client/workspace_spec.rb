@@ -11,22 +11,79 @@ RSpec.describe Dor::Services::Client::Workspace do
   let(:pid) { 'druid:123' }
 
   describe '#create' do
-    subject(:request) { client.create(source: 'abd/cwef/vwef/content') }
+    let(:path_to_workspace) { '/dor/workspace/123' }
+    let(:source) { 'abd/cwef/vwef/content' }
 
-    context 'when API request succeeds' do
+    context 'when API request succeeds with source param' do
+      subject(:request) { client.create(source: source) }
+
       before do
-        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:123/workspace?source=abd/cwef/vwef/content')
-          .to_return(status: 200)
+        stub_request(:post, "https://dor-services.example.com/v1/objects/druid:123/workspace?source=#{source}&metadata=false&content=false")
+          .to_return(status: 201, body: { path: path_to_workspace }.to_json)
       end
 
-      it 'posts params' do
-        expect(request).to be_nil
+      it 'posts params and returns directory' do
+        expect(request).to eq path_to_workspace
+      end
+    end
+
+    context 'when API request succeeds without source param' do
+      subject(:request) { client.create }
+
+      before do
+        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:123/workspace?metadata=false&content=false')
+          .to_return(status: 201, body: { path: path_to_workspace }.to_json)
+      end
+
+      it 'posts params and returns directory' do
+        expect(request).to eq path_to_workspace
+      end
+    end
+
+    context 'when API request succeeds without source param and with content param' do
+      subject(:request) { client.create(content: true) }
+
+      before do
+        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:123/workspace?metadata=false&content=true')
+          .to_return(status: 201, body: { path: path_to_workspace }.to_json)
+      end
+
+      it 'posts params and returns directory' do
+        expect(request).to eq path_to_workspace
+      end
+    end
+
+    context 'when API request succeeds without source param and with metadata param' do
+      subject(:request) { client.create(metadata: true) }
+
+      before do
+        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:123/workspace?metadata=true&content=false')
+          .to_return(status: 201, body: { path: path_to_workspace }.to_json)
+      end
+
+      it 'posts params and returns directory' do
+        expect(request).to eq path_to_workspace
+      end
+    end
+
+    context 'when API request succeeds without source param and with content and metadata params' do
+      subject(:request) { client.create(content: true, metadata: true) }
+
+      before do
+        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:123/workspace?metadata=true&content=true')
+          .to_return(status: 201, body: { path: path_to_workspace }.to_json)
+      end
+
+      it 'posts params and returns directory' do
+        expect(request).to eq path_to_workspace
       end
     end
 
     context 'when API request fails' do
+      subject(:request) { client.create(source: source) }
+
       before do
-        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:123/workspace?source=abd/cwef/vwef/content')
+        stub_request(:post, "https://dor-services.example.com/v1/objects/druid:123/workspace?source=#{source}&metadata=false&content=false")
           .to_return(status: [500, 'something is amiss'])
       end
 
@@ -49,7 +106,7 @@ RSpec.describe Dor::Services::Client::Workspace do
 
       before do
         stub_request(:delete, 'https://dor-services.example.com/v1/objects/druid:123/workspace?workflow=accessionWF&lane-id=low')
-          .to_return(status: 200, headers: { 'Location' => 'https://dor-services.example.com/v1/background_job_results/123' })
+          .to_return(status: 201, headers: { 'Location' => 'https://dor-services.example.com/v1/background_job_results/123' })
       end
 
       it 'returns a url' do
@@ -82,7 +139,7 @@ RSpec.describe Dor::Services::Client::Workspace do
 
       before do
         stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:123/workspace/reset?workflow=accessionWF&lane-id=low')
-          .to_return(status: 200)
+          .to_return(status: 201)
       end
 
       it 'raises no errors' do
