@@ -78,6 +78,10 @@ module Dor
       # Error that is raised when the remote server returns a 400 Bad Request; apps should not retry the request
       class BadRequestError < UnexpectedResponse; end
 
+      module Types
+        include Dry.Types()
+      end
+
       # @param object_identifier [String] the pid for the object
       # @raise [ArgumentError] when `object_identifier` is `nil`
       # @return [Dor::Services::Client::Object] an instance of the `Client::Object` class

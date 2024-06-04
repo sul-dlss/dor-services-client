@@ -51,7 +51,7 @@ RSpec.describe Dor::Services::Client::ReleaseTags do
     subject(:request) { client.create(tag: tag) }
 
     let(:tag) do
-      Cocina::Models::ReleaseTag.new(what: 'self')
+      Dor::Services::Client::ReleaseTag.new(what: 'self')
     end
 
     context 'when API request succeeds' do
