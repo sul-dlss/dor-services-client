@@ -13,7 +13,7 @@ module Dor
 
         # Create a release tag for an object
         #
-        # @param tag [Cocina::Models::ReleaseTag]
+        # @param tag [ReleaseTag]
         # @return [Boolean] true if successful
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] if the request is unsuccessful.
@@ -32,7 +32,7 @@ module Dor
         #
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] if the request is unsuccessful.
-        # @return [Array<Cocina::Models::ReleaseTag>]
+        # @return [Array<ReleaseTag>]
         def list
           resp = connection.get do |req|
             req.url "#{api_version}/objects/#{object_identifier}/release_tags"
@@ -40,7 +40,7 @@ module Dor
 
           raise_exception_based_on_response!(resp, object_identifier) unless resp.success?
 
-          JSON.parse(resp.body).map { |tag_data| Cocina::Models::ReleaseTag.new(tag_data) }
+          JSON.parse(resp.body).map { |tag_data| ReleaseTag.new(tag_data) }
         end
 
         private
