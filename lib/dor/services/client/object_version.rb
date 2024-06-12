@@ -6,7 +6,7 @@ module Dor
       # API calls that are about versions
       class ObjectVersion < VersionedService
         Version = Struct.new(:versionId, :message, keyword_init: true)
-        VersionStatus = Struct.new(:versionId, :open, :openable, :assembling, :accessioning, :closeable, keyword_init: true) do
+        VersionStatus = Struct.new(:versionId, :open, :openable, :assembling, :text_extracting, :accessioning, :closeable, keyword_init: true) do
           alias_method :version, :versionId
 
           def open?
@@ -19,6 +19,10 @@ module Dor
 
           def assembling?
             assembling
+          end
+
+          def text_extracting?
+            text_extracting
           end
 
           def accessioning?
