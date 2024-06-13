@@ -175,7 +175,6 @@ RSpec.describe Dor::Services::Client::Object do
               label: 'factory DRO label',
               cocinaVersion: '0.90.0',
               administrative: {
-                releaseTags: [],
                 hasAdminPolicy: 'druid:hv992ry2431'
               },
               access: {
