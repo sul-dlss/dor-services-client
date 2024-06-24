@@ -8,13 +8,13 @@ RSpec.describe Dor::Services::Client::UserVersion do
   end
 
   let(:connection) { Dor::Services::Client.instance.send(:connection) }
-  let(:pid) { 'druid:1234' }
+  let(:pid) { 'druid:bc123df4567' }
 
   describe '#inventory' do
     subject(:request) { client.inventory }
 
     before do
-      stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:1234/user_versions')
+      stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/user_versions')
         .to_return(status: status, body: body)
     end
 
@@ -65,6 +65,35 @@ RSpec.describe Dor::Services::Client::UserVersion do
 
       it 'raises an error' do
         expect { request }.to raise_error(Dor::Services::Client::ConnectionFailed, 'unable to reach dor-services-app: end of file reached')
+      end
+    end
+  end
+
+  describe '#find' do
+    subject(:model) { client.find(2) }
+
+    let(:cocina) { build(:dro, id: 'druid:bc123df4567') }
+
+    let(:status) { 200 }
+
+    before do
+      stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/user_versions/2')
+        .to_return(status: status,
+                   body: cocina.to_json,
+                   headers: {
+                     'Last-Modified' => 'Wed, 03 Mar 2021 18:58:00 GMT',
+                     'X-Created-At' => 'Wed, 01 Jan 2021 12:58:00 GMT',
+                     'X-Served-By' => 'Awesome webserver',
+                     'ETag' => 'W/"d41d8cd98f00b204e9800998ecf8427e"'
+                   })
+    end
+
+    context 'when API request succeeds with DRO' do
+      it 'returns the cocina model' do
+        expect(model.externalIdentifier).to eq 'druid:bc123df4567'
+        expect(model.lock).to eq('W/"d41d8cd98f00b204e9800998ecf8427e"')
+        expect(model.created.to_s).to eq('2021-01-01T12:58:00+00:00')
+        expect(model.modified.to_s).to eq('2021-03-03T18:58:00+00:00')
       end
     end
   end

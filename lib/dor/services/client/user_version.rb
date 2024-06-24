@@ -24,6 +24,17 @@ module Dor
           JSON.parse(resp.body).fetch('user_versions').map { |params| Version.new(**params.symbolize_keys!) }
         end
 
+        # @return [Cocina::Models::DROWithMetadata] the object metadata
+        # @raise [UnexpectedResponse] on an unsuccessful response from the server
+        def find(version)
+          resp = connection.get do |req|
+            req.url "#{base_path}/#{version}"
+          end
+          raise_exception_based_on_response!(resp) unless resp.success?
+
+          build_cocina_from_response(resp, validate: false)
+        end
+
         private
 
         attr_reader :object_identifier
