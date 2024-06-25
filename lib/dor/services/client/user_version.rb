@@ -5,7 +5,7 @@ module Dor
     class Client
       # API calls that are about user versions
       class UserVersion < VersionedService
-        Version = Struct.new(:version, :userVersion, keyword_init: true)
+        Version = Struct.new(:version, :userVersion, :withdrawn, keyword_init: true)
 
         # @param object_identifier [String] the pid for the object
         def initialize(connection:, version:, object_identifier:)
