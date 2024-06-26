@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 RSpec.describe Dor::Services::Client::UserVersion do
-  subject(:client) { described_class.new(connection: connection, version: 'v1', object_identifier: pid) }
+  subject(:client) { described_class.new(connection: connection, version: 'v1', object_identifier: druid) }
 
   before do
     Dor::Services::Client.configure(url: 'https://dor-services.example.com', token: '123', enable_get_retries: false)
   end
 
   let(:connection) { Dor::Services::Client.instance.send(:connection) }
-  let(:pid) { 'druid:bc123df4567' }
+  let(:druid) { 'druid:bc123df4567' }
 
   describe '#inventory' do
     subject(:request) { client.inventory }
@@ -94,6 +94,66 @@ RSpec.describe Dor::Services::Client::UserVersion do
         expect(model.lock).to eq('W/"d41d8cd98f00b204e9800998ecf8427e"')
         expect(model.created.to_s).to eq('2021-01-01T12:58:00+00:00')
         expect(model.modified.to_s).to eq('2021-03-03T18:58:00+00:00')
+      end
+    end
+  end
+
+  describe '#create' do
+    subject(:request) { client.create(object_version: '3') }
+
+    context 'when API request succeeds' do
+      before do
+        stub_request(:post, "https://dor-services.example.com/v1/objects/#{druid}/user_versions")
+          .with(body: { version: '3' }.to_json,
+                headers: { 'Content-Type' => 'application/json' })
+          .to_return(status: 201, body: { version: 3, userVersion: 3, withdrawn: true }.to_json)
+      end
+
+      it 'posts request' do
+        expect(request).to eq(described_class::Version.new(version: 3, userVersion: 3, withdrawn: true))
+      end
+    end
+
+    context 'when API request fails' do
+      before do
+        stub_request(:post, "https://dor-services.example.com/v1/objects/#{druid}/user_versions")
+          .to_return(status: [500, 'something is amiss'])
+      end
+
+      it 'raises an error' do
+        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse)
+      end
+    end
+  end
+
+  describe '#update' do
+    subject(:request) { client.update(user_version: described_class::Version.new(userVersion: 3, version: 2, withdrawn: true)) }
+
+    context 'when API request succeeds' do
+      before do
+        stub_request(:patch, "https://dor-services.example.com/v1/objects/#{druid}/user_versions/3")
+          .with(
+            body: { version: 2, withdrawn: true }.to_json,
+            headers: {
+              'Content-Type' => 'application/json'
+            }
+          )
+          .to_return(status: 200, body: { version: 2, userVersion: 3, withdrawn: true }.to_json, headers: {})
+      end
+
+      it 'posts request' do
+        expect(request).to eq(described_class::Version.new(version: 2, userVersion: 3, withdrawn: true))
+      end
+    end
+
+    context 'when API request fails' do
+      before do
+        stub_request(:patch, "https://dor-services.example.com/v1/objects/#{druid}/user_versions/3")
+          .to_return(status: [500, 'something is amiss'])
+      end
+
+      it 'raises an error' do
+        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse)
       end
     end
   end

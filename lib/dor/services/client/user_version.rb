@@ -35,6 +35,42 @@ module Dor
           build_cocina_from_response(resp, validate: false)
         end
 
+        # Create a user version for an object
+        #
+        # @param [String] object_version the version of the object to create a user version for
+        # @return [Version]
+        # @raise [NotFoundResponse] when the response is a 404 (object not found)
+        # @raise [UnexpectedResponse] if the request is unsuccessful.
+        def create(object_version:)
+          resp = connection.post do |req|
+            req.url "#{api_version}/objects/#{object_identifier}/user_versions"
+            req.headers['Content-Type'] = 'application/json'
+            req.body = { version: object_version }.to_json
+          end
+          raise_exception_based_on_response!(resp, object_identifier) unless resp.success?
+
+          Version.new(**JSON.parse(resp.body).symbolize_keys!)
+        end
+
+        # Updates a user version
+        #
+        # @param [Version] user_version the updated user version
+        # @return [Version]
+        # @raise [NotFoundResponse] when the response is a 404 (object not found)
+        # @raise [UnexpectedResponse] if the request is unsuccessful.
+        # rubocop:disable Metrics/AbcSize
+        def update(user_version:)
+          resp = connection.patch do |req|
+            req.url "#{api_version}/objects/#{object_identifier}/user_versions/#{user_version.userVersion}"
+            req.headers['Content-Type'] = 'application/json'
+            req.body = user_version.to_h.except(:userVersion).compact.to_json
+          end
+          raise_exception_based_on_response!(resp, object_identifier) unless resp.success?
+
+          Version.new(**JSON.parse(resp.body).symbolize_keys!)
+        end
+        # rubocop:enable Metrics/AbcSize
+
         private
 
         attr_reader :object_identifier

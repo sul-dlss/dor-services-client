@@ -129,6 +129,12 @@ object_client.version.open(description: 'Changed title')
 # see dor-services-app openapi.yml for optional params
 object_client.version.close
 
+# Manage user versions
+object_client.user_version.inventory
+object_client.user_version.find(2)
+object_client.user_version.create(object_version: 3)
+object_client.user_version.update(user_version: Dor::Services::Client::UserVersion::Version.new(version: 3, userVersion: 3, withdrawn: true))
+
 # Return the Cocina metadata
 object_client.find
 
