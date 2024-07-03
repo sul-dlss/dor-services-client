@@ -35,6 +35,17 @@ module Dor
           build_cocina_from_response(resp, validate: false)
         end
 
+        # @return [Hash] the solr document for the user version
+        # @raise [UnexpectedResponse] on an unsuccessful response from the server
+        def solr(version)
+          resp = connection.get do |req|
+            req.url "#{base_path}/#{version}/solr"
+          end
+          raise_exception_based_on_response!(resp) unless resp.success?
+
+          JSON.parse(resp.body)
+        end
+
         # Create a user version for an object
         #
         # @param [String] object_version the version of the object to create a user version for
