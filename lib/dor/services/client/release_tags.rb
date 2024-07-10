@@ -35,10 +35,8 @@ module Dor
         # @raise [UnexpectedResponse] if the request is unsuccessful.
         # @return [Array<ReleaseTag>]
         def list(public: false)
-          params = public ? 'public=true' : ''
-          resp = connection.get do |req|
-            req.url "#{api_version}/objects/#{object_identifier}/release_tags?#{params}"
-          end
+          url = "#{api_version}/objects/#{object_identifier}/release_tags"
+          resp = connection.get(url, { public: public })
 
           raise_exception_based_on_response!(resp, object_identifier) unless resp.success?
 
