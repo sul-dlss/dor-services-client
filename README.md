@@ -158,6 +158,7 @@ object_client.administrative_tags.list
 # Create and list release tags for an object
 object_client.release_tags.create(tag: Cocina::Models::Tag.new(to: 'Searchworks'))
 object_client.release_tags.list
+object_client.release_tags.list(public: true) # only public release tags (i.e. last published value)
 
 # Create and list events for an object
 object_client.events.create(type: type, data: data)
