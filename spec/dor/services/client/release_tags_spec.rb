@@ -15,7 +15,7 @@ RSpec.describe Dor::Services::Client::ReleaseTags do
 
     context 'when API request succeeds' do
       before do
-        stub_request(:get, "https://dor-services.example.com/v1/objects/#{druid}/release_tags")
+        stub_request(:get, "https://dor-services.example.com/v1/objects/#{druid}/release_tags?public=false")
           .to_return(status: 200, body: '[{"to":"Searchworks","what":"self"},{"to":"Earthworks","what":"self"}]')
       end
 
@@ -24,9 +24,22 @@ RSpec.describe Dor::Services::Client::ReleaseTags do
       end
     end
 
+    context 'when API request succeeds and public release tags are requested' do
+      subject(:request) { client.list(public: true) }
+
+      before do
+        stub_request(:get, "https://dor-services.example.com/v1/objects/#{druid}/release_tags?public=true")
+          .to_return(status: 200, body: '[{"to":"Searchworks","what":"self"},{"to":"Earthworks","what":"self", "release": true}]')
+      end
+
+      it 'lists administrative tags' do
+        expect(request.map(&:to_h)).to eq([{ to: 'Searchworks', release: false, what: 'self' }, { to: 'Earthworks', release: true, what: 'self' }])
+      end
+    end
+
     context 'when API request fails because of not found' do
       before do
-        stub_request(:get, "https://dor-services.example.com/v1/objects/#{druid}/release_tags")
+        stub_request(:get, "https://dor-services.example.com/v1/objects/#{druid}/release_tags?public=false")
           .to_return(status: [404, 'object not found'])
       end
 
@@ -37,7 +50,7 @@ RSpec.describe Dor::Services::Client::ReleaseTags do
 
     context 'when API request fails due to unexpected response' do
       before do
-        stub_request(:get, "https://dor-services.example.com/v1/objects/#{druid}/release_tags")
+        stub_request(:get, "https://dor-services.example.com/v1/objects/#{druid}/release_tags?public=false")
           .to_return(status: [500, 'something is amiss'])
       end
 

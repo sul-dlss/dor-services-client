@@ -30,13 +30,13 @@ module Dor
 
         # List release tags for an object
         #
+        # @param public [Boolean] indicates if we only want public release tags (defaults to false)
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] if the request is unsuccessful.
         # @return [Array<ReleaseTag>]
-        def list
-          resp = connection.get do |req|
-            req.url "#{api_version}/objects/#{object_identifier}/release_tags"
-          end
+        def list(public: false)
+          url = "#{api_version}/objects/#{object_identifier}/release_tags"
+          resp = connection.get(url, { public: public })
 
           raise_exception_based_on_response!(resp, object_identifier) unless resp.success?
 
