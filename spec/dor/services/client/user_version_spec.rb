@@ -23,16 +23,16 @@ RSpec.describe Dor::Services::Client::UserVersion do
       let(:body) do
         <<~JSON
           {"user_versions":[
-            {"version":1,"userVersion":1,"withdrawn":true},
-            {"version":3,"userVersion":2,"withdrawn":false}
+            {"version":1,"userVersion":1,"withdrawn":true,"withdrawable":false,"restorable":true,"head":false},
+            {"version":3,"userVersion":2,"withdrawn":false,"withdrawable":true,"restorable":false,"head":true}
           ]}
         JSON
       end
 
       it 'returns the list of versions' do
         expect(request).to eq [
-          described_class::Version.new(version: 1, userVersion: 1, withdrawn: true),
-          described_class::Version.new(version: 3, userVersion: 2, withdrawn: false)
+          described_class::Version.new(version: 1, userVersion: 1, withdrawn: true, withdrawable: false, restorable: true, head: false),
+          described_class::Version.new(version: 3, userVersion: 2, withdrawn: false, withdrawable: true, restorable: false, head: true)
         ]
       end
     end
