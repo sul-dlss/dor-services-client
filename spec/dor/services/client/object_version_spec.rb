@@ -1,20 +1,49 @@
 # frozen_string_literal: true
 
 RSpec.describe Dor::Services::Client::ObjectVersion do
-  subject(:client) { described_class.new(connection: connection, version: 'v1', object_identifier: pid) }
+  subject(:client) { described_class.new(connection: connection, version: 'v1', object_identifier: druid) }
 
   before do
     Dor::Services::Client.configure(url: 'https://dor-services.example.com', token: '123', enable_get_retries: false)
   end
 
   let(:connection) { Dor::Services::Client.instance.send(:connection) }
-  let(:pid) { 'druid:1234' }
+  let(:druid) { 'druid:bc123df4567' }
+
+  describe '#find' do
+    subject(:model) { client.find(2) }
+
+    let(:cocina) { build(:dro, id: druid) }
+
+    let(:status) { 200 }
+
+    before do
+      stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/versions/2')
+        .to_return(status: status,
+                   body: cocina.to_json,
+                   headers: {
+                     'Last-Modified' => 'Wed, 03 Mar 2021 18:58:00 GMT',
+                     'X-Created-At' => 'Wed, 01 Jan 2021 12:58:00 GMT',
+                     'X-Served-By' => 'Awesome webserver',
+                     'ETag' => 'W/"d41d8cd98f00b204e9800998ecf8427e"'
+                   })
+    end
+
+    context 'when API request succeeds with DRO' do
+      it 'returns the cocina model' do
+        expect(model.externalIdentifier).to eq 'druid:bc123df4567'
+        expect(model.lock).to eq('W/"d41d8cd98f00b204e9800998ecf8427e"')
+        expect(model.created.to_s).to eq('2021-01-01T12:58:00+00:00')
+        expect(model.modified.to_s).to eq('2021-03-03T18:58:00+00:00')
+      end
+    end
+  end
 
   describe '#current_version' do
     subject(:request) { client.current }
 
     before do
-      stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:1234/versions/current')
+      stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/versions/current')
         .to_return(status: status, body: body)
     end
 
@@ -51,7 +80,7 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
 
     context 'when connection fails' do
       before do
-        stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:1234/versions/current')
+        stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/versions/current')
           .to_raise(Faraday::ConnectionFailed.new('end of file reached'))
       end
 
@@ -66,7 +95,7 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
       before do
         Dor::Services::Client.configure(url: 'https://dor-services.example.com', token: '123', logger: logger)
 
-        stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:1234/versions/current')
+        stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/versions/current')
           .to_return(status: 503, body: '')
           .then.to_return(status: 200, body: '2')
       end
@@ -74,7 +103,7 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
       it 'logs retries' do
         expect(request).to eq '2'
         expect(logger).to have_received(:info)
-          .with('Retry 1 for https://dor-services.example.com/v1/objects/druid:1234/versions/current due to Faraday::RetriableResponse ()')
+          .with('Retry 1 for https://dor-services.example.com/v1/objects/druid:bc123df4567/versions/current due to Faraday::RetriableResponse ()')
       end
     end
   end
@@ -83,7 +112,7 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
     subject(:request) { client.inventory }
 
     before do
-      stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:1234/versions')
+      stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/versions')
         .to_return(status: status, body: body)
     end
 
@@ -168,7 +197,7 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
     let(:body) { dro.to_json }
 
     before do
-      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/versions')
+      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/versions')
         .with(headers: { 'Content-Type' => 'application/json' })
         .to_return(status: status, body: body,
                    headers: headers)
@@ -179,7 +208,7 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
       let(:params) { { foo: 'bar' } }
 
       before do
-        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/versions?foo=bar')
+        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/versions?foo=bar')
           .with(headers: { 'Content-Type' => 'application/json' })
           .to_return(status: status, body: body, headers: headers)
       end
@@ -223,7 +252,7 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
     let(:params) { {} }
 
     before do
-      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/versions/current/close')
+      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/versions/current/close')
         .with(headers: { 'Content-Type' => 'application/json' })
         .to_return(status: status, body: body)
     end
@@ -234,7 +263,7 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
       let(:params) { { foo: 'bar' } }
 
       before do
-        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:1234/versions/current/close?foo=bar')
+        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/versions/current/close?foo=bar')
           .with(headers: { 'Content-Type' => 'application/json' })
           .to_return(status: status, body: body)
       end
@@ -277,7 +306,7 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
     subject(:request) { client.openable? }
 
     before do
-      stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:1234/versions/openable')
+      stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/versions/openable')
         .to_return(status: status, body: body)
     end
 
@@ -323,7 +352,7 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
     subject(:request) { client.status }
 
     before do
-      stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:1234/versions/status')
+      stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/versions/status')
         .to_return(status: status, body: body)
     end
 

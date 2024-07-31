@@ -40,6 +40,17 @@ module Dor
           @object_identifier = object_identifier
         end
 
+        # @return [Cocina::Models::DROWithMetadata] the object metadata
+        # @raise [UnexpectedResponse] on an unsuccessful response from the server
+        def find(version)
+          resp = connection.get do |req|
+            req.url "#{base_path}/#{version}"
+          end
+          raise_exception_based_on_response!(resp) unless resp.success?
+
+          build_cocina_from_response(resp, validate: false)
+        end
+
         # Get the current version for a DOR object. This comes from ObjectVersion table in the DSA
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
