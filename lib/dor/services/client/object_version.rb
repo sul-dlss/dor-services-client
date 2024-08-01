@@ -4,8 +4,15 @@ module Dor
   module Services
     class Client
       # API calls that are about versions
-      class ObjectVersion < VersionedService
-        Version = Struct.new(:versionId, :message, keyword_init: true)
+      class ObjectVersion < VersionedService # rubocop:disable Metrics/ClassLength
+        Version = Struct.new(:versionId, :message, :cocina, keyword_init: true) do
+          alias_method :version, :versionId
+
+          def cocina?
+            cocina
+          end
+        end
+
         VersionStatus = Struct.new(:versionId, :open, :openable, :assembling, :accessioning, :closeable, keyword_init: true) do
           alias_method :version, :versionId
 
