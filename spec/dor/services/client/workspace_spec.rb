@@ -94,39 +94,6 @@ RSpec.describe Dor::Services::Client::Workspace do
     end
   end
 
-  describe '#cleanup' do
-    subject(:request) { client.cleanup(workflow: workflow, lane_id: lane_id) }
-
-    let(:workflow) { nil }
-    let(:lane_id) { nil }
-
-    context 'when API request succeeds' do
-      let(:workflow) { 'accessionWF' }
-      let(:lane_id) { 'low' }
-
-      before do
-        stub_request(:delete, 'https://dor-services.example.com/v1/objects/druid:123/workspace?workflow=accessionWF&lane-id=low')
-          .to_return(status: 201, headers: { 'Location' => 'https://dor-services.example.com/v1/background_job_results/123' })
-      end
-
-      it 'returns a url' do
-        expect(request).to eq 'https://dor-services.example.com/v1/background_job_results/123'
-      end
-    end
-
-    context 'when API request fails' do
-      before do
-        stub_request(:delete, 'https://dor-services.example.com/v1/objects/druid:123/workspace')
-          .to_return(status: [500, 'something is amiss'])
-      end
-
-      it 'raises an error' do
-        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
-                                          "something is amiss: 500 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY}) for druid:123")
-      end
-    end
-  end
-
   describe '#reset' do
     subject(:request) { client.reset(workflow: workflow, lane_id: lane_id) }
 
@@ -138,7 +105,7 @@ RSpec.describe Dor::Services::Client::Workspace do
       let(:lane_id) { 'low' }
 
       before do
-        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:123/workspace/reset?workflow=accessionWF&lane-id=low')
+        stub_request(:delete, 'https://dor-services.example.com/v1/objects/druid:123/workspace?workflow=accessionWF&lane-id=low')
           .to_return(status: 201)
       end
 
@@ -149,7 +116,7 @@ RSpec.describe Dor::Services::Client::Workspace do
 
     context 'when API request fails' do
       before do
-        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:123/workspace/reset')
+        stub_request(:delete, 'https://dor-services.example.com/v1/objects/druid:123/workspace')
           .to_return(status: [500, 'something is amiss'])
       end
 

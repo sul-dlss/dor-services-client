@@ -164,9 +164,8 @@ object_client.release_tags.list(public: true) # only public release tags (i.e. l
 object_client.events.create(type: type, data: data)
 object_client.events.list
 
-# Create, remove, and reset workspaces
+# Create and reset workspaces
 object_client.workspace.create(source: object_path_string)
-object_client.workspace.cleanup
 object_client.workspace.reset
 
 # Reindex

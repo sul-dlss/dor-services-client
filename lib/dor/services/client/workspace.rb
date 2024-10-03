@@ -31,32 +31,21 @@ module Dor
         end
         # rubocop:enable Metrics/AbcSize
 
-        # Cleans up a workspace
+        # Cleans up and resets the workspace
+        # After an object has been copied to preservation the workspace can be
+        # reset. This is called by the reset-workspace step of the accessionWF
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
         # @param [String] workflow (nil) which workflow to callback to.
         # @param [String] lane_id for prioritization (default or low)
         # @return [String] the URL of the background job on dor-service-app
-        def cleanup(workflow: nil, lane_id: nil)
+        def reset(workflow: nil, lane_id: nil)
           resp = connection.delete do |req|
             req.url with_query_params(workspace_path, workflow, lane_id)
           end
           return resp.headers['Location'] if resp.success?
 
           raise_exception_based_on_response!(resp, object_identifier)
-        end
-
-        # After an object has been copied to preservation the workspace can be
-        # reset. This is called by the reset-workspace step of the accessionWF
-        # @param [String] workflow (nil) which workflow to callback to.
-        # @param [String] lane_id for prioritization (default or low)
-        # @raise [UnexpectedResponse] if the request is unsuccessful.
-        # @return nil
-        def reset(workflow: nil, lane_id: nil)
-          resp = connection.post do |req|
-            req.url with_query_params("#{workspace_path}/reset", workflow, lane_id)
-          end
-          raise_exception_based_on_response!(resp, object_identifier) unless resp.success?
         end
 
         private
