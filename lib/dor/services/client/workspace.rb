@@ -39,7 +39,7 @@ module Dor
         # @param [String] workflow (nil) which workflow to callback to.
         # @param [String] lane_id for prioritization (default or low)
         # @return [String] the URL of the background job on dor-service-app
-        def reset(workflow: nil, lane_id: nil)
+        def cleanup(workflow: nil, lane_id: nil)
           resp = connection.delete do |req|
             req.url with_query_params(workspace_path, workflow, lane_id)
           end

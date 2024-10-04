@@ -94,8 +94,8 @@ RSpec.describe Dor::Services::Client::Workspace do
     end
   end
 
-  describe '#reset' do
-    subject(:request) { client.reset(workflow: workflow, lane_id: lane_id) }
+  describe '#cleanup' do
+    subject(:request) { client.cleanup(workflow: workflow, lane_id: lane_id) }
 
     let(:workflow) { nil }
     let(:lane_id) { nil }

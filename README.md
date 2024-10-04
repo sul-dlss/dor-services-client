@@ -166,7 +166,7 @@ object_client.events.list
 
 # Create and reset workspaces
 object_client.workspace.create(source: object_path_string)
-object_client.workspace.reset
+object_client.workspace.cleanup
 
 # Reindex
 object_client.reindex
