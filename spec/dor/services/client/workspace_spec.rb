@@ -95,17 +95,15 @@ RSpec.describe Dor::Services::Client::Workspace do
   end
 
   describe '#cleanup' do
-    subject(:request) { client.cleanup(workflow: workflow, lane_id: lane_id) }
+    subject(:request) { client.cleanup(lane_id: lane_id) }
 
-    let(:workflow) { nil }
     let(:lane_id) { nil }
 
     context 'when API request succeeds' do
-      let(:workflow) { 'accessionWF' }
       let(:lane_id) { 'low' }
 
       before do
-        stub_request(:delete, 'https://dor-services.example.com/v1/objects/druid:123/workspace?workflow=accessionWF&lane-id=low')
+        stub_request(:delete, 'https://dor-services.example.com/v1/objects/druid:123/workspace?lane-id=low')
           .to_return(status: 201)
       end
 
