@@ -108,6 +108,51 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
     end
   end
 
+  describe '#discard' do
+    subject(:request) { client.discard }
+
+    let(:status) { [209, 'no content'] }
+
+    before do
+      stub_request(:delete, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/versions/current')
+        .to_return(status: status)
+    end
+
+    context 'when API request succeeds' do
+      it 'does not raise' do
+        expect { request }.not_to raise_error
+      end
+    end
+
+    context 'when API request returns 404' do
+      let(:status) { [404, 'not found'] }
+
+      it 'raises a NotFoundResponse exception' do
+        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse)
+      end
+    end
+
+    context 'when API request fails' do
+      let(:status) { [401, 'unauthorized'] }
+
+      it 'raises an error' do
+        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
+                                          "unauthorized: 401 (#{Dor::Services::Client::ResponseErrorFormatter::DEFAULT_BODY})")
+      end
+    end
+
+    context 'when connection fails' do
+      before do
+        stub_request(:delete, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/versions/current')
+          .to_raise(Faraday::ConnectionFailed.new('end of file reached'))
+      end
+
+      it 'raises an error' do
+        expect { request }.to raise_error(Dor::Services::Client::ConnectionFailed, 'unable to reach dor-services-app: end of file reached')
+      end
+    end
+  end
+
   describe '#inventory' do
     subject(:request) { client.inventory }
 
@@ -363,12 +408,14 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
 
       let(:body) do
         <<~JSON
-          {"versionId":1,"open":true,"openable":false,"assembling":true,"accessioning":false,"closeable":true}
+          {"versionId":1,"open":true,"openable":false,"assembling":true,"accessioning":false,"closeable":true,"discardable":false}
         JSON
       end
 
       it 'returns the list of versions' do
-        expect(request).to eq described_class::VersionStatus.new(versionId: 1, open: true, openable: false, assembling: true, accessioning: false, closeable: true)
+        expect(request).to eq described_class::VersionStatus.new(versionId: 1, open: true, openable: false,
+                                                                 assembling: true, accessioning: false, closeable: true,
+                                                                 discardable: false)
         expect(request.version).to eq 1
         expect(request).to be_open
         expect(request).not_to be_openable
@@ -376,6 +423,7 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
         expect(request).not_to be_accessioning
         expect(request).not_to be_closed
         expect(request).to be_closeable
+        expect(request).not_to be_discardable
       end
     end
 

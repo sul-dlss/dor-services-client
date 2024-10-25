@@ -13,7 +13,7 @@ module Dor
           end
         end
 
-        VersionStatus = Struct.new(:versionId, :open, :openable, :assembling, :accessioning, :closeable, keyword_init: true) do
+        VersionStatus = Struct.new(:versionId, :open, :openable, :assembling, :accessioning, :closeable, :discardable, keyword_init: true) do
           alias_method :version, :versionId
 
           def open?
@@ -38,6 +38,10 @@ module Dor
 
           def closeable?
             closeable
+          end
+
+          def discardable?
+            discardable
           end
         end
 
@@ -161,6 +165,18 @@ module Dor
           raise_exception_based_on_response!(resp) unless resp.success?
 
           JSON.parse(resp.body)
+        end
+
+        # Discard current version for an object
+        # @raise [NotFoundResponse] when the response is a 404 (object not found)
+        # @raise [UnexpectedResponse] when the response is not successful.
+        def discard
+          resp = connection.delete do |req|
+            req.url "#{base_path}/current"
+          end
+          return if resp.success?
+
+          raise_exception_based_on_response!(resp)
         end
 
         private

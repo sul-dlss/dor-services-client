@@ -12,6 +12,9 @@ Metrics/BlockLength:
     - 'dor-services-client.gemspec'
     - 'spec/**/*'
 
+Rspec/ExampleLength:
+  Enabled: false
+
 RSpec/MultipleExpectations:
   Enabled: false
 
