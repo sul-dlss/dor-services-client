@@ -349,52 +349,6 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
     end
   end
 
-  describe '#openable?' do
-    subject(:request) { client.openable? }
-
-    before do
-      stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/versions/openable')
-        .to_return(status: status, body: body)
-    end
-
-    context 'when API returns true' do
-      let(:status) { 200 }
-      let(:body) { 'true' }
-
-      it 'returns true' do
-        expect(request).to be true
-      end
-    end
-
-    context 'when API returns false' do
-      let(:status) { 200 }
-      let(:body) { 'false' }
-
-      it 'returns true' do
-        expect(request).to be false
-      end
-    end
-
-    context 'when API request returns 404' do
-      let(:status) { [404, 'not found'] }
-      let(:body) { '' }
-
-      it 'raises a NotFoundResponse exception' do
-        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse)
-      end
-    end
-
-    context 'when API request fails' do
-      let(:status) { [500, 'internal server error'] }
-      let(:body) { 'broken' }
-
-      it 'raises an UnexpectedResponse error' do
-        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse,
-                                          'internal server error: 500 (broken)')
-      end
-    end
-  end
-
   describe '#status' do
     subject(:request) { client.status }
 

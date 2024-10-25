@@ -75,29 +75,6 @@ module Dor
           raise_exception_based_on_response!(resp)
         end
 
-        # Determines if a new version can be opened for a DOR object.
-        # @raise [NotFoundResponse] when the response is a 404 (object not found)
-        # @raise [UnexpectedResponse] when the response is not successful.
-        # @return [Boolean] true if a new version can be opened
-        # rubocop:disable Metrics/MethodLength
-        def openable?
-          resp = connection.get do |req|
-            req.url "#{base_path}/openable"
-          end
-
-          raise_exception_based_on_response!(resp) unless resp.success?
-
-          case resp.body
-          when 'true'
-            true
-          when 'false'
-            false
-          else
-            raise MalformedResponse, "Expected true or false, not #{resp.body}"
-          end
-        end
-        # rubocop:enable Metrics/MethodLength
-
         # Open new version for an object
         # @param description [String] a description of the object version being opened - required
         # @param opening_user_name [String] sunetid - defaults to nil
