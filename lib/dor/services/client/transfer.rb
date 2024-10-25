@@ -32,19 +32,6 @@ module Dor
           raise_exception_based_on_response!(resp)
         end
 
-        # Unpublish an object (yank from to PURL)
-        # @raise [NotFoundResponse] when the response is a 404 (object not found)
-        # @raise [UnexpectedResponse] when the response is not successful.
-        # @return [String] the URL of the background job on dor-service-app
-        def unpublish
-          resp = connection.post do |req|
-            req.url "#{object_path}/unpublish"
-          end
-          return resp.headers['Location'] if resp.success?
-
-          raise_exception_based_on_response!(resp)
-        end
-
         # Preserve an object (send to SDR)
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
