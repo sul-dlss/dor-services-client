@@ -14,12 +14,10 @@ module Dor
         # Publish an object (send to PURL)
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
-        # @param [String] workflow (nil) which workflow to callback to.
         # @param [String] lane_id for prioritization (default or low)
         # @return [String] the URL of the background job on dor-service-app
-        def publish(workflow: nil, lane_id: nil)
+        def publish(lane_id: nil)
           query_params = [].tap do |params|
-            params << "workflow=#{workflow}" if workflow
             params << "lane-id=#{lane_id}" if lane_id
           end
           query_string = query_params.any? ? "?#{query_params.join('&')}" : ''
