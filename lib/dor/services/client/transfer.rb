@@ -32,21 +32,6 @@ module Dor
           raise_exception_based_on_response!(resp)
         end
 
-        # Preserve an object (send to SDR)
-        # @raise [NotFoundResponse] when the response is a 404 (object not found)
-        # @raise [UnexpectedResponse] when the response is not successful.
-        # @param [String] lane_id for prioritization (default or low)
-        # @return [String] URL from Location response header if no errors
-        def preserve(lane_id: nil)
-          query_string = lane_id ? "?lane-id=#{lane_id}" : ''
-          resp = connection.post do |req|
-            req.url "#{object_path}/preserve#{query_string}"
-          end
-          return resp.headers['Location'] if resp.success?
-
-          raise_exception_based_on_response!(resp)
-        end
-
         # Shelve an object (send to Stacks)
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.

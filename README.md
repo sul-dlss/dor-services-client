@@ -93,9 +93,6 @@ object_client.shelve(lane_id: 'low')
 # Start accessioning an object (initialize assemblyWF or specified workflow, and version object if needed)
 object_client.accession.start(**versioning_params)
 
-# Preserve an object (push to SDR)
-object_client.preserve(lane_id: 'low')
-
 # Update the MARC record (used in the releaseWF)
 object_client.update_marc_record
 
