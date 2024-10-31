@@ -102,9 +102,6 @@ object_client.refresh_descriptive_metadata_from_ils
 # Apply defaults from the item's AdminPolicy to the item itself
 object_client.apply_admin_policy_defaults
 
-# Send a notification to goobi
-object_client.notify_goobi
-
 # Manage versions
 object_client.version.inventory
 object_client.version.current
