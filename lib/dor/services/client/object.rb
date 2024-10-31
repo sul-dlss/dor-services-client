@@ -131,18 +131,6 @@ module Dor
           raise_exception_based_on_response!(resp)
         end
 
-        # Update the DOI metadata at DataCite
-        # @raise [NotFoundResponse] when the response is a 404 (object not found)
-        # @return [boolean] true on success
-        def update_doi_metadata
-          resp = connection.post do |req|
-            req.url "#{object_path}/update_doi_metadata"
-          end
-          return true if resp.success?
-
-          raise_exception_based_on_response!(resp)
-        end
-
         # Update the ORCID Work
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @return [Boolean] true on success
