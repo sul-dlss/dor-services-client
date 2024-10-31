@@ -96,9 +96,6 @@ object_client.accession.start(**versioning_params)
 # Update the MARC record (used in the releaseWF)
 object_client.update_marc_record
 
-# Update the Orcid work (used by robot)
-object_client.update_orcid_work
-
 # Copy metadata from Symphony into descMetadata
 object_client.refresh_descriptive_metadata_from_ils
 

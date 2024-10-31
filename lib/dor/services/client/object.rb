@@ -131,18 +131,6 @@ module Dor
           raise_exception_based_on_response!(resp)
         end
 
-        # Update the ORCID Work
-        # @raise [NotFoundResponse] when the response is a 404 (object not found)
-        # @return [Boolean] true on success
-        def update_orcid_work
-          resp = connection.post do |req|
-            req.url "#{object_path}/update_orcid_work"
-          end
-          return true if resp.success?
-
-          raise_exception_based_on_response!(resp)
-        end
-
         # Notify the external Goobi system for a new object that was registered in DOR
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
