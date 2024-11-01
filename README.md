@@ -87,9 +87,6 @@ object_client.update(params: dro)
 # Publish an object (push to PURL)
 object_client.publish(workflow: 'releaseWF', lane_id: 'low')
 
-# Shelve an object (push to Stacks)
-object_client.shelve(lane_id: 'low')
-
 # Start accessioning an object (initialize assemblyWF or specified workflow, and version object if needed)
 object_client.accession.start(**versioning_params)
 

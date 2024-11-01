@@ -107,8 +107,6 @@ module Dor
           Transfer.new(**parent_params)
         end
 
-        delegate :preserve, :shelve, to: :transfer
-
         def mutate
           Mutate.new(**parent_params)
         end
@@ -130,6 +128,29 @@ module Dor
 
           raise_exception_based_on_response!(resp)
         end
+
+        # Publish an object (send to PURL)
+        # @raise [NotFoundResponse] when the response is a 404 (object not found)
+        # @raise [UnexpectedResponse] when the response is not successful.
+        # @param [String] workflow (nil) which workflow to callback to.
+        # @param [String] lane_id for prioritization (default or low)
+        # @return [String] the URL of the background job on dor-service-app
+        # rubocop:disable Metrics/MethodLength
+        def publish(workflow: nil, lane_id: nil)
+          query_params = [].tap do |params|
+            params << "workflow=#{workflow}" if workflow
+            params << "lane-id=#{lane_id}" if lane_id
+          end
+          query_string = query_params.any? ? "?#{query_params.join('&')}" : ''
+          publish_path = "#{object_path}/publish#{query_string}"
+          resp = connection.post do |req|
+            req.url publish_path
+          end
+          return resp.headers['Location'] if resp.success?
+
+          raise_exception_based_on_response!(resp)
+        end
+        # rubocop:enable Metrics/MethodLength
 
         private
 

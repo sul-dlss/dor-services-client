@@ -383,39 +383,6 @@ RSpec.describe Dor::Services::Client::Object do
     end
   end
 
-  describe '#shelve' do
-    subject(:request) { client.shelve(lane_id: 'low') }
-
-    before do
-      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/shelve?lane-id=low')
-        .to_return(status: status, headers: { 'Location' => 'https://dor-services.example.com/v1/background_job_results/123' })
-    end
-
-    context 'when API request succeeds' do
-      let(:status) { 204 }
-
-      it 'returns true' do
-        expect(request).to eq 'https://dor-services.example.com/v1/background_job_results/123'
-      end
-    end
-
-    context 'when API request returns 404' do
-      let(:status) { [404, 'not found'] }
-
-      it 'raises a NotFoundResponse exception' do
-        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse)
-      end
-    end
-
-    context 'when API request fails' do
-      let(:status) { [422, 'unprocessable entity'] }
-
-      it 'raises an error' do
-        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse)
-      end
-    end
-  end
-
   describe '#refresh_descriptive_metadata_from_ils' do
     subject(:request) { client.refresh_descriptive_metadata_from_ils }
 
