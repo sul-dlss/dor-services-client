@@ -107,8 +107,6 @@ module Dor
           Transfer.new(**parent_params)
         end
 
-        delegate :publish, :preserve, :shelve, to: :transfer
-
         def mutate
           Mutate.new(**parent_params)
         end
@@ -117,56 +115,6 @@ module Dor
 
         alias refresh_metadata refresh_descriptive_metadata_from_ils
         deprecation_deprecate refresh_metadata: 'Use refresh_descriptive_metadata_from_ils instead'
-
-        # Update the marc record for the given object
-        # @raise [NotFoundResponse] when the response is a 404 (object not found)
-        # @raise [UnexpectedResponse] when the response is not successful.
-        # @return [boolean] true on success
-        def update_marc_record
-          resp = connection.post do |req|
-            req.url "#{object_path}/update_marc_record"
-          end
-          return true if resp.success?
-
-          raise_exception_based_on_response!(resp)
-        end
-
-        # Update the DOI metadata at DataCite
-        # @raise [NotFoundResponse] when the response is a 404 (object not found)
-        # @return [boolean] true on success
-        def update_doi_metadata
-          resp = connection.post do |req|
-            req.url "#{object_path}/update_doi_metadata"
-          end
-          return true if resp.success?
-
-          raise_exception_based_on_response!(resp)
-        end
-
-        # Update the ORCID Work
-        # @raise [NotFoundResponse] when the response is a 404 (object not found)
-        # @return [Boolean] true on success
-        def update_orcid_work
-          resp = connection.post do |req|
-            req.url "#{object_path}/update_orcid_work"
-          end
-          return true if resp.success?
-
-          raise_exception_based_on_response!(resp)
-        end
-
-        # Notify the external Goobi system for a new object that was registered in DOR
-        # @raise [NotFoundResponse] when the response is a 404 (object not found)
-        # @raise [UnexpectedResponse] when the response is not successful.
-        # @return [boolean] true on success
-        def notify_goobi
-          resp = connection.post do |req|
-            req.url "#{object_path}/notify_goobi"
-          end
-          return true if resp.success?
-
-          raise_exception_based_on_response!(resp)
-        end
 
         # Reindex the object in Solr.
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
@@ -180,6 +128,29 @@ module Dor
 
           raise_exception_based_on_response!(resp)
         end
+
+        # Publish an object (send to PURL)
+        # @raise [NotFoundResponse] when the response is a 404 (object not found)
+        # @raise [UnexpectedResponse] when the response is not successful.
+        # @param [String] workflow (nil) which workflow to callback to.
+        # @param [String] lane_id for prioritization (default or low)
+        # @return [String] the URL of the background job on dor-service-app
+        # rubocop:disable Metrics/MethodLength
+        def publish(workflow: nil, lane_id: nil)
+          query_params = [].tap do |params|
+            params << "workflow=#{workflow}" if workflow
+            params << "lane-id=#{lane_id}" if lane_id
+          end
+          query_string = query_params.any? ? "?#{query_params.join('&')}" : ''
+          publish_path = "#{object_path}/publish#{query_string}"
+          resp = connection.post do |req|
+            req.url publish_path
+          end
+          return resp.headers['Location'] if resp.success?
+
+          raise_exception_based_on_response!(resp)
+        end
+        # rubocop:enable Metrics/MethodLength
 
         private
 

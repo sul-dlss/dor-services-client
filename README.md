@@ -87,32 +87,14 @@ object_client.update(params: dro)
 # Publish an object (push to PURL)
 object_client.publish(workflow: 'releaseWF', lane_id: 'low')
 
-# Shelve an object (push to Stacks)
-object_client.shelve(lane_id: 'low')
-
 # Start accessioning an object (initialize assemblyWF or specified workflow, and version object if needed)
 object_client.accession.start(**versioning_params)
-
-# Preserve an object (push to SDR)
-object_client.preserve(lane_id: 'low')
-
-# Update the MARC record (used in the releaseWF)
-object_client.update_marc_record
-
-# Update the DOI metadata (used by robot)
-object_client.update_doi_metadata
-
-# Update the Orcid work (used by robot)
-object_client.update_orcid_work
 
 # Copy metadata from Symphony into descMetadata
 object_client.refresh_descriptive_metadata_from_ils
 
 # Apply defaults from the item's AdminPolicy to the item itself
 object_client.apply_admin_policy_defaults
-
-# Send a notification to goobi
-object_client.notify_goobi
 
 # Manage versions
 object_client.version.inventory
@@ -160,9 +142,8 @@ object_client.release_tags.list(public: true) # only public release tags (i.e. l
 object_client.events.create(type: type, data: data)
 object_client.events.list
 
-# Create and reset workspaces
+# Create workspaces
 object_client.workspace.create(source: object_path_string)
-object_client.workspace.cleanup
 
 # Reindex
 object_client.reindex
