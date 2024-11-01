@@ -118,19 +118,6 @@ module Dor
         alias refresh_metadata refresh_descriptive_metadata_from_ils
         deprecation_deprecate refresh_metadata: 'Use refresh_descriptive_metadata_from_ils instead'
 
-        # Update the marc record for the given object
-        # @raise [NotFoundResponse] when the response is a 404 (object not found)
-        # @raise [UnexpectedResponse] when the response is not successful.
-        # @return [boolean] true on success
-        def update_marc_record
-          resp = connection.post do |req|
-            req.url "#{object_path}/update_marc_record"
-          end
-          return true if resp.success?
-
-          raise_exception_based_on_response!(resp)
-        end
-
         # Reindex the object in Solr.
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.

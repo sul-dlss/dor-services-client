@@ -416,60 +416,6 @@ RSpec.describe Dor::Services::Client::Object do
     end
   end
 
-  describe '#update_marc_record' do
-    subject(:request) { client.update_marc_record }
-
-    let(:body) { '' }
-    let(:headers) { {} }
-
-    before do
-      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/update_marc_record')
-        .to_return(status: status, body: body, headers: headers)
-    end
-
-    context 'when API request succeeds' do
-      let(:status) { 201 }
-
-      it 'returns true' do
-        expect(request).to be true
-      end
-    end
-
-    context 'when API request returns 404' do
-      let(:status) { [404, 'not found'] }
-
-      it 'raises a NotFoundResponse exception' do
-        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse)
-      end
-    end
-
-    context 'when API request fails' do
-      let(:status) { [422, 'something wrong'] }
-      let(:headers) { { 'content-type' => 'application/vnd.api+json' } }
-      let(:body) do
-        <<~JSON
-          {"errors":
-            [{
-              "status":"422",
-              "title":"MODS validation failed",
-              "detail":"The value 'marclanguage' is not a value in an element..."
-            }]
-          }
-        JSON
-      end
-
-      it 'raises an error' do
-        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse)
-        begin
-          request
-        rescue Dor::Services::Client::UnexpectedResponse => e
-          expect(e.errors.size).to eq 1
-          expect(e.errors.first['title']).to eq 'MODS validation failed'
-        end
-      end
-    end
-  end
-
   describe '#refresh_descriptive_metadata_from_ils' do
     subject(:request) { client.refresh_descriptive_metadata_from_ils }
 
