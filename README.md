@@ -66,6 +66,9 @@ objects_client.register(params: {}, assign_doi: true)
 # Find object by source ID
 objects_client.find(source_id: 'sul:abc123')
 
+# Get status for a batch of objects
+objects_client.statuses(object_ids: ['druid:bc123df4567', 'druid:bc987gh6543'])
+
 # Interact with virtual objects
 virtual_objects_client = Dor::Services::Client.virtual_objects
 
@@ -101,9 +104,9 @@ object_client.version.inventory
 object_client.version.current
 # Returns a struct containing the status.
 # Status includes whether the object is open, assembling, accessioning, or closeable.
+# See also objects_client.statuses for getting statuses in batch.
 object_client.version.status
-# Get status for a batch of objects
-objects_client.statuses(object_ids: ['druid:bc123df4567', 'druid:bc987gh6543'])
+
 # see dor-services-app openapi.yml for optional params
 object_client.version.open(description: 'Changed title')
 # see dor-services-app openapi.yml for optional params
