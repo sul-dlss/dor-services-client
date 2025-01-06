@@ -168,4 +168,54 @@ RSpec.describe Dor::Services::Client::Objects do
       end
     end
   end
+
+  describe '#statuses' do
+    subject(:statuses) { client.statuses(object_ids: ['druid:bc123df4567', 'druid:bc987gh6543']) }
+
+    let(:status) { 200 }
+
+    before do
+      stub_request(:post, 'https://dor-services.example.com/v1/objects/versions/status')
+        .with(
+          body: { externalIdentifiers: ['druid:bc123df4567', 'druid:bc987gh6543'] }.to_json,
+          headers: { 'Content-Type' => 'application/json' }
+        )
+        .to_return(status: status,
+                   body: { 'druid:bc123df4567' => {
+                             versionId: 1,
+                             open: true,
+                             openable: false,
+                             assembling: true,
+                             accessioning: false,
+                             closeable: true,
+                             discardable: true
+                           },
+                           'druid:bc987gh6543' => {
+                             versionId: 2,
+                             open: false,
+                             openable: true,
+                             assembling: false,
+                             accessioning: true,
+                             closeable: false,
+                             discardable: false
+                           } }.to_json)
+    end
+
+    context 'when API request succeeds' do
+      it 'returns a hash of statuses' do
+        expect(statuses).to match({
+                                    'druid:bc123df4567' => an_instance_of(Dor::Services::Client::ObjectVersion::VersionStatus),
+                                    'druid:bc987gh6543' => an_instance_of(Dor::Services::Client::ObjectVersion::VersionStatus)
+                                  })
+      end
+    end
+
+    context 'when API request fails' do
+      let(:status) { 500 }
+
+      it 'raises UnexpectedResponse' do
+        expect { statuses }.to raise_error(Dor::Services::Client::UnexpectedResponse)
+      end
+    end
+  end
 end

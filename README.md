@@ -102,6 +102,8 @@ object_client.version.current
 # Returns a struct containing the status.
 # Status includes whether the object is open, assembling, accessioning, or closeable.
 object_client.version.status
+# Get status for a batch of objects
+objects_client.statuses(object_ids: ['druid:bc123df4567', 'druid:bc987gh6543'])
 # see dor-services-app openapi.yml for optional params
 object_client.version.open(description: 'Changed title')
 # see dor-services-app openapi.yml for optional params
