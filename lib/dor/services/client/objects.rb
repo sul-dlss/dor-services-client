@@ -41,6 +41,22 @@ module Dor
           build_cocina_from_response(resp, validate: validate)
         end
 
+        # Retrieves the version statuses for a batch of objects
+        # @param [Array<String>] object_ids the druids to get statuses for
+        # @return [Hash<String,VersionStatus>] Map of druids to statuses
+        # @raise [UnexpectedResponse] on an unsuccessful response from the server
+        def statuses(object_ids:)
+          resp = connection.post do |req|
+            req.url "#{objects_path}/versions/status"
+            req.headers['Content-Type'] = 'application/json'
+            req.body = { externalIdentifiers: object_ids }.to_json
+          end
+
+          raise_exception_based_on_response!(resp) unless resp.success?
+
+          JSON.parse(resp.body).transform_values { |status| ObjectVersion::VersionStatus.new(status.symbolize_keys!) }
+        end
+
         private
 
         def objects_path
