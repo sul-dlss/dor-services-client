@@ -13,8 +13,10 @@ module Dor
           end
         end
 
-        VersionStatus = Struct.new(:versionId, :open, :openable, :assembling, :accessioning, :closeable, :discardable, keyword_init: true) do
+        VersionStatus = Struct.new(:versionId, :open, :openable, :assembling, :accessioning, :closeable, :discardable,
+                                   :versionDescription, keyword_init: true) do
           alias_method :version, :versionId
+          alias_method :version_description, :versionDescription
 
           def open?
             open
