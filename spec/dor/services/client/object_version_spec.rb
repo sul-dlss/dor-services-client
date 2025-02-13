@@ -362,14 +362,14 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
 
       let(:body) do
         <<~JSON
-          {"versionId":1,"open":true,"openable":false,"assembling":true,"accessioning":false,"closeable":true,"discardable":false}
+          {"versionId":1,"open":true,"openable":false,"assembling":true,"accessioning":false,"closeable":true,"discardable":false,"versionDescription":"Initial version"}
         JSON
       end
 
       it 'returns the list of versions' do
         expect(request).to eq described_class::VersionStatus.new(versionId: 1, open: true, openable: false,
                                                                  assembling: true, accessioning: false, closeable: true,
-                                                                 discardable: false)
+                                                                 discardable: false, versionDescription: 'Initial version')
         expect(request.version).to eq 1
         expect(request).to be_open
         expect(request).not_to be_openable
@@ -378,6 +378,7 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
         expect(request).not_to be_closed
         expect(request).to be_closeable
         expect(request).not_to be_discardable
+        expect(request.version_description).to eq 'Initial version'
       end
     end
 
