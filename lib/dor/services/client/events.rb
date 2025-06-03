@@ -30,12 +30,12 @@ module Dor
           true
         end
 
+        # @param event_types [Array<String>,NilClass] an array of event types to filter by, or nil for all
         # @return [Array<Event>,NilClass] The events for an object or nil if 404
         # @raise [UnexpectedResponse] on an unsuccessful response from the server
-        def list
-          resp = connection.get do |req|
-            req.url "#{api_version}/objects/#{object_identifier}/events"
-          end
+        def list(event_types: nil)
+          resp = connection.get("#{api_version}/objects/#{object_identifier}/events",
+                                { 'event_types[]': event_types }.compact)
           return response_to_models(resp) if resp.success?
           return if resp.status == 404
 
