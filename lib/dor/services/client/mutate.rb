@@ -43,7 +43,8 @@ module Dor
           raise ArgumentError, 'ETag not provided.' unless skip_lock || params.respond_to?(:lock)
 
           resp = connection.patch do |req|
-            req.url "#{object_path}?event_data=#{event_data.to_json}"
+            req.url object_path
+            req.params = { event_data: event_data.to_json }
             req.headers['Content-Type'] = 'application/json'
             # asking the service to return JSON (else it'll be plain text)
             req.headers['Accept'] = 'application/json'
