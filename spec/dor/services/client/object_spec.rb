@@ -316,8 +316,10 @@ RSpec.describe Dor::Services::Client::Object do
     context 'when API request succeeds with DRO' do
       subject(:model) { client.update(params: dro_with_metadata) }
 
+      let(:event_data) { {} }
+
       before do
-        stub_request(:patch, 'https://dor-services.example.com/v1/objects/druid:bc123df4567')
+        stub_request(:patch, "https://dor-services.example.com/v1/objects/druid:bc123df4567?event_data=#{event_data.to_json}")
           .with(
             body: json,
             headers: {
@@ -342,6 +344,39 @@ RSpec.describe Dor::Services::Client::Object do
       end
     end
 
+    context 'when some event data is provided' do
+      subject(:model) { client.update(params: dro_with_metadata, event_data: event_data) }
+
+      let(:event_data) { { who: 'test_user', description: 'update stuff' } }
+
+      before do
+        stub_request(:patch, "https://dor-services.example.com/v1/objects/druid:bc123df4567?event_data=#{event_data.to_json}")
+          .with(
+            body: json,
+            headers: {
+              'If-Match' => lock,
+              'Content-Type' => 'application/json',
+              'Accept' => 'application/json'
+            }
+          )
+          .to_return(status: 200,
+                     body: json,
+                     headers: {
+                       'Last-Modified' => 'Wed, 04 Mar 2021 18:58:00 GMT',
+                       'X-Created-At' => 'Wed, 02 Jan 2021 12:58:00 GMT',
+                       'X-Served-By' => 'Awesome webserver',
+                       'ETag' => 'W/"e541d8cd98f00b204e9800998ecf8427f"'
+                     })
+      end
+
+      it 'sends the event data in the patch request in the querystring' do
+        expect(model.externalIdentifier).to eq 'druid:bc123df4567'
+        expect(model.lock).to eq('W/"e541d8cd98f00b204e9800998ecf8427f"')
+        expect(WebMock).to have_requested(:patch, "https://dor-services.example.com/v1/objects/druid:bc123df4567?event_data=#{event_data.to_json}")
+          .with(body: json, headers: { 'If-Match' => lock, 'Content-Type' => 'application/json', 'Accept' => 'application/json' })
+      end
+    end
+
     context 'when provided a hash' do
       it 'raises' do
         expect { client.update(params: dro_with_metadata.to_h) }.to raise_error(ArgumentError)
@@ -357,8 +392,10 @@ RSpec.describe Dor::Services::Client::Object do
     context 'when skipping lock' do
       subject(:model) { client.update(params: dro, skip_lock: true) }
 
+      let(:event_data) { {} }
+
       before do
-        stub_request(:patch, 'https://dor-services.example.com/v1/objects/druid:bc123df4567')
+        stub_request(:patch, "https://dor-services.example.com/v1/objects/druid:bc123df4567?event_data=#{event_data.to_json}")
           .with(
             body: json,
             headers: {

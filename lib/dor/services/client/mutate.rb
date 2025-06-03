@@ -29,13 +29,14 @@ module Dor
         # @param [Cocina::Models::DROWithMetadata|CollectionWithMetadata|AdminPolicyWithMetadata|DRO|Collection|AdminPolicy] params model object
         # @param [boolean] skip_lock do not provide ETag
         # @param [boolean] validate validate the response object
+        # @param [Hash] event_data additional event data to be added to the update object event
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
         # @raise [BadRequestError] when ETag not provided.
         # @return [Cocina::Models::DROWithMetadata,Cocina::Models::CollectionWithMetadata,Cocina::Models::AdminPolicyWithMetadata] the returned model
         # rubocop:disable Metrics/AbcSize
         # rubocop:disable Metrics/MethodLength
-        def update(params:, skip_lock: false, validate: false)
+        def update(params:, skip_lock: false, validate: false, event_data: {})
           raise ArgumentError, 'Cocina object not provided.' unless params.respond_to?(:externalIdentifier)
 
           # Raised if Cocina::Models::*WithMetadata not provided.
@@ -43,6 +44,7 @@ module Dor
 
           resp = connection.patch do |req|
             req.url object_path
+            req.params = { event_data: event_data.to_json }
             req.headers['Content-Type'] = 'application/json'
             # asking the service to return JSON (else it'll be plain text)
             req.headers['Accept'] = 'application/json'

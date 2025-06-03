@@ -5,7 +5,7 @@ require 'deprecation'
 module Dor
   module Services
     class Client
-      # API calls that are about a repository objects
+      # API calls that are about repository objects
       class Objects < VersionedService
         # Creates a new object in DOR
         # @param params [Cocina::Models::RequestDRO,Cocina::Models::RequestCollection,Cocina::Models::RequestAdminPolicy]
