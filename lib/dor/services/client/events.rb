@@ -35,7 +35,7 @@ module Dor
         # @raise [UnexpectedResponse] on an unsuccessful response from the server
         def list(event_types: nil)
           resp = connection.get("#{api_version}/objects/#{object_identifier}/events",
-                                { 'event_types[]': event_types }.compact)
+                                { event_types: event_types }.compact)
           return response_to_models(resp) if resp.success?
           return if resp.status == 404
 
