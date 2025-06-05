@@ -67,7 +67,7 @@ RSpec.describe Dor::Services::Client::Objects do
     end
 
     context 'when passing in the person who registered the object' do
-      let(:url) { "https://dor-services.example.com/v1/objects?assign_doi=false&who=#{who}" }
+      let(:url) { "https://dor-services.example.com/v1/objects?assign_doi=false&event_who=#{who}" }
       let(:who) { 'test_user' }
 
       it 'posts with who param' do

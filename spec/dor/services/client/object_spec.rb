@@ -352,7 +352,7 @@ RSpec.describe Dor::Services::Client::Object do
       let(:description) { 'update stuff' }
 
       before do
-        stub_request(:patch, "https://dor-services.example.com/v1/objects/druid:bc123df4567?description=#{description}&who=#{who}")
+        stub_request(:patch, "https://dor-services.example.com/v1/objects/druid:bc123df4567?event_description=#{description}&event_who=#{who}")
           .with(
             body: json,
             headers: {
@@ -374,7 +374,7 @@ RSpec.describe Dor::Services::Client::Object do
       it 'sends the event data in the patch request in the querystring' do
         expect(model.externalIdentifier).to eq 'druid:bc123df4567'
         expect(model.lock).to eq('W/"e541d8cd98f00b204e9800998ecf8427f"')
-        expect(WebMock).to have_requested(:patch, "https://dor-services.example.com/v1/objects/druid:bc123df4567?description=#{description}&who=#{who}")
+        expect(WebMock).to have_requested(:patch, "https://dor-services.example.com/v1/objects/druid:bc123df4567?event_description=#{description}&event_who=#{who}")
           .with(body: json, headers: { 'If-Match' => lock, 'Content-Type' => 'application/json', 'Accept' => 'application/json' })
       end
     end

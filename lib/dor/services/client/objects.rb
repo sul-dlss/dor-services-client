@@ -16,7 +16,7 @@ module Dor
         def register(params:, assign_doi: false, validate: false, who: nil)
           resp = connection.post do |req|
             req.url objects_path
-            req.params = { assign_doi: assign_doi, who: who }.compact
+            req.params = { assign_doi: assign_doi, event_who: who }.compact
             req.headers['Content-Type'] = 'application/json'
             # asking the service to return JSON (else it'll be plain text)
             req.headers['Accept'] = 'application/json'

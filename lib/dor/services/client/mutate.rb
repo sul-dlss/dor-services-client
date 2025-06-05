@@ -45,7 +45,7 @@ module Dor
 
           resp = connection.patch do |req|
             req.url object_path
-            req.params = { description: description, who: who }.compact
+            req.params = { event_description: description, event_who: who }.compact
             req.headers['Content-Type'] = 'application/json'
             # asking the service to return JSON (else it'll be plain text)
             req.headers['Accept'] = 'application/json'
