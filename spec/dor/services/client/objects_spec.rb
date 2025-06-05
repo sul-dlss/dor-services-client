@@ -66,6 +66,15 @@ RSpec.describe Dor::Services::Client::Objects do
       end
     end
 
+    context 'when passing in the person who registered the object' do
+      let(:url) { "https://dor-services.example.com/v1/objects?assign_doi=false&who=#{who}" }
+      let(:who) { 'test_user' }
+
+      it 'posts with who param' do
+        expect { client.register(params: request_dro, assign_doi: false, who: who) }.not_to raise_error
+      end
+    end
+
     context 'when API request fails' do
       context 'when Conflict (409) response' do
         let(:status) { [409, 'object already exists'] }

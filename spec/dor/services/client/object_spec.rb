@@ -320,7 +320,7 @@ RSpec.describe Dor::Services::Client::Object do
       let(:description) { '' }
 
       before do
-        stub_request(:patch, 'https://dor-services.example.com/v1/objects/druid:bc123df4567?who&description')
+        stub_request(:patch, 'https://dor-services.example.com/v1/objects/druid:bc123df4567')
           .with(
             body: json,
             headers: {
@@ -397,7 +397,7 @@ RSpec.describe Dor::Services::Client::Object do
       let(:event_data) { {} }
 
       before do
-        stub_request(:patch, 'https://dor-services.example.com/v1/objects/druid:bc123df4567?who&description')
+        stub_request(:patch, 'https://dor-services.example.com/v1/objects/druid:bc123df4567')
           .with(
             body: json,
             headers: {
