@@ -29,7 +29,7 @@ module Dor
         # @param [Cocina::Models::DROWithMetadata|CollectionWithMetadata|AdminPolicyWithMetadata|DRO|Collection|AdminPolicy] params model object
         # @param [boolean] skip_lock do not provide ETag
         # @param [boolean] validate validate the response object
-        # @param [string] who the sunetid of the user performing the update
+        # @param [string] user_name the sunetid of the user performing the update
         # @param [string] description a description of the update
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
@@ -37,7 +37,7 @@ module Dor
         # @return [Cocina::Models::DROWithMetadata,Cocina::Models::CollectionWithMetadata,Cocina::Models::AdminPolicyWithMetadata] the returned model
         # rubocop:disable Metrics/AbcSize
         # rubocop:disable Metrics/MethodLength
-        def update(params:, skip_lock: false, validate: false, who: nil, description: nil)
+        def update(params:, skip_lock: false, validate: false, user_name: nil, description: nil)
           raise ArgumentError, 'Cocina object not provided.' unless params.respond_to?(:externalIdentifier)
 
           # Raised if Cocina::Models::*WithMetadata not provided.
@@ -45,7 +45,7 @@ module Dor
 
           resp = connection.patch do |req|
             req.url object_path
-            req.params = { event_description: description, event_who: who }.compact
+            req.params = { event_description: description, user_name: user_name }.compact
             req.headers['Content-Type'] = 'application/json'
             # asking the service to return JSON (else it'll be plain text)
             req.headers['Accept'] = 'application/json'
@@ -80,10 +80,9 @@ module Dor
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] if the request is unsuccessful.
         def destroy(user_name: nil)
-          path = object_path
-          path += "?user_name=#{user_name}" if user_name
           resp = connection.delete do |req|
-            req.url path
+            req.url object_path
+            req.params = { user_name: user_name }.compact
           end
           raise_exception_based_on_response!(resp, object_identifier) unless resp.success?
 

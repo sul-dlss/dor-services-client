@@ -60,7 +60,7 @@ objects_client = Dor::Services::Client.objects
 
 # Register a non-existent object
 objects_client.register(params: {})
-objects_client.register(params: {}, assign_doi: true)
+objects_client.register(params: {}, assign_doi: true, user_name: 'dude')
 
 # Find object by source ID
 objects_client.find(source_id: 'sul:abc123')
@@ -84,7 +84,7 @@ background_jobs_client.show(job_id: 123)
 object_client = Dor::Services::Client.object(object_identifier)
 
 # Update an object
-object_client.update(params: dro)
+object_client.update(params: dro, user_name: 'dude', description: 'things change sometimes')
 
 # Publish an object (push to PURL)
 object_client.publish(workflow: 'releaseWF', lane_id: 'low')
