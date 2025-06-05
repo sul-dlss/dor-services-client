@@ -25,7 +25,8 @@ module Dor
         def start(params = {})
           body = params[:context] ? { 'context' => params[:context] }.to_json : ''
           resp = connection.post do |req|
-            req.url with_querystring(url: path, params: params.except(:context))
+            req.url path
+            req.params = params.except(:context)
             req.headers['Content-Type'] = 'application/json'
             req.body = body
           end
