@@ -10,13 +10,13 @@ module Dor
         # Creates a new object in DOR
         # @param params [Cocina::Models::RequestDRO,Cocina::Models::RequestCollection,Cocina::Models::RequestAdminPolicy]
         # @param [boolean] assign a doi to the object
-        # @param [string] who the sunetid of the user registering the object
+        # @param [string] user_name the sunetid of the user registering the object
         # @param [boolean] validate validate the response object
         # @return [Cocina::Models::DROWithMetadata,Cocina::Models::CollectionWithMetadata,Cocina::Models::AdminPolicyWithMetadata] the returned model
-        def register(params:, assign_doi: false, validate: false, who: nil)
+        def register(params:, assign_doi: false, validate: false, user_name: nil)
           resp = connection.post do |req|
             req.url objects_path
-            req.params = { assign_doi: assign_doi, event_who: who }.compact
+            req.params = { assign_doi: assign_doi, user_name: user_name }.compact
             req.headers['Content-Type'] = 'application/json'
             # asking the service to return JSON (else it'll be plain text)
             req.headers['Accept'] = 'application/json'

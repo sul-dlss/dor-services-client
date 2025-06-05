@@ -316,9 +316,6 @@ RSpec.describe Dor::Services::Client::Object do
     context 'when API request succeeds with DRO' do
       subject(:model) { client.update(params: dro_with_metadata) }
 
-      let(:who) { '' }
-      let(:description) { '' }
-
       before do
         stub_request(:patch, 'https://dor-services.example.com/v1/objects/druid:bc123df4567')
           .with(
@@ -346,13 +343,13 @@ RSpec.describe Dor::Services::Client::Object do
     end
 
     context 'when some event data is provided' do
-      subject(:model) { client.update(params: dro_with_metadata, who: who, description: description) }
+      subject(:model) { client.update(params: dro_with_metadata, user_name: who, description: description) }
 
       let(:who) { 'test_user' }
       let(:description) { 'update stuff' }
 
       before do
-        stub_request(:patch, "https://dor-services.example.com/v1/objects/druid:bc123df4567?event_description=#{description}&event_who=#{who}")
+        stub_request(:patch, "https://dor-services.example.com/v1/objects/druid:bc123df4567?event_description=#{description}&user_name=#{who}")
           .with(
             body: json,
             headers: {
@@ -374,7 +371,7 @@ RSpec.describe Dor::Services::Client::Object do
       it 'sends the event data in the patch request in the querystring' do
         expect(model.externalIdentifier).to eq 'druid:bc123df4567'
         expect(model.lock).to eq('W/"e541d8cd98f00b204e9800998ecf8427f"')
-        expect(WebMock).to have_requested(:patch, "https://dor-services.example.com/v1/objects/druid:bc123df4567?event_description=#{description}&event_who=#{who}")
+        expect(WebMock).to have_requested(:patch, "https://dor-services.example.com/v1/objects/druid:bc123df4567?event_description=#{description}&user_name=#{who}")
           .with(body: json, headers: { 'If-Match' => lock, 'Content-Type' => 'application/json', 'Accept' => 'application/json' })
       end
     end
