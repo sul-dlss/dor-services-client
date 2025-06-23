@@ -116,6 +116,11 @@ module Dor
         @background_job_results ||= BackgroundJobResults.new(connection: connection, version: DEFAULT_VERSION)
       end
 
+      # @return [Dor::Services::Client::Workflows] an instance of the `Client::Workflows` class
+      def workflows
+        @workflows ||= Workflows.new(connection: connection, version: DEFAULT_VERSION)
+      end
+
       class << self
         # @param [String] url the base url of the endpoint the client should connect to (required)
         # @param [String] token a bearer token for HTTP authentication (required)
@@ -133,7 +138,7 @@ module Dor
           self
         end
 
-        delegate :background_job_results, :objects, :object, :virtual_objects, :administrative_tags, to: :instance
+        delegate :background_job_results, :objects, :object, :virtual_objects, :administrative_tags, :workflows, to: :instance
       end
 
       attr_writer :url, :token, :connection, :enable_get_retries, :logger

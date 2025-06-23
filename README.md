@@ -154,6 +154,9 @@ object_client.reindex
 
 # Search for administrative tags:
 Dor::Services::Client.administrative_tags.search(q: 'Project')
+
+# Get a list of workflow templates
+Dor::Services::Client.workflows.templates
 ```
 
 ## Asynchronous results
