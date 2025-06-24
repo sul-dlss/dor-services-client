@@ -54,6 +54,16 @@ RSpec.describe Dor::Services::Client do
       end
     end
 
+    describe '.workflows' do
+      it 'returns an instance of Client::Workflows' do
+        expect(described_class.workflows).to be_instance_of Dor::Services::Client::Workflows
+      end
+
+      it 'returns the memoized instance when called again' do
+        expect(described_class.workflows).to eq described_class.workflows
+      end
+    end
+
     describe '.background_job_results' do
       it 'returns an instance of Client::BackgroundJobResults' do
         expect(described_class.background_job_results).to be_instance_of Dor::Services::Client::BackgroundJobResults
