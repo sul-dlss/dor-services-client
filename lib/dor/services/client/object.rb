@@ -46,6 +46,10 @@ module Dor
           @accession ||= Accession.new(**parent_params.merge(params))
         end
 
+        def milestones
+          @milestones ||= Milestones.new(**parent_params)
+        end
+
         # Retrieves the Cocina model
         # @param [boolean] validate validate the response object
         # @raise [NotFoundResponse] when the response is a 404 (object not found)

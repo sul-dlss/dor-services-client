@@ -10,6 +10,7 @@ require 'active_support/json'
 require 'cocina/models'
 require 'faraday'
 require 'faraday/retry'
+require 'nokogiri'
 require 'singleton'
 require 'zeitwerk'
 

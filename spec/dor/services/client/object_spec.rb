@@ -84,6 +84,12 @@ RSpec.describe Dor::Services::Client::Object do
     end
   end
 
+  describe '#milestones' do
+    it 'returns an instance of Client::Milestones' do
+      expect(client.milestones).to be_instance_of Dor::Services::Client::Milestones
+    end
+  end
+
   describe '#find' do
     subject(:model) { client.find(validate: validate) }
 
