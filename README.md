@@ -152,6 +152,14 @@ object_client.workspace.create(source: object_path_string)
 # Reindex
 object_client.reindex
 
+# List workflows
+object_client.workflows
+
+# List milestones
+object_client.milestones.list
+# Get the date for a milestone
+object_client.milestones.date(milestone_name: 'published')
+
 # Search for administrative tags:
 Dor::Services::Client.administrative_tags.search(q: 'Project')
 
