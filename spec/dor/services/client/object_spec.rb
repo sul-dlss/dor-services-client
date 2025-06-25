@@ -90,6 +90,19 @@ RSpec.describe Dor::Services::Client::Object do
     end
   end
 
+  describe '#workflows' do
+    let(:object_workflows) { instance_double(Dor::Services::Client::ObjectWorkflows, list: true) }
+
+    before do
+      allow(Dor::Services::Client::ObjectWorkflows).to receive(:new).and_return(object_workflows)
+    end
+
+    it 'delegates to the Client::ObjectWorkflows' do
+      client.workflows
+      expect(object_workflows).to have_received(:list)
+    end
+  end
+
   describe '#find' do
     subject(:model) { client.find(validate: validate) }
 
