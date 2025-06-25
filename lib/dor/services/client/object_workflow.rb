@@ -24,6 +24,22 @@ module Dor
           Dor::Services::Response::Workflow.new(xml: Nokogiri::XML(resp.body))
         end
 
+        # Creates a workflow for a given object in the repository.  If this particular workflow for this objects exists,
+        # it will replace the old workflow.
+        # @param [Integer] version
+        # @param [String] lane_id adds laneId attribute to all process elements in the wf_xml workflow xml.  Defaults to a value of 'default'
+        # @param [Hash] context optional context to be included in the workflow (same for all processes for a given druid/version pair)
+        def create(version:, lane_id: 'default', context: nil) # rubocop:disable Metrics/AbcSize
+          resp = connection.post do |req|
+            req.url "#{api_version}/objects/#{object_identifier}/workflows/#{workflow_name}"
+            req.params['version'] = version
+            req.params['lane-id'] = lane_id
+            req.headers['Content-Type'] = 'application/json'
+            req.body = { context: context }.to_json if context
+          end
+          raise_exception_based_on_response!(resp) unless resp.success?
+        end
+
         private
 
         attr_reader :object_identifier, :workflow_name

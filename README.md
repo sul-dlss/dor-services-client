@@ -155,7 +155,9 @@ object_client.reindex
 # List workflows
 object_client.workflows
 # Find workflow
-object_client.workflow(workflow_name).find
+object_client.workflow('accessionWF').find
+# Create workflow
+object_client.workflow('etdSubmitWF').create(version: 2)
 
 # List milestones
 object_client.milestones.list

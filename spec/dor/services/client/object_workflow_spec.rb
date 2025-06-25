@@ -45,4 +45,44 @@ RSpec.describe Dor::Services::Client::ObjectWorkflow do
       end
     end
   end
+
+  describe '#create' do
+    before do
+      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:mw971zk1113/workflows/accessionWF?lane-id=default&version=1')
+        .to_return(status: status)
+    end
+
+    let(:status) { 201 }
+
+    context 'when API request succeeds' do
+      it 'does not raise' do
+        expect { client.create(version: 1) }.not_to raise_error
+      end
+    end
+
+    context 'when parameters are provided' do
+      let(:context) { { foo: 'bar' } }
+
+      before do
+        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:mw971zk1113/workflows/accessionWF?lane-id=low&version=1')
+          .with(
+            headers: { 'Content-Type' => 'application/json' },
+            body: { context: context }
+          )
+          .to_return(status: 201)
+      end
+
+      it 'does not raise' do
+        expect { client.create(version: 1, context: context, lane_id: 'low') }.not_to raise_error
+      end
+    end
+
+    context 'when API request returns 404' do
+      let(:status) { [404, 'not found'] }
+
+      it 'raises a NotFoundResponse exception' do
+        expect { client.create(version: 1) }.to raise_error(Dor::Services::Client::NotFoundResponse)
+      end
+    end
+  end
 end
