@@ -103,6 +103,25 @@ RSpec.describe Dor::Services::Client::Object do
     end
   end
 
+  describe '#workflow' do
+    let(:object_workflow) { instance_double(Dor::Services::Client::ObjectWorkflow) }
+
+    before do
+      allow(Dor::Services::Client::ObjectWorkflow).to receive(:new).and_return(object_workflow)
+    end
+
+    it 'returns an instance of Client::ObjectWorkflow' do
+      client.workflow('accessionWF')
+      expect(client.workflow('accessionWF')).to be object_workflow
+      expect(Dor::Services::Client::ObjectWorkflow).to have_received(:new).with(
+        connection: connection,
+        version: 'v1',
+        object_identifier: druid,
+        workflow_name: 'accessionWF'
+      )
+    end
+  end
+
   describe '#find' do
     subject(:model) { client.find(validate: validate) }
 

@@ -54,6 +54,10 @@ module Dor
           @workflows ||= ObjectWorkflows.new(**parent_params).list
         end
 
+        def workflow(workflow_name)
+          @workflow ||= ObjectWorkflow.new(**parent_params.merge({ workflow_name: workflow_name }))
+        end
+
         # Retrieves the Cocina model
         # @param [boolean] validate validate the response object
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
