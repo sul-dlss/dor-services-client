@@ -158,6 +158,8 @@ object_client.workflows
 object_client.workflow('accessionWF').find
 # Create workflow
 object_client.workflow('etdSubmitWF').create(version: 2)
+# Skip all workflow steps
+object_client.workflow('accessionWF').skip_all(note: 'Cleaning up')
 
 # List milestones
 object_client.milestones.list

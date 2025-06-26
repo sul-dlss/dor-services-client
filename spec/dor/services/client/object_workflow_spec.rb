@@ -85,4 +85,27 @@ RSpec.describe Dor::Services::Client::ObjectWorkflow do
       end
     end
   end
+
+  describe '#skip_all' do
+    before do
+      stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:mw971zk1113/workflows/accessionWF/skip_all?note=I%20changed%20my%20mind')
+        .to_return(status: status)
+    end
+
+    let(:status) { 204 }
+
+    context 'when API request succeeds' do
+      it 'does not raise' do
+        expect { client.skip_all(note: 'I changed my mind') }.not_to raise_error
+      end
+    end
+
+    context 'when API request returns 404' do
+      let(:status) { [404, 'not found'] }
+
+      it 'raises a NotFoundResponse exception' do
+        expect { client.skip_all(note: 'I changed my mind') }.to raise_error(Dor::Services::Client::NotFoundResponse)
+      end
+    end
+  end
 end

@@ -19,6 +19,7 @@ module Dor
             req.url "#{api_version}/objects/#{object_identifier}/workflows/#{workflow_name}"
             req.headers['Accept'] = 'application/xml'
           end
+
           raise_exception_based_on_response!(resp) unless resp.success?
 
           Dor::Services::Response::Workflow.new(xml: Nokogiri::XML(resp.body))
@@ -37,6 +38,18 @@ module Dor
             req.headers['Content-Type'] = 'application/json'
             req.body = { context: context }.to_json if context
           end
+
+          raise_exception_based_on_response!(resp) unless resp.success?
+        end
+
+        # Skips all steps in a workflow.
+        # @param note [String] a note to be added to the skipped steps
+        def skip_all(note:)
+          resp = connection.post do |req|
+            req.url "#{api_version}/objects/#{object_identifier}/workflows/#{workflow_name}/skip_all"
+            req.params['note'] = note
+          end
+
           raise_exception_based_on_response!(resp) unless resp.success?
         end
 
