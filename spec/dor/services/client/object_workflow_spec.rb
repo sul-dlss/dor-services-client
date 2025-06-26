@@ -108,4 +108,24 @@ RSpec.describe Dor::Services::Client::ObjectWorkflow do
       end
     end
   end
+
+  describe '#process' do
+    let(:process) { instance_double(Dor::Services::Client::Process) }
+
+    before do
+      allow(Dor::Services::Client::Process).to receive(:new).and_return(process)
+    end
+
+    it 'returns a Process' do
+      expect(client.process('shelve')).to eq(process)
+
+      expect(Dor::Services::Client::Process).to have_received(:new).with(
+        connection: connection,
+        version: 'v1',
+        object_identifier: druid,
+        workflow_name: 'accessionWF',
+        process: 'shelve'
+      )
+    end
+  end
 end
