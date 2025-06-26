@@ -15,6 +15,17 @@ module Dor
           @process = process
         end
 
+        # Gets the status of one step in a workflow.
+        def status
+          resp = connection.get do |req|
+            req.url "#{api_version}/objects/#{object_identifier}/workflows/#{workflow_name}/processes/#{process}"
+            req.headers['Content-Type'] = 'application/json'
+          end
+
+          raise_exception_based_on_response!(resp) unless resp.success?
+          JSON.parse(resp.body)['status']
+        end
+
         # Updates the status of one step in a workflow.
         # @param [String] status The status of the process.
         # @param [Float] elapsed The number of seconds it took to complete this step. Can have a decimal.  Is set to 0 if not passed in.
