@@ -154,6 +154,8 @@ object_client.reindex
 
 # List workflows
 object_client.workflows
+# Find workflow
+object_client.workflow(workflow_name).find
 
 # List milestones
 object_client.milestones.list
