@@ -161,10 +161,12 @@ object_client.workflow('etdSubmitWF').create(version: 2)
 # Skip all workflow steps
 object_client.workflow('accessionWF').skip_all(note: 'Cleaning up')
 
+# Get the status of a workflow process
+object_client.workflow('accessionWF').process('shelve').status
+=> 'completed'
 # Update workflow processes
 object_client.workflow('accessionWF').process('shelve').update(status: 'completed')
 object_client.workflow('accessionWF').process('shelve').update_error(error_msg: 'Something went wrong', error_text: 'Detailed error message')
-
 
 # List milestones
 object_client.milestones.list
