@@ -16,7 +16,7 @@ module Dor
         # @return [Dor::Services::Client::Process]
         def process(process)
           @process ||= Process.new(connection: connection, version: api_version, object_identifier: object_identifier,
-                                   workflow_name: workflow_name, process: process)
+                                   workflow_name: workflow_name, process: process, object_workflow_client: self)
         end
 
         # @return [Workflow::Response::Workflow]

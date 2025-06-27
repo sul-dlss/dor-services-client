@@ -8,11 +8,22 @@ module Dor
         # @param object_identifier [String] the druid for the object
         # @param [String] workflow_name The name of the workflow
         # @param [String] process The name of the workflow step
-        def initialize(connection:, version:, object_identifier:, workflow_name:, process:)
+        def initialize(connection:, version:, object_identifier:, workflow_name:, process:, object_workflow_client:) # rubocop:disable Metrics/ParameterLists
           super(connection: connection, version: version)
           @object_identifier = object_identifier
           @workflow_name = workflow_name
           @process = process
+          @object_workflow_client = object_workflow_client
+        end
+
+        # Retrieves the process status of the given workflow for the given object identifier
+        # @return [String,nil] status
+        def status
+          doc = object_workflow_client.find.xml
+
+          processes = doc.root.xpath("//process[@name='#{process}']")
+          process = processes.max { |a, b| a.attr('version').to_i <=> b.attr('version').to_i }
+          process&.attr('status')
         end
 
         # Updates the status of one step in a workflow.
@@ -24,14 +35,6 @@ module Dor
         # @raise [Dor::Services::Client::ConflictResponse] if the current status does not match the value passed in current_status.
         def update(status:, elapsed: 0, lifecycle: nil, note: nil, current_status: nil)
           perform_update(status: status, elapsed: elapsed, lifecycle: lifecycle, note: note, current_status: current_status)
-          # resp = connection.get do |req|
-          #   req.url "#{api_version}/objects/#{object_identifier}/workflows/#{workflow_name}"
-          #   req.headers['Accept'] = 'application/xml'
-          # end
-
-          # raise_exception_based_on_response!(resp) unless resp.success?
-
-          # Dor::Services::Response::Workflow.new(xml: Nokogiri::XML(resp.body))
         end
 
         # Updates the status of one step in a workflow to error.
@@ -43,7 +46,7 @@ module Dor
 
         private
 
-        attr_reader :object_identifier, :workflow_name, :process
+        attr_reader :object_identifier, :workflow_name, :process, :object_workflow_client
 
         def perform_update(**payload)
           resp = connection.put do |req|

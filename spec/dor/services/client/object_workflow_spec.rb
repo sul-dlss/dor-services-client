@@ -124,7 +124,8 @@ RSpec.describe Dor::Services::Client::ObjectWorkflow do
         version: 'v1',
         object_identifier: druid,
         workflow_name: 'accessionWF',
-        process: 'shelve'
+        process: 'shelve',
+        object_workflow_client: client
       )
     end
   end
