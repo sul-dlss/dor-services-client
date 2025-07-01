@@ -107,7 +107,7 @@ module Dor
         def close(**params)
           resp = connection.post do |req|
             req.url close_version_path
-            req.params = params
+            req.params = params.compact
             req.headers['Content-Type'] = 'application/json'
           end
           return resp.body if resp.success?
