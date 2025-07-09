@@ -106,12 +106,9 @@ RSpec.describe Dor::Services::Client::Object do
   describe '#workflow' do
     let(:object_workflow) { instance_double(Dor::Services::Client::ObjectWorkflow) }
 
-    before do
-      allow(Dor::Services::Client::ObjectWorkflow).to receive(:new).and_return(object_workflow)
-    end
-
     it 'returns an instance of Client::ObjectWorkflow' do
-      client.workflow('accessionWF')
+      # This is not in a `before` block because the other tests in the `describe` block don't rely on this being spied on
+      allow(Dor::Services::Client::ObjectWorkflow).to receive(:new).and_return(object_workflow)
       expect(client.workflow('accessionWF')).to be object_workflow
       expect(Dor::Services::Client::ObjectWorkflow).to have_received(:new).with(
         connection: connection,
@@ -119,6 +116,24 @@ RSpec.describe Dor::Services::Client::Object do
         object_identifier: druid,
         workflow_name: 'accessionWF'
       )
+    end
+
+    context 'when called with a different workflow name' do
+      it 'refreshes the memoized instance' do
+        expect(client.workflow('accessionWF')).not_to eq client.workflow('registrationWF')
+      end
+    end
+
+    context 'when called with nil workflow name' do
+      it 'raises an ArgumentError' do
+        expect { client.workflow(nil) }.to raise_error(ArgumentError, /`workflow_name` argument cannot be blank/)
+      end
+    end
+
+    context 'when called with blank workflow name' do
+      it 'raises an ArgumentError' do
+        expect { client.workflow('') }.to raise_error(ArgumentError, /`workflow_name` argument cannot be blank/)
+      end
     end
   end
 

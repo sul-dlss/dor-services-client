@@ -55,7 +55,14 @@ module Dor
         end
 
         def workflow(workflow_name)
-          @workflow ||= ObjectWorkflow.new(**parent_params.merge({ workflow_name: workflow_name }))
+          raise ArgumentError, '`workflow_name` argument cannot be blank in call to `#workflow(workflow_name)' if workflow_name.blank?
+
+          # Return memoized object instance if workflow_name value is the same
+          #
+          # This allows the client to interact with multiple workflows for a given object
+          return @workflow if @workflow&.workflow_name == workflow_name
+
+          @workflow = ObjectWorkflow.new(**parent_params.merge({ workflow_name: workflow_name }))
         end
 
         # Retrieves the Cocina model
