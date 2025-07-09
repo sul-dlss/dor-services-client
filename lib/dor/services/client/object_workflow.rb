@@ -5,6 +5,8 @@ module Dor
     class Client
       # API calls around workflow for an object.
       class ObjectWorkflow < VersionedService
+        attr_reader :workflow_name
+
         # @param object_identifier [String] the druid for the object
         # @param [String] workflow_name The name of the workflow
         def initialize(connection:, version:, object_identifier:, workflow_name:)
@@ -61,7 +63,7 @@ module Dor
 
         private
 
-        attr_reader :object_identifier, :workflow_name
+        attr_reader :object_identifier
       end
     end
   end
