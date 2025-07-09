@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    dor-services-client (15.15.1)
+    dor-services-client (15.15.2)
       activesupport (>= 7.0.0)
       cocina-models (~> 0.104.1)
       deprecation
