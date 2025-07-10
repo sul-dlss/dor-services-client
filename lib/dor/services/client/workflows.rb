@@ -8,7 +8,7 @@ module Dor
         # Retrieves a list of workflow template name
         # @return [Array<String>] the list of templates
         def templates
-          resp = connection.post do |req|
+          resp = connection.get do |req|
             req.url "#{api_version}/workflow_templates"
             req.headers['Content-Type'] = 'application/json'
             req.headers['Accept'] = 'application/json'
