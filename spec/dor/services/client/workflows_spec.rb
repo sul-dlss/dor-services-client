@@ -11,7 +11,7 @@ RSpec.describe Dor::Services::Client::Workflows do
 
   describe '#templates' do
     before do
-      stub_request(:post, 'https://dor-services.example.com/v1/workflow_templates')
+      stub_request(:get, 'https://dor-services.example.com/v1/workflow_templates')
         .with(
           headers: { 'Content-Type' => 'application/json', 'Accept' => 'application/json' }
         )
