@@ -159,6 +159,51 @@ RSpec.describe Dor::Services::Response::Workflow do
     end
   end
 
+  describe '#error_count' do
+    subject(:process) { instance.error_count }
+
+    context 'when errors present in latest version' do
+      let(:xml) do
+        <<~XML
+          <workflow repository="dor" objectId="druid:mw971zk1113" id="assemblyWF">
+            <process version="1" laneId="default" elapsed="0.0" attempts="1" datetime="2013-02-18T14:40:25-0800" status="completed" name="start-assembly"/>
+            <process version="1" laneId="default" elapsed="0.509" attempts="1" datetime="2013-02-18T14:42:24-0800" status="completed" name="jp2-create"/>
+            <process version="2" laneId="default" elapsed="0.509" attempts="1" datetime="2013-02-18T14:42:24-0800" status="error" name="jp2-create" errorMessage="it just broke"/>
+          </workflow>
+        XML
+      end
+
+      it { is_expected.to eq(1) }
+    end
+
+    context 'when no errors present in latest version' do
+      let(:xml) do
+        <<~XML
+          <workflow repository="dor" objectId="druid:mw971zk1113" id="assemblyWF">
+            <process version="1" laneId="default" elapsed="0.0" attempts="1" datetime="2013-02-18T14:40:25-0800" status="completed" name="start-assembly"/>
+            <process version="1" laneId="default" elapsed="0.509" attempts="1" datetime="2013-02-18T14:42:24-0800" status="completed" name="jp2-create"/>
+          </workflow>
+        XML
+      end
+
+      it { is_expected.to eq(0) }
+    end
+
+    context 'when errors in earlier versions' do
+      let(:xml) do
+        <<~XML
+          <workflow repository="dor" objectId="druid:mw971zk1113" id="assemblyWF">
+            <process version="1" laneId="default" elapsed="0.0" attempts="1" datetime="2013-02-18T14:40:25-0800" status="error" name="start-assembly" errorMessage="it just broke"/>
+            <process version="1" laneId="default" elapsed="0.509" attempts="1" datetime="2013-02-18T14:42:24-0800" status="error" name="jp2-create" errorMessage="it just broke"/>
+            <process version="2" laneId="default" elapsed="0.509" attempts="1" datetime="2013-02-18T14:42:24-0800" status="completed" name="jp2-create"/>
+          </workflow>
+        XML
+      end
+
+      it { is_expected.to eq(0) }
+    end
+  end
+
   describe '#process_for_recent_version' do
     subject(:process) { instance.process_for_recent_version(name: 'jp2-create') }
 

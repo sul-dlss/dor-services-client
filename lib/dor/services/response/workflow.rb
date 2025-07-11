@@ -24,7 +24,12 @@ module Dor
           result ? true : false
         end
 
-        # Returns the process, for the most recent version that matches the given name:
+        def error_count
+          process_names.map { |process_name| process_for_recent_version(name: process_name) }
+                       .count { |process| process.status == 'error' }
+        end
+
+        # Returns the process for the most recent version that matches the given name:
         def process_for_recent_version(name:)
           nodes = process_nodes_for(name: name)
           node = nodes.max { |a, b| a.attr('version').to_i <=> b.attr('version').to_i }
@@ -38,12 +43,11 @@ module Dor
         # Check if all processes are skipped or complete for the provided version.
         # @param [Integer] version the version we are checking for.
         def complete_for?(version:)
-          # ng_xml.xpath("/workflow/process[@version=#{version}]/@status").map(&:value).all? { |p| %w[skipped completed].include?(p) }
           incomplete_processes_for(version: version).empty?
         end
 
         def complete?
-          complete_for?(version: version)
+          complete_for?(version: latest_version)
         end
 
         def incomplete_processes_for(version:)
@@ -53,15 +57,15 @@ module Dor
         end
 
         def incomplete_processes
-          incomplete_processes_for(version: version)
+          incomplete_processes_for(version: latest_version)
         end
 
         attr_reader :xml
 
         private
 
-        # Return the max version in this workflow document
-        def version
+        # Return the latest version in this workflow document
+        def latest_version
           ng_xml.xpath('/workflow/process/@version').map { |attr| attr.value.to_i }.max
         end
 
@@ -80,6 +84,10 @@ module Dor
         def to_process(node)
           attributes = node ? node.attributes.to_h { |k, v| [k.to_sym, v.value] } : {}
           Process.new(parent: self, **attributes)
+        end
+
+        def process_names(version: latest_version)
+          ng_xml.xpath("/workflow/process[@version=#{version}]").map { |process| process['name'] }
         end
       end
     end
