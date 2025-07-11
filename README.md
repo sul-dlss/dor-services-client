@@ -178,6 +178,8 @@ Dor::Services::Client.administrative_tags.search(q: 'Project')
 
 # Get a list of workflow templates
 Dor::Services::Client.workflows.templates
+# Show a workflow template (e.g., to view its list of steps)
+Dor::Services::Client.workflows.template('accessionWF')
 ```
 
 ## Asynchronous results
