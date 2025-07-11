@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Dor::Services::Response::Workflows do
-  subject(:instance) { described_class.new(xml: xml) }
+  subject(:instance) { described_class.new(xml: Nokogiri::XML(xml)) }
 
   describe '#pid' do
     subject { instance.pid }
