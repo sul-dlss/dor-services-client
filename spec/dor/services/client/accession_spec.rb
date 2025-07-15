@@ -15,6 +15,9 @@ RSpec.describe Dor::Services::Client::Accession do
   let(:headers) { { 'Authorization' => 'Bearer 123', 'Content-Type' => 'application/json' } }
   let(:body) { '' }
 
+  # NOTE: the stubbed request with body, headers and status will essentially provide the expectation
+  # since if you specify the params you pass, along with setting the body, headers and status you expect
+  # in the before block for the individual spec, it will fail if the request that is made does not match the stub
   describe '#start' do
     context 'with no params' do
       before do
@@ -55,8 +58,8 @@ RSpec.describe Dor::Services::Client::Accession do
         end
 
         context 'with context' do
-          let(:body) { '{"context":{"requireOCR":true}}' }
-          let(:params) { { opening_user_name: 'dude', workflow: 'accessionWF', context: { 'requireOCR' => true } } }
+          let(:body) { '{"context":{"requireOCR":true,"ocrLanguages":["Russian"]}}' }
+          let(:params) { { opening_user_name: 'dude', workflow: 'accessionWF', context: { 'requireOCR' => true, 'ocrLanguages' => ['Russian'] } } }
 
           it 'returns true' do
             expect(client.start(params)).to be true
