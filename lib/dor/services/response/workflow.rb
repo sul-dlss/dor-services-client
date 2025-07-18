@@ -5,6 +5,7 @@ module Dor
     module Response
       # The response from asking the server about a workflow for an item
       class Workflow
+        # @param [String] xml An XML string representing a given workflow
         def initialize(xml:)
           @xml = xml
         end

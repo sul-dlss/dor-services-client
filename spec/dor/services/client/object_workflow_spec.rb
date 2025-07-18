@@ -9,8 +9,6 @@ RSpec.describe Dor::Services::Client::ObjectWorkflow do
 
   let(:connection) { Dor::Services::Client.instance.send(:connection) }
   let(:druid) { 'druid:mw971zk1113' }
-
-  let(:ng_xml) { Nokogiri::XML(xml) }
   let(:xml) do
     <<~XML
       <workflow repository="dor" objectId="druid:mw971zk1113" id="accessionWF">
@@ -20,7 +18,7 @@ RSpec.describe Dor::Services::Client::ObjectWorkflow do
   end
 
   describe '#find' do
-    subject(:workflows) { client.find }
+    subject(:workflow) { client.find }
 
     before do
       stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:mw971zk1113/workflows/accessionWF')
@@ -31,8 +29,8 @@ RSpec.describe Dor::Services::Client::ObjectWorkflow do
       let(:status) { 200 }
       let(:body) { xml }
 
-      it 'returns the workflows' do
-        expect(workflows).to be_a(Dor::Services::Response::Workflow)
+      it 'returns the workflow' do
+        expect(workflow).to be_a(Dor::Services::Response::Workflow)
       end
     end
 
@@ -41,7 +39,7 @@ RSpec.describe Dor::Services::Client::ObjectWorkflow do
       let(:body) { '' }
 
       it 'raises a NotFoundResponse exception' do
-        expect { workflows }.to raise_error(Dor::Services::Client::NotFoundResponse)
+        expect { workflow }.to raise_error(Dor::Services::Client::NotFoundResponse)
       end
     end
   end
