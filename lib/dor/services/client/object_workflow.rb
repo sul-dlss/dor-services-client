@@ -30,7 +30,7 @@ module Dor
 
           raise_exception_based_on_response!(resp) unless resp.success?
 
-          Dor::Services::Response::Workflow.new(xml: Nokogiri::XML(resp.body))
+          Dor::Services::Response::Workflow.new(xml: resp.body)
         end
 
         # Creates a workflow for a given object in the repository.  If this particular workflow for this objects exists,
