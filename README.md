@@ -160,6 +160,12 @@ object_client.workflow('accessionWF').find
 object_client.workflow('etdSubmitWF').create(version: 2)
 # Skip all workflow steps
 object_client.workflow('accessionWF').skip_all(note: 'Cleaning up')
+# Check if workflow is active for a given version
+object_client.workflow(workflow_name).find.active_for?(version: 1)
+# Check if workflow is complete for a given version
+object_client.workflow(workflow_name).find.complete_for?(version: 1)
+# Check if workflow is complete for an object
+object_client.workflow(workflow_name).find.complete?
 
 # Get the status of a workflow process
 object_client.workflow('accessionWF').process('shelve').status
