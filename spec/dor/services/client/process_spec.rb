@@ -85,7 +85,7 @@ RSpec.describe Dor::Services::Client::Process do
   describe '#status' do
     subject(:workflow_status) { client.status }
 
-    let(:workflow) { instance_double(Dor::Services::Response::Workflow, xml: Nokogiri::XML(xml)) }
+    let(:workflow) { instance_double(Dor::Services::Response::Workflow, ng_xml: Nokogiri::XML(xml)) }
     let(:process) { 'registrar-approval' }
 
     before do
