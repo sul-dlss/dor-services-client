@@ -17,8 +17,15 @@ module Dor
 
         # @return [Dor::Services::Client::Process]
         def process(process)
-          @process ||= Process.new(connection: connection, version: api_version, object_identifier: object_identifier,
-                                   workflow_name: workflow_name, process: process, object_workflow_client: self)
+          raise ArgumentError, '`process` argument cannot be blank in call to `#process(process)`' if process.blank?
+
+          # Return memoized object instance if process value is the same
+          #
+          # This allows the client to interact with multiple workflows for a given object
+          return @process if @process&.process == process
+
+          @process = Process.new(connection: connection, version: api_version, object_identifier: object_identifier,
+                                 workflow_name: workflow_name, process: process, object_workflow_client: self)
         end
 
         # @return [Workflow::Response::Workflow]

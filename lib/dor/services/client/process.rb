@@ -44,9 +44,9 @@ module Dor
           perform_update(status: 'error', error_msg: error_msg, error_text: error_text)
         end
 
-        private
-
         attr_reader :object_identifier, :workflow_name, :process, :object_workflow_client
+
+        private
 
         def perform_update(**payload)
           resp = connection.put do |req|

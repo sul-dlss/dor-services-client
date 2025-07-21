@@ -110,11 +110,8 @@ RSpec.describe Dor::Services::Client::ObjectWorkflow do
   describe '#process' do
     let(:process) { instance_double(Dor::Services::Client::Process) }
 
-    before do
-      allow(Dor::Services::Client::Process).to receive(:new).and_return(process)
-    end
-
     it 'returns a Process' do
+      allow(Dor::Services::Client::Process).to receive(:new).and_return(process)
       expect(client.process('shelve')).to eq(process)
 
       expect(Dor::Services::Client::Process).to have_received(:new).with(
@@ -125,6 +122,12 @@ RSpec.describe Dor::Services::Client::ObjectWorkflow do
         process: 'shelve',
         object_workflow_client: client
       )
+    end
+
+    context 'when called with a different process name' do
+      it 'refreshes the memoized instance' do
+        expect(client.process('shelve')).not_to eq client.process('publish')
+      end
     end
   end
 end
