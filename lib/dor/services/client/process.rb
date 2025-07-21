@@ -19,7 +19,7 @@ module Dor
         # Retrieves the process status of the given workflow for the given object identifier
         # @return [String,nil] status
         def status
-          doc = object_workflow_client.find.xml
+          doc = object_workflow_client.find.ng_xml
 
           processes = doc.root.xpath("//process[@name='#{process}']")
           process = processes.max { |a, b| a.attr('version').to_i <=> b.attr('version').to_i }

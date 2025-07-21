@@ -61,6 +61,10 @@ module Dor
           incomplete_processes_for(version: latest_version)
         end
 
+        def ng_xml
+          @ng_xml ||= Nokogiri::XML(@xml)
+        end
+
         attr_reader :xml
 
         private
@@ -76,10 +80,6 @@ module Dor
 
         def process_nodes_for(name:)
           ng_xml.xpath("/workflow/process[@name = '#{name}']")
-        end
-
-        def ng_xml
-          @ng_xml ||= Nokogiri::XML(@xml)
         end
 
         def to_process(node)
