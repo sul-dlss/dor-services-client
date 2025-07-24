@@ -51,7 +51,7 @@ module Dor
         end
 
         def workflows
-          @workflows ||= ObjectWorkflows.new(**parent_params).list
+          ObjectWorkflows.new(**parent_params).list
         end
 
         def workflow(workflow_name)
