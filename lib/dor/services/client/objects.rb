@@ -46,7 +46,9 @@ module Dor
         # Find objects by a list of druids
         # @raise [UnexpectedResponse] when the response is not successful.
         # @return [Array<Cocina::Models::DROWithMetadata,Cocina::Models::CollectionWithMetadata,,Cocina::Models::AdminPolicyWithMetadata>] the returned objects
-        def find_all(druids:, validate: false)
+        def find_all(druids:, validate: false) # rubocop:disable Metrics/AbcSize
+          return [] if druids.empty?
+
           resp = connection.post do |req|
             req.url "#{objects_path}/find_all"
             req.headers['Content-Type'] = 'application/json'
