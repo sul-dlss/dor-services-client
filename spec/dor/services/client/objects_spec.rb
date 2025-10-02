@@ -211,6 +211,16 @@ RSpec.describe Dor::Services::Client::Objects do
         expect(model).to be_empty
       end
     end
+
+    context 'when druids is empty, return an empty array' do
+      let(:druids) { [] }
+      let(:cocina) { [] }
+
+      it 'returns an empty array' do
+        expect(model).to be_an(Array)
+        expect(model).to be_empty
+      end
+    end
   end
 
   describe '#statuses' do
