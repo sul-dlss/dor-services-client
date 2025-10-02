@@ -178,6 +178,41 @@ RSpec.describe Dor::Services::Client::Objects do
     end
   end
 
+  describe '#find_all' do
+    subject(:model) { client.find_all(druids: druids, validate: validate) }
+
+    let(:druids) { ['druid:bc123df4567', 'druid:bc987gh6543'] }
+    let(:cocina) { [build(:dro_with_metadata, id: 'druid:bc123df4567'), build(:dro_with_metadata, id: 'druid:bc987gh6543')] }
+    let(:validate) { false }
+    let(:status) { 200 }
+
+    before do
+      stub_request(:post, 'https://dor-services.example.com/v1/objects/find_all')
+        .with(
+          body: { externalIdentifiers: druids }.to_json,
+          headers: { 'Content-Type' => 'application/json' }
+        )
+        .to_return(status: status,
+                   body: cocina.to_json)
+    end
+
+    context 'when API request succeeds with DRO' do
+      it 'returns an array of cocina models' do
+        expect(model.first.externalIdentifier).to eq 'druid:bc123df4567'
+        expect(model.last.externalIdentifier).to eq 'druid:bc987gh6543'
+      end
+    end
+
+    context 'when API request returns an empty array' do
+      let(:cocina) { [] }
+
+      it 'returns an empty array' do
+        expect(model).to be_an(Array)
+        expect(model).to be_empty
+      end
+    end
+  end
+
   describe '#statuses' do
     subject(:statuses) { client.statuses(object_ids: ['druid:bc123df4567', 'druid:bc987gh6543']) }
 

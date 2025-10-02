@@ -13,7 +13,7 @@ module Dor
         # @param [string] user_name the sunetid of the user registering the object
         # @param [boolean] validate validate the response object
         # @return [Cocina::Models::DROWithMetadata,Cocina::Models::CollectionWithMetadata,Cocina::Models::AdminPolicyWithMetadata] the returned model
-        def register(params:, assign_doi: false, validate: false, user_name: nil)
+        def register(params:, assign_doi: false, validate: false, user_name: nil) # rubocop:disable Metrics/AbcSize
           resp = connection.post do |req|
             req.url objects_path
             req.params = { assign_doi: assign_doi, user_name: user_name }.compact
@@ -25,7 +25,7 @@ module Dor
 
           raise_exception_based_on_response!(resp) unless resp.success?
 
-          build_cocina_from_response(resp, validate: validate)
+          build_cocina_from_response(JSON.parse(resp.body), headers: resp.headers, validate: validate)
         end
 
         # Find an object by source ID
@@ -40,7 +40,24 @@ module Dor
           end
           raise_exception_based_on_response!(resp) unless resp.success?
 
-          build_cocina_from_response(resp, validate: validate)
+          build_cocina_from_response(JSON.parse(resp.body), headers: resp.headers, validate: validate)
+        end
+
+        # Find objects by a list of druids
+        # @raise [UnexpectedResponse] when the response is not successful.
+        # @return [Array<Cocina::Models::DROWithMetadata,Cocina::Models::CollectionWithMetadata,,Cocina::Models::AdminPolicyWithMetadata>] the returned objects
+        def find_all(druids:, validate: false)
+          resp = connection.post do |req|
+            req.url "#{objects_path}/find_all"
+            req.headers['Content-Type'] = 'application/json'
+            req.body = { 'externalIdentifiers' => druids }.to_json
+          end
+          raise_exception_based_on_response!(resp) unless resp.success?
+
+          JSON.parse(resp.body).map do |item|
+            # The ETag header is used as the lock parameter when instantiating a cocina model with metadata
+            build_cocina_from_response(item, headers: { 'ETag' => item['lock'] }, validate: validate)
+          end
         end
 
         # Retrieves the version statuses for a batch of objects

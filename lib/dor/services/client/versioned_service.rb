@@ -41,18 +41,20 @@ module Dor
                                     errors: data.fetch('errors', []))
         end
 
-        def build_cocina_from_response(response, validate: false)
-          cocina_object = Cocina::Models.build(JSON.parse(response.body), validate: validate)
-          Cocina::Models.with_metadata(cocina_object, response.headers['ETag'], created: date_from_header(response, 'X-Created-At'),
-                                                                                modified: date_from_header(response, 'Last-Modified'))
+        def build_cocina_from_response(item, headers: nil, validate: false)
+          cocina_object = Cocina::Models.build(item, validate: validate)
+          return Cocina::Models.without_metadata(cocina_object) unless headers.present?
+
+          Cocina::Models.with_metadata(cocina_object, headers['ETag'], created: date_from_header(headers, 'X-Created-At'),
+                                                                       modified: date_from_header(headers, 'Last-Modified'))
         end
 
         def build_json_from_cocina(cocina_object)
           Cocina::Models.without_metadata(cocina_object).to_json
         end
 
-        def date_from_header(response, key)
-          response.headers[key]&.to_datetime
+        def date_from_header(headers, key)
+          headers[key]&.to_datetime
         end
       end
     end

@@ -61,7 +61,7 @@ module Dor
           end
           raise_exception_based_on_response!(resp) unless resp.success?
 
-          build_cocina_from_response(resp, validate: false)
+          build_cocina_from_response(JSON.parse(resp.body), headers: resp.headers, validate: false)
         end
 
         # Get the current version for a DOR object. This comes from ObjectVersion table in the DSA
@@ -93,7 +93,7 @@ module Dor
 
           raise_exception_based_on_response!(resp) unless resp.success?
 
-          build_cocina_from_response(resp)
+          build_cocina_from_response(JSON.parse(resp.body), headers: resp.headers)
         end
 
         # Close current version for an object
