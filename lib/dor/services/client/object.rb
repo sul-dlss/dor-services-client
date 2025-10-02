@@ -76,7 +76,7 @@ module Dor
           end
           raise_exception_based_on_response!(resp) unless resp.success?
 
-          build_cocina_from_response(resp, validate: validate)
+          build_cocina_from_response(JSON.parse(resp.body), headers: resp.headers, validate: validate)
         end
 
         BASE_ALLOWED_FIELDS = %i[external_identifier cocina_version label version administrative description].freeze

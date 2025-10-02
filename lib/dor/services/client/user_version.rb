@@ -44,7 +44,7 @@ module Dor
           end
           raise_exception_based_on_response!(resp) unless resp.success?
 
-          build_cocina_from_response(resp, validate: false)
+          build_cocina_from_response(JSON.parse(resp.body), headers: resp.headers, validate: false)
         end
 
         # @return [Hash] the solr document for the user version
