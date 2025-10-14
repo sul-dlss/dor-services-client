@@ -10,7 +10,8 @@ module Dor
           401 => UnauthorizedResponse,
           404 => NotFoundResponse,
           409 => ConflictResponse,
-          412 => PreconditionFailedResponse
+          412 => PreconditionFailedResponse,
+          422 => UnprocessableContentError
         }.freeze
 
         JSON_API_MIME_TYPE = 'application/vnd.api+json'

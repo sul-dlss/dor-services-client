@@ -148,6 +148,20 @@ module Dor
           raise_exception_based_on_response!(resp)
         end
 
+        # Verify the object can be indexed into Solr
+        # @raise [UnprocessableContent] when the response is not successful.
+        # @return [string] JSON representation of the descriptive solr document
+        def indexable(cocina:)
+          resp = connection.post do |req|
+            req.url "#{object_path}/indexable"
+            req.headers['Content-Type'] = 'application/json'
+            req.body = cocina.to_json
+          end
+          return true if resp.success?
+
+          raise_exception_based_on_response!(resp)
+        end
+
         # Publish an object (send to PURL)
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.

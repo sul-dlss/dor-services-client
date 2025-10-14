@@ -79,6 +79,10 @@ module Dor
       # Error that is raised when the remote server returns a 400 Bad Request; apps should not retry the request
       class BadRequestError < UnexpectedResponse; end
 
+      # Error that is raised when the remote server returns a 422 Unprocessable Content
+      # This occurs when the request is well-formed but the content is not indexable
+      class UnprocessableContentError < UnexpectedResponse; end
+
       module Types
         include Dry.Types()
       end
