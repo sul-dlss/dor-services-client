@@ -78,6 +78,22 @@ module Dor
           JSON.parse(resp.body).transform_values { |status| ObjectVersion::VersionStatus.new(status.symbolize_keys!) }
         end
 
+        # Verify the object can be indexed into Solr
+        # @param [String] druid the object's druid
+        # @param [Cocina::Models::DROWithoutMetadata] cocina the cocina object to verify
+        # @raise [UnprocessableContent] when the response is not successful.
+        # @return [string] JSON representation of the descriptive solr document
+        def indexable(druid:, cocina:)
+          resp = connection.post do |req|
+            req.url "#{objects_path}/#{druid}/indexable"
+            req.headers['Content-Type'] = 'application/json'
+            req.body = cocina.to_json
+          end
+          return true if resp.success?
+
+          raise_exception_based_on_response!(resp)
+        end
+
         private
 
         def objects_path

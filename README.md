@@ -68,6 +68,9 @@ objects_client.find(source_id: 'sul:abc123')
 # Get status for a batch of objects
 objects_client.statuses(object_ids: ['druid:bc123df4567', 'druid:bc987gh6543'])
 
+# Determine if a cocina representation will index to solr
+objects_client.indexable(druid: 'druid:bc123df4567', cocina: cocina_object)
+
 # Interact with virtual objects
 virtual_objects_client = Dor::Services::Client.virtual_objects
 
