@@ -272,4 +272,51 @@ RSpec.describe Dor::Services::Client::Objects do
       end
     end
   end
+
+  describe '#indexable' do
+    subject(:request) { client.indexable(druid: druid, cocina: cocina) }
+
+    let(:cocina) { build(:dro) }
+    let(:druid) { cocina.externalIdentifier }
+    let(:expected_solr) do
+      { 'id' => druid }
+    end
+
+    before do
+      stub_request(:post, "https://dor-services.example.com/v1/objects/#{druid}/indexable")
+        .with(
+          body: cocina.to_json,
+          headers: {
+            'Content-Type' => 'application/json'
+          }
+        )
+        .to_return(status: status, body: expected_solr.to_json)
+    end
+
+    context 'when API request succeeds' do
+      let(:status) { 200 }
+
+      it 'returns the solr document as a string' do
+        expect(request).to be true
+      end
+    end
+
+    context 'when API request returns 422' do
+      let(:status) { [422, 'unprocessable entity'] }
+      let(:body) { '{"error": "cannot index"}' }
+
+      it 'raises an UnprocessableContent exception' do
+        expect { request }.to raise_error(Dor::Services::Client::UnprocessableContentError)
+      end
+    end
+
+    context 'when API request fails' do
+      let(:status) { [401, 'unauthorized'] }
+      let(:body) { '{"error": "not authorized"}' }
+
+      it 'raises an error' do
+        expect { request }.to raise_error(Dor::Services::Client::UnexpectedResponse)
+      end
+    end
+  end
 end
