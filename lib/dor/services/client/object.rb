@@ -8,6 +8,7 @@ module Dor
       # API calls that are about a repository object
       class Object < VersionedService # rubocop:disable Metrics/ClassLength
         extend Deprecation
+
         attr_reader :object_identifier
 
         # @param object_identifier [String] the pid for the object
