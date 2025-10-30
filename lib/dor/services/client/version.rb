@@ -3,7 +3,7 @@
 module Dor
   module Services
     class Client
-      VERSION = '15.24.0'
+      VERSION = '15.25.0'
     end
   end
 end
