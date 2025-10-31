@@ -16,15 +16,14 @@ module Dor
         # @param [String] druid object id
         # @param [String] milestone_name the name of the milestone being queried for
         # @param [Number] version (nil) the version to query for
-        # @param [Boolean] active_only (false) if true, return only lifecycle steps for versions that have all processes complete
         # @return [Time] when the milestone was achieved.  Returns nil if the milestone does not exist
-        def date(milestone_name:, version: nil, active_only: false)
-          filter_milestone(query_lifecycle(version: version, active_only: active_only), milestone_name)
+        def date(milestone_name:, version: nil)
+          filter_milestone(query_lifecycle(version: version), milestone_name)
         end
 
         # @return [Array<Hash>]
         def list
-          doc = query_lifecycle(active_only: false)
+          doc = query_lifecycle
           doc.xpath('//lifecycle/milestone').collect do |node|
             { milestone: node.text, at: Time.parse(node['date']), version: node['version'] }
           end
@@ -42,7 +41,6 @@ module Dor
         end
 
         # @param [String] druid object id
-        # @param [Boolean] active_only (false) if true, return only lifecycle steps for versions that have all processes complete
         # @param [Number] version the version to query for
         # @return [Nokogiri::XML::Document]
         # @example An example lifecycle xml from the workflow service.
@@ -52,12 +50,11 @@ module Dor
         #     <milestone date="2010-06-15T16:08:58-0700">released</milestone>
         #   </lifecycle>
         #
-        def query_lifecycle(active_only:, version: nil)
+        def query_lifecycle(version: nil)
           resp = connection.get do |req|
             req.url "#{api_version}/objects/#{object_identifier}/lifecycles"
             req.headers['Accept'] = 'application/xml'
             req.params['version'] = version if version
-            req.params['active-only'] = 'true' if active_only
           end
           raise_exception_based_on_response!(resp) unless resp.success?
 

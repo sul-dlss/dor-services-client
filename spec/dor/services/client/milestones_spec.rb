@@ -44,10 +44,9 @@ RSpec.describe Dor::Services::Client::Milestones do
   end
 
   describe '#date' do
-    subject(:date) { client.date(milestone_name: 'published', version: version, active_only: active_only) }
+    subject(:date) { client.date(milestone_name: 'published', version: version) }
 
     let(:version) { nil }
-    let(:active_only) { false }
 
     let(:status) { 200 }
     let(:body) { xml }
@@ -74,10 +73,9 @@ RSpec.describe Dor::Services::Client::Milestones do
 
     context 'with parameters' do
       let(:version) { '2' }
-      let(:active_only) { true }
 
       before do
-        stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:gv054hp4128/lifecycles?active-only=true&version=2')
+        stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:gv054hp4128/lifecycles?version=2')
           .to_return(status: 200, body: xml)
       end
 
