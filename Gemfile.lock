@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    dor-services-client (15.27.0)
+    dor-services-client (15.27.1)
       activesupport (>= 7.0.0)
-      cocina-models (~> 0.110.0)
+      cocina-models (~> 0.110.1)
       deprecation
       faraday (~> 2.0)
       faraday-retry
@@ -34,7 +34,7 @@ GEM
     bigdecimal (4.0.1)
     byebug (13.0.0)
       reline (>= 0.6.0)
-    cocina-models (0.110.0)
+    cocina-models (0.110.1)
       activesupport
       deprecation
       dry-struct (~> 1.0)
