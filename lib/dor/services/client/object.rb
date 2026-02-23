@@ -80,6 +80,17 @@ module Dor
           build_cocina_from_response(JSON.parse(resp.body), headers: resp.headers, validate: validate)
         end
 
+        # @raise [NotFoundResponse] when the response is a 404 (object not found)
+        # @raise [UnexpectedResponse] when the response is not successful.
+        # @return [String] the ETag value for the object
+        def lock
+          resp = connection.head do |req|
+            req.url object_path
+          end
+          raise_exception_based_on_response!(resp) unless resp.success?
+          resp.headers['ETag']
+        end
+
         BASE_ALLOWED_FIELDS = %i[external_identifier cocina_version label version administrative description].freeze
         DRO_ALLOWED_FIELDS = BASE_ALLOWED_FIELDS + %i[content_type access identification structural geographic]
 
