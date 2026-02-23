@@ -127,6 +127,9 @@ object_client.find
 # Returns "lite" Cocina metadata (excluding specified attributes)
 object_client.find_lite(structural: false, geographic: false)
 
+# Return the lock (ETag) for the object
+object_client.lock
+
 # Query for an object's collections
 object_client.collections
 

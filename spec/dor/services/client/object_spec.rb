@@ -200,6 +200,27 @@ RSpec.describe Dor::Services::Client::Object do
     end
   end
 
+  describe '#lock' do
+    subject(:lock) { client.lock }
+
+    let(:status) { 200 }
+
+    before do
+      stub_request(:head, 'https://dor-services.example.com/v1/objects/druid:bc123df4567')
+        .to_return(status: status,
+                   headers: {
+                     'Last-Modified' => 'Wed, 03 Mar 2021 18:58:00 GMT',
+                     'X-Created-At' => 'Wed, 01 Jan 2021 12:58:00 GMT',
+                     'X-Served-By' => 'Awesome webserver',
+                     'ETag' => 'W/"d41d8cd98f00b204e9800998ecf8427e"'
+                   })
+    end
+
+    it 'returns the ETag value' do
+      expect(lock).to eq('W/"d41d8cd98f00b204e9800998ecf8427e"')
+    end
+  end
+
   describe '#find_lite' do
     subject(:model) { client.find_lite(structural: false, geographic: false, description: false) }
 
