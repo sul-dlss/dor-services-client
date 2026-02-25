@@ -212,12 +212,22 @@ RSpec.describe Dor::Services::Client::Object do
                      'Last-Modified' => 'Wed, 03 Mar 2021 18:58:00 GMT',
                      'X-Created-At' => 'Wed, 01 Jan 2021 12:58:00 GMT',
                      'X-Served-By' => 'Awesome webserver',
-                     'ETag' => 'W/"d41d8cd98f00b204e9800998ecf8427e"'
-                   })
+                     'ETag' => 'W/"d41d8cd98f00b204e9800998ecf8427e"',
+                     'Content-Type' => 'application/vnd.api+json'
+                   },
+                   body: '')
     end
 
     it 'returns the ETag value' do
       expect(lock).to eq('W/"d41d8cd98f00b204e9800998ecf8427e"')
+    end
+
+    context 'when API request returns 404' do
+      let(:status) { 404 }
+
+      it 'raises a NotFoundResponse exception' do
+        expect { lock }.to raise_error(Dor::Services::Client::NotFoundResponse)
+      end
     end
   end
 
