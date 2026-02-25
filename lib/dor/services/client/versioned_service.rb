@@ -31,7 +31,7 @@ module Dor
         attr_reader :connection, :api_version
 
         def raise_exception_based_on_response!(response, object_identifier = nil)
-          data = if response.headers.fetch('content-type', '').start_with?(JSON_API_MIME_TYPE)
+          data = if response.headers.fetch('content-type', '').start_with?(JSON_API_MIME_TYPE) && response.body.present?
                    JSON.parse(response.body)
                  else
                    {}
