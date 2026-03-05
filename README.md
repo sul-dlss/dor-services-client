@@ -108,6 +108,8 @@ object_client.version.current
 # Status includes whether the object is open, assembling, accessioning, or closeable.
 # See also objects_client.statuses for getting statuses in batch.
 object_client.version.status
+# Returns object version as Cocina instance if valid; returns a Hash<cocina_object:, error_message:> if invalid
+object_client.version.find(3)
 
 # see dor-services-app openapi.yml for optional params
 object_client.version.open(description: 'Changed title')
