@@ -56,7 +56,7 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
         {
           errors: [{
             status: status,
-            message: message,
+            detail: message,
             title: 'Object is not valid cocina',
             meta: {
               json: {
