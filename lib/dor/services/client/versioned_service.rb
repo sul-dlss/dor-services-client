@@ -59,7 +59,7 @@ module Dor
 
           {
             cocina_object: invalid_cocina_error.dig('meta', 'json'),
-            error_message: invalid_cocina_error['message']
+            error_message: invalid_cocina_error['detail']
           }.with_indifferent_access
         end
 
