@@ -110,6 +110,8 @@ object_client.version.current
 object_client.version.status
 # Returns object version as Cocina instance if valid; returns a Hash<cocina_object:, error_message:> if invalid
 object_client.version.find(3)
+# Include `validate: false` as a param to return the Solr representation of a version w/ invalid Cocina
+object_client.version.solr(2)
 
 # see dor-services-app openapi.yml for optional params
 object_client.version.open(description: 'Changed title')
