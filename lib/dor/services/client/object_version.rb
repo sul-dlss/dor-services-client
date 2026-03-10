@@ -145,9 +145,9 @@ module Dor
 
         # @return [Hash] the solr document for the user version
         # @raise [UnexpectedResponse] on an unsuccessful response from the server
-        def solr(version)
+        def solr(version, validate: true)
           resp = connection.get do |req|
-            req.url "#{base_path}/#{version}/solr"
+            req.url "#{base_path}/#{version}/solr?validate=#{validate}"
           end
           raise_exception_based_on_response!(resp) unless resp.success?
 

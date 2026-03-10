@@ -712,7 +712,7 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
   end
 
   describe '#solr' do
-    subject(:solr) { client.solr(2) }
+    subject(:solr) { client.solr(2, validate: validate) }
 
     let(:expected_solr) do
       {
@@ -725,14 +725,21 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
         'objectType_ssim' => ['item']
       }
     end
+    let(:validate) { true }
 
     before do
-      stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/versions/2/solr')
+      stub_request(:get, "https://dor-services.example.com/v1/objects/druid:bc123df4567/versions/2/solr?validate=#{validate}")
         .to_return(status: 200,
                    body: expected_solr.to_json)
     end
 
-    context 'when API request succeeds' do
+    it 'returns the solr document' do
+      expect(solr).to eq expected_solr
+    end
+
+    context 'with validation turned off' do
+      let(:validate) { false }
+
       it 'returns the solr document' do
         expect(solr).to eq expected_solr
       end
