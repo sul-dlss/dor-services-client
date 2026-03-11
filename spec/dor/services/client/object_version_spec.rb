@@ -329,9 +329,8 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
       end
       # rubocop:enable Layout/LineLength
 
-      it 'returns the cocina model as a hash' do
-        expect(model.dig(:cocina_object, :type)).to eq('https://cocina.sul.stanford.edu/models/map')
-        expect(model[:error_message]).to eq(message)
+      it 'returns the cocina model without validation' do
+        expect(model.type).to eq('https://cocina.sul.stanford.edu/models/map')
       end
     end
   end
