@@ -331,6 +331,7 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
 
       it 'returns the cocina model without validation' do
         expect(model.type).to eq('https://cocina.sul.stanford.edu/models/map')
+        expect(model.error_message).to eq('Multiple value, groupedValue, structuredValue, and parallelValue in description: note1, note2, note3')
       end
     end
   end

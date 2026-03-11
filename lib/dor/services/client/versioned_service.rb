@@ -57,7 +57,7 @@ module Dor
         def build_invalid_cocina_from_response(response)
           invalid_cocina_error = JSON.parse(response.body).dig('errors', 0)
 
-          Cocina::Models.build(invalid_cocina_error.dig('meta', 'json'), validate: false)
+          InvalidCocina.new(invalid_cocina_error.dig('meta', 'json').merge(error_message: invalid_cocina_error['detail']))
         end
 
         def date_from_header(headers, key)
