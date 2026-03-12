@@ -56,7 +56,7 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
         {
           errors: [{
             status: status,
-            message: message,
+            detail: message,
             title: 'Object is not valid cocina',
             meta: {
               json: {
@@ -329,9 +329,9 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
       end
       # rubocop:enable Layout/LineLength
 
-      it 'returns the cocina model as a hash' do
-        expect(model.dig(:cocina_object, :type)).to eq('https://cocina.sul.stanford.edu/models/map')
-        expect(model[:error_message]).to eq(message)
+      it 'returns the cocina model without validation' do
+        expect(model.type).to eq('https://cocina.sul.stanford.edu/models/map')
+        expect(model.error_message).to eq('Multiple value, groupedValue, structuredValue, and parallelValue in description: note1, note2, note3')
       end
     end
   end
@@ -712,7 +712,7 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
   end
 
   describe '#solr' do
-    subject(:solr) { client.solr(2) }
+    subject(:solr) { client.solr(2, validate: validate) }
 
     let(:expected_solr) do
       {
@@ -725,14 +725,21 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
         'objectType_ssim' => ['item']
       }
     end
+    let(:validate) { true }
 
     before do
-      stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/versions/2/solr')
+      stub_request(:get, "https://dor-services.example.com/v1/objects/druid:bc123df4567/versions/2/solr?validate=#{validate}")
         .to_return(status: 200,
                    body: expected_solr.to_json)
     end
 
-    context 'when API request succeeds' do
+    it 'returns the solr document' do
+      expect(solr).to eq expected_solr
+    end
+
+    context 'with validation turned off' do
+      let(:validate) { false }
+
       it 'returns the solr document' do
         expect(solr).to eq expected_solr
       end

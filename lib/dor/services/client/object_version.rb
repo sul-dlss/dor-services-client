@@ -53,8 +53,8 @@ module Dor
           @object_identifier = object_identifier
         end
 
-        # @return [Cocina::Models::DROWithMetadata, Hash] the object metadata or a hash with
-        #   invalid metadata and a message about the source of the invalidity
+        # @return [Cocina::Models::DROWithMetadata, Dor::Services::Client::InvalidCocina] the object version or an
+        #   InvalidCocina instance that behaves similarly to a Cocina object
         # @raise [Dor::Services::Client::Error] on an unsuccessful response from the server
         def find(version)
           resp = connection.get do |req|
@@ -145,9 +145,9 @@ module Dor
 
         # @return [Hash] the solr document for the user version
         # @raise [UnexpectedResponse] on an unsuccessful response from the server
-        def solr(version)
+        def solr(version, validate: true)
           resp = connection.get do |req|
-            req.url "#{base_path}/#{version}/solr"
+            req.url "#{base_path}/#{version}/solr?validate=#{validate}"
           end
           raise_exception_based_on_response!(resp) unless resp.success?
 
