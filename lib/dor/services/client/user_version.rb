@@ -36,22 +36,28 @@ module Dor
           JSON.parse(resp.body).fetch('user_versions').map { |params| Version.new(**params.symbolize_keys!) }
         end
 
-        # @return [Cocina::Models::DROWithMetadata] the object metadata
-        # @raise [UnexpectedResponse] on an unsuccessful response from the server
+        # @return [Cocina::Models::DROWithMetadata, Dor::Services::Client::InvalidCocina] the object version or an
+        #   InvalidCocina instance that behaves similarly to a Cocina object
+        # @raise [Dor::Services::Client::Error] on an unsuccessful response from the server
         def find(version)
           resp = connection.get do |req|
             req.url "#{base_path}/#{version}"
           end
-          raise_exception_based_on_response!(resp) unless resp.success?
 
-          build_cocina_from_response(JSON.parse(resp.body), headers: resp.headers, validate: false)
+          if resp.success?
+            build_cocina_from_response(JSON.parse(resp.body), headers: resp.headers, validate: false)
+          elsif resp.status == 409 # Signals the Cocina is present but invalid
+            build_invalid_cocina_from_response(resp)
+          else
+            raise_exception_based_on_response!(resp)
+          end
         end
 
         # @return [Hash] the solr document for the user version
         # @raise [UnexpectedResponse] on an unsuccessful response from the server
-        def solr(version)
+        def solr(version, validate: true)
           resp = connection.get do |req|
-            req.url "#{base_path}/#{version}/solr"
+            req.url "#{base_path}/#{version}/solr?validate=#{validate}"
           end
           raise_exception_based_on_response!(resp) unless resp.success?
 

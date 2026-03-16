@@ -66,7 +66,7 @@ module Dor
           elsif resp.status == 409 # Signals the Cocina is present but invalid
             build_invalid_cocina_from_response(resp)
           else
-            raise_exception_based_on_response!(resp) unless resp.success?
+            raise_exception_based_on_response!(resp)
           end
         end
 
