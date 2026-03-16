@@ -57,10 +57,7 @@ module Dor
         def build_invalid_cocina_from_response(response)
           invalid_cocina_error = JSON.parse(response.body).dig('errors', 0)
 
-          {
-            cocina_object: invalid_cocina_error.dig('meta', 'json'),
-            error_message: invalid_cocina_error['message']
-          }.with_indifferent_access
+          InvalidCocina.new(invalid_cocina_error.dig('meta', 'json').merge(error_message: invalid_cocina_error['detail']))
         end
 
         def date_from_header(headers, key)
