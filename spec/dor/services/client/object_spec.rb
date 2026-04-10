@@ -652,4 +652,39 @@ RSpec.describe Dor::Services::Client::Object do
       end
     end
   end
+
+  describe '#solr' do
+    subject(:solr) { client.solr(validate: validate) }
+
+    let(:expected_solr) do
+      {
+        'id' => druid,
+        'current_version_isi' => 1,
+        'obj_label_tesim' => 'Test DRO',
+        'modified_latest_dttsi' => '2024-07-03T12:32:16Z',
+        'created_at_dttsi' => '2024-07-03T12:32:16Z',
+        'is_governed_by_ssim' => 'info:fedora/druid:hy787xj5878',
+        'objectType_ssim' => ['item']
+      }
+    end
+    let(:validate) { true }
+
+    before do
+      stub_request(:get, "https://dor-services.example.com/v1/objects/druid:bc123df4567/solr?validate=#{validate}")
+        .to_return(status: 200,
+                   body: expected_solr.to_json)
+    end
+
+    it 'returns the solr document' do
+      expect(solr).to eq expected_solr
+    end
+
+    context 'with validation turned off' do
+      let(:validate) { false }
+
+      it 'returns the solr document' do
+        expect(solr).to eq expected_solr
+      end
+    end
+  end
 end

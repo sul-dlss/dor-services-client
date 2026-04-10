@@ -183,6 +183,17 @@ module Dor
         end
         # rubocop:enable Metrics/MethodLength
 
+        # @return [Hash] the solr document for the head version
+        # @raise [UnexpectedResponse] on an unsuccessful response from the server
+        def solr(validate: true)
+          resp = connection.get do |req|
+            req.url "#{object_path}/solr?validate=#{validate}"
+          end
+          raise_exception_based_on_response!(resp) unless resp.success?
+
+          JSON.parse(resp.body)
+        end
+
         private
 
         def parent_params
