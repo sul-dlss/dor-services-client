@@ -141,6 +141,9 @@ object_client.collections
 # Query for a collection's members
 object_client.members
 
+# Returns the solr document for the head version.
+object_client.solr(validate: false)
+
 # Create, update, destroy, and list administrative tags for an object
 object_client.administrative_tags.create(tags: ['Tag : One', 'Tag : Two'])
 object_client.administrative_tags.replace(tags: ['Tag : One', 'Tag : Two']) # like #create but removes current tags first
