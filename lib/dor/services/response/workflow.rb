@@ -37,6 +37,11 @@ module Dor
           to_process(node)
         end
 
+        # @return [Array<String>] returns a list of all processes
+        def processes
+          ng_xml.xpath('/workflow/process').map { |node| to_process(node) }
+        end
+
         def empty?
           ng_xml.xpath('/workflow/process').empty?
         end

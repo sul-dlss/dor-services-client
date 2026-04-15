@@ -244,6 +244,26 @@ RSpec.describe Dor::Services::Response::Workflow do
     end
   end
 
+  describe '#processes' do
+    subject(:processes) { instance.processes }
+
+    let(:xml) do
+      <<~XML
+        <workflow repository="dor" objectId="druid:mw971zk1113" id="assemblyWF">
+          <process version="1" laneId="default" elapsed="0.0" attempts="1" datetime="2013-02-18T14:40:25-0800" status="completed" name="start-assembly"/>
+          <process version="1" laneId="default" elapsed="0.509" attempts="1" datetime="2013-02-18T14:42:24-0800" status="completed" name="jp2-create"/>
+          <process version="2" laneId="default" elapsed="0.509" attempts="1" datetime="2013-02-18T14:42:24-0800" status="error" name="jp2-create" errorMessage="it just broke"/>
+        </workflow>
+      XML
+    end
+
+    it 'returns all processes as response process objects' do
+      expect(processes).to all(be_a Dor::Services::Response::Process)
+      expect(processes.map(&:name)).to eq %w[start-assembly jp2-create jp2-create]
+      expect(processes.map(&:status)).to eq %w[completed completed error]
+    end
+  end
+
   describe '#incomplete_processes' do
     subject(:processes) { instance.incomplete_processes }
 
