@@ -48,6 +48,10 @@ module Dor
           @attributes[:laneId].presence
         end
 
+        def version
+          @attributes[:version]&.to_i
+        end
+
         # @return [Hash] the context for the process (or empty hash if none present)
         def context
           return {} unless @attributes[:context].present?
