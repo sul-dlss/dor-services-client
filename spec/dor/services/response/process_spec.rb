@@ -90,4 +90,18 @@ RSpec.describe Dor::Services::Response::Process do
       it { is_expected.to eq({}) }
     end
   end
+
+  describe '#version' do
+    subject { instance.version }
+
+    let(:xml) do
+      <<~XML
+        <workflow repository="dor" objectId="druid:mw971zk1113" id="assemblyWF">
+          <process name="start-assembly" version="3">
+        </workflow>
+      XML
+    end
+
+    it { is_expected.to eq 3 }
+  end
 end
