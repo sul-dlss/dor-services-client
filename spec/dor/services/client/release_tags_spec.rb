@@ -61,15 +61,30 @@ RSpec.describe Dor::Services::Client::ReleaseTags do
   end
 
   describe '#create' do
-    subject(:request) { client.create(tag: tag) }
+    subject(:request) { client.create(tag: tag, lane_id: lane_id) }
 
     let(:tag) do
       Dor::Services::Client::ReleaseTag.new(what: 'self')
     end
 
+    let(:lane_id) { nil }
+
     context 'when API request succeeds' do
       before do
         stub_request(:post, "https://dor-services.example.com/v1/objects/#{druid}/release_tags")
+          .to_return(status: 201)
+      end
+
+      it 'posts tag' do
+        expect(request).to be true
+      end
+    end
+
+    context 'when API request with a lane id' do
+      let(:lane_id) { 'low' }
+
+      before do
+        stub_request(:post, "https://dor-services.example.com/v1/objects/#{druid}/release_tags?lane-id=low")
           .to_return(status: 201)
       end
 

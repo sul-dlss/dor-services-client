@@ -14,14 +14,16 @@ module Dor
         # Create a release tag for an object
         #
         # @param tag [ReleaseTag]
+        # @param lane_id [String, nil] optional lane id for the releaseWF
         # @return [Boolean] true if successful
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] if the request is unsuccessful.
-        def create(tag:)
+        def create(tag:, lane_id: nil)
           resp = connection.post do |req|
             req.url "#{api_version}/objects/#{object_identifier}/release_tags"
             req.headers['Content-Type'] = 'application/json'
             req.body = tag.to_json
+            req.params['lane-id'] = lane_id if lane_id
           end
           raise_exception_based_on_response!(resp, object_identifier) unless resp.success?
 
