@@ -604,10 +604,10 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
     context 'with additional params' do
       let(:status) { 200 }
       let(:body) { 'version 2 closed' }
-      let(:params) { { user_name: 'lelands', description: nil } }
+      let(:params) { { user_name: 'lelands', description: nil, lane_id: 'high' } }
 
       before do
-        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/versions/current/close?user_name=lelands')
+        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/versions/current/close?user_name=lelands&lane-id=high')
           .with(headers: { 'Content-Type' => 'application/json' })
           .to_return(status: status, body: body)
       end
