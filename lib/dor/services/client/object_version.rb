@@ -106,11 +106,13 @@ module Dor
         # @param description [String] (optional) - a description of the object version being opened
         # @param user_name [String] (optional) - sunetid
         # @param start_accession [Boolean] (optional) - whether to start accessioning workflow; defaults to true
+        # @param lane_id [String] (optional) - lane id to use for accessioning workflow ('low', 'default', 'high')
         # @param user_versions [String] (optional - values are none, new, or update) - create, update, or do nothing with user versions on close; defaults to none.
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
         # @return [String] a message confirming successful closing
         def close(**params)
+          params['lane-id'] = params.delete(:lane_id) if params.key?(:lane_id)
           resp = connection.post do |req|
             req.url close_version_path
             req.params = params.compact
