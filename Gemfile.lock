@@ -99,7 +99,7 @@ GEM
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
     io-console (0.8.2)
-    json (2.19.8)
+    json (2.19.9)
     jsonschema_rs (0.46.5-arm64-darwin)
       bigdecimal (>= 3.1, < 5)
     jsonschema_rs (0.46.5-x86_64-darwin)
@@ -214,4 +214,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-  4.0.13
+  4.0.14
