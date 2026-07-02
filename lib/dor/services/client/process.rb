@@ -32,16 +32,19 @@ module Dor
         # @param [String] lifecycle Bookeeping label for this particular workflow step.  Examples are: 'registered', 'shelved'
         # @param [String] note Any kind of string annotation that you want to attach to the workflow
         # @param [String] current_status Setting this string tells the workflow service to compare the current status to this value.
+        # @param [String,Integer] version The object version this workflow step belongs to. If not provided, the step for the latest version is updated.
         # @raise [Dor::Services::Client::ConflictResponse] if the current status does not match the value passed in current_status.
-        def update(status:, elapsed: 0, lifecycle: nil, note: nil, current_status: nil)
-          perform_update(status: status, elapsed: elapsed, lifecycle: lifecycle, note: note, current_status: current_status)
+        def update(status:, elapsed: 0, lifecycle: nil, note: nil, current_status: nil, version: nil) # rubocop:disable Metrics/ParameterLists
+          perform_update(status: status, elapsed: elapsed, lifecycle: lifecycle, note: note, current_status: current_status,
+                         version: version)
         end
 
         # Updates the status of one step in a workflow to error.
         # @param [String] error_msg The error message.  Ideally, this is a brief message describing the error
         # @param [String] error_text A slot to hold more information about the error, like a full stacktrace
-        def update_error(error_msg:, error_text: nil)
-          perform_update(status: 'error', error_msg: error_msg, error_text: error_text)
+        # @param [String,Integer] version The object version this workflow step belongs to. If not provided, the step for the latest version is updated.
+        def update_error(error_msg:, error_text: nil, version: nil)
+          perform_update(status: 'error', error_msg: error_msg, error_text: error_text, version: version)
         end
 
         attr_reader :object_identifier, :workflow_name, :process, :object_workflow_client

@@ -66,6 +66,20 @@ RSpec.describe Dor::Services::Client::Process do
         expect { client.update(status: 'completed', current_status: 'started') }.to raise_error(Dor::Services::Client::ConflictResponse)
       end
     end
+
+    context 'when API request succeeds with a version' do
+      let(:body) do
+        {
+          status: 'completed',
+          elapsed: 0,
+          version: 2
+        }
+      end
+
+      it 'does not raise' do
+        expect { client.update(status: 'completed', version: 2) }.not_to raise_error
+      end
+    end
   end
 
   describe '#update_error' do
@@ -79,6 +93,21 @@ RSpec.describe Dor::Services::Client::Process do
 
     it 'does not raise' do
       expect { client.update_error(error_msg: 'Ooops', error_text: 'the backtrace') }.not_to raise_error
+    end
+
+    context 'when a version is provided' do
+      let(:body) do
+        {
+          status: 'error',
+          error_msg: 'Ooops',
+          error_text: 'the backtrace',
+          version: 2
+        }
+      end
+
+      it 'does not raise' do
+        expect { client.update_error(error_msg: 'Ooops', error_text: 'the backtrace', version: 2) }.not_to raise_error
+      end
     end
   end
 
