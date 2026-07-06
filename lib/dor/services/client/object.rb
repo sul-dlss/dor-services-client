@@ -91,9 +91,6 @@ module Dor
           resp.headers['ETag']
         end
 
-        BASE_ALLOWED_FIELDS = %i[external_identifier cocina_version label version administrative description].freeze
-        DRO_ALLOWED_FIELDS = BASE_ALLOWED_FIELDS + %i[content_type access identification structural geographic]
-
         # rubocop:disable Metrics/MethodLength
         # rubocop:disable Metrics/AbcSize
         # rubocop:disable Metrics/CyclomaticComplexity
