@@ -14,7 +14,6 @@ RSpec.describe Dor::Services::Client::Objects do
     let(:properties) do
       {
         type: Cocina::Models::ObjectType.object,
-        label: 'My object',
         version: 1,
         administrative: { hasAdminPolicy: 'druid:fv123df4567' },
         identification: { sourceId: 'sul:99999' },

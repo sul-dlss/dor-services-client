@@ -658,7 +658,6 @@ RSpec.describe Dor::Services::Client::Object do
       {
         'id' => druid,
         'current_version_isi' => 1,
-        'obj_label_tesim' => 'Test DRO',
         'modified_latest_dttsi' => '2024-07-03T12:32:16Z',
         'created_at_dttsi' => '2024-07-03T12:32:16Z',
         'is_governed_by_ssim' => 'info:fedora/druid:hy787xj5878',
