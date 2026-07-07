@@ -201,7 +201,7 @@ module Dor
           "#{api_version}/objects/#{object_identifier}"
         end
 
-        DEFAULT_FIELDS = %i[externalIdentifier type version label cocinaVersion].freeze
+        DEFAULT_FIELDS = %i[externalIdentifier type version cocinaVersion].freeze
 
         def query(fields)
           all_fields = DEFAULT_FIELDS + fields
