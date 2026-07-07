@@ -238,7 +238,7 @@ RSpec.describe Dor::Services::Client::Object do
       stub_request(:post, 'https://dor-services.example.com/graphql')
         .with(
           body: '{"query":"{\\n  cocinaObject(externalIdentifier: \"druid:bc123df4567\") {\\n    ' \
-                'externalIdentifier\\ntype\\nversion\\nlabel\\ncocinaVersion\\nadministrative\\naccess\\n' \
+                'externalIdentifier\\ntype\\nversion\\ncocinaVersion\\nadministrative\\naccess\\n' \
                 'identification\\n  }\\n}\\n"}',
           headers: {
             'Authorization' => 'Bearer 123',
@@ -256,7 +256,6 @@ RSpec.describe Dor::Services::Client::Object do
               externalIdentifier: druid,
               type: 'https://cocina.sul.stanford.edu/models/object',
               version: 1,
-              label: 'factory DRO label',
               cocinaVersion: '0.90.0',
               administrative: {
                 hasAdminPolicy: 'druid:hv992ry2431'
@@ -299,7 +298,6 @@ RSpec.describe Dor::Services::Client::Object do
               externalIdentifier: druid,
               type: 'https://cocina.sul.stanford.edu/models/admin_policy',
               version: 1,
-              label: 'factory APO label',
               cocinaVersion: '0.90.0',
               administrative: {
                 roles: [],
