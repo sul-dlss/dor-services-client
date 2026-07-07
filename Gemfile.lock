@@ -3,7 +3,7 @@ PATH
   specs:
     dor-services-client (15.60.1)
       activesupport (>= 7.0.0)
-      cocina-models (~> 0.126.0)
+      cocina-models (~> 0.127.0)
       deprecation
       faraday (~> 2.0)
       faraday-retry
@@ -35,7 +35,7 @@ GEM
     bigdecimal (4.1.2)
     byebug (13.0.0)
       reline (>= 0.6.0)
-    cocina-models (0.126.0)
+    cocina-models (0.127.0)
       activesupport
       cocina_display
       deprecation
