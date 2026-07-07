@@ -122,7 +122,6 @@ RSpec.describe Dor::Services::Client::UserVersion do
                 cocinaVersion: '0.75.0',
                 type: 'https://cocina.sul.stanford.edu/models/map',
                 externalIdentifier: 'druid:zc797bh1369',
-                label: 'Naka Shina gomanbun no ichi Buko',
                 version: 3,
                 access:
                   { 'view' => 'world',
@@ -402,7 +401,6 @@ RSpec.describe Dor::Services::Client::UserVersion do
       {
         'id' => druid,
         'current_version_isi' => 1,
-        'obj_label_tesim' => 'Test DRO',
         'modified_latest_dttsi' => '2024-07-03T12:32:16Z',
         'created_at_dttsi' => '2024-07-03T12:32:16Z',
         'is_governed_by_ssim' => 'info:fedora/druid:hy787xj5878',
