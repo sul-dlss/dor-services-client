@@ -37,6 +37,12 @@ module Dor
           to_process(node)
         end
 
+        # Returns the process for the specific version and name:
+        def process_for(name:, version:)
+          node = ng_xml.at_xpath("/workflow/process[@name = '#{name}' and @version = #{version}]")
+          to_process(node)
+        end
+
         # @return [Array<String>] returns a list of all processes
         def processes
           ng_xml.xpath('/workflow/process').map { |node| to_process(node) }

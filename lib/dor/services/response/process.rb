@@ -52,6 +52,10 @@ module Dor
           @attributes[:version]&.to_i
         end
 
+        def active_version?
+          @attributes[:activeVersion] == 'true'
+        end
+
         # @return [Hash] the context for the process (or empty hash if none present)
         def context
           return {} unless @attributes[:context].present?
