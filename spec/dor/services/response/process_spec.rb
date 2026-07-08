@@ -104,4 +104,44 @@ RSpec.describe Dor::Services::Response::Process do
 
     it { is_expected.to eq 3 }
   end
+
+  describe '#active_version?' do
+    subject { instance.active_version? }
+
+    context 'when activeVersion is true' do
+      let(:xml) do
+        <<~XML
+          <workflow repository="dor" objectId="druid:mw971zk1113" id="assemblyWF">
+            <process name="start-assembly" version="2" activeVersion="true">
+          </workflow>
+        XML
+      end
+
+      it { is_expected.to be true }
+    end
+
+    context 'when activeVersion is false' do
+      let(:xml) do
+        <<~XML
+          <workflow repository="dor" objectId="druid:mw971zk1113" id="assemblyWF">
+            <process name="start-assembly" version="2" activeVersion="false">
+          </workflow>
+        XML
+      end
+
+      it { is_expected.to be false }
+    end
+
+    context 'when activeVersion is not present' do
+      let(:xml) do
+        <<~XML
+          <workflow repository="dor" objectId="druid:mw971zk1113" id="assemblyWF">
+            <process name="start-assembly" version="2">
+          </workflow>
+        XML
+      end
+
+      it { is_expected.to be false }
+    end
+  end
 end

@@ -244,6 +244,41 @@ RSpec.describe Dor::Services::Response::Workflow do
     end
   end
 
+  describe '#process_for' do
+    subject(:process) { instance.process_for(name: name, version: version) }
+
+    let(:name) { 'jp2-create' }
+    let(:version) { 2 }
+    let(:xml) do
+      <<~XML
+        <workflow repository="dor" objectId="druid:mw971zk1113" id="assemblyWF">
+          <process version="1" laneId="default" elapsed="0.509" attempts="1" datetime="2013-02-18T14:42:24-0800" status="completed" name="jp2-create"/>
+          <process version="2" laneId="default" elapsed="0.509" attempts="1" datetime="2013-02-18T14:42:24-0800" status="error" name="jp2-create" errorMessage="it just broke"/>
+          <process version="2" laneId="default" elapsed="0.509" attempts="1" datetime="2013-02-18T14:42:24-0800" status="waiting" name="start-assembly"/>
+        </workflow>
+      XML
+    end
+
+    it 'returns the process matching the provided name and version' do
+      expect(process).to be_a Dor::Services::Response::Process
+      expect(process.name).to eq 'jp2-create'
+      expect(process.version).to eq 2
+      expect(process.status).to eq 'error'
+      expect(process.error_message).to eq 'it just broke'
+    end
+
+    context 'when no process matches the name and version' do
+      let(:name) { 'does-not-exist' }
+
+      it 'returns an empty process object' do
+        expect(process).to be_a Dor::Services::Response::Process
+        expect(process.name).to be_nil
+        expect(process.status).to be_nil
+        expect(process.version).to be_nil
+      end
+    end
+  end
+
   describe '#processes' do
     subject(:processes) { instance.processes }
 
