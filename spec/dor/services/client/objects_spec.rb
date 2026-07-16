@@ -16,16 +16,19 @@ RSpec.describe Dor::Services::Client::Objects do
         type: Cocina::Models::ObjectType.object,
         version: 1,
         administrative: { hasAdminPolicy: 'druid:fv123df4567' },
-        identification: { sourceId: 'sul:99999' },
-        structural: {}
+        identification: { sourceId: 'sul:99999', catalogLinks: [] },
+        structural: {},
+        description: request_description_props
       }
     end
     let(:expected_request) { request_dro.to_json }
-    let(:description_props) do
+    let(:request_description_props) do
       {
-        title: [{ value: 'Test DRO' }],
-        purl: 'https://purl.stanford.edu/bc123df4567'
+        title: [{ value: 'Test DRO' }]
       }
+    end
+    let(:description_props) do
+      request_description_props.merge(purl: 'https://purl.stanford.edu/bc123df4567')
     end
 
     let(:status) { 201 }
