@@ -83,6 +83,9 @@ background_jobs_client = Dor::Services::Client.background_job_results
 # Show results of background job
 background_jobs_client.show(job_id: 123)
 
+# List the valid event types
+Dor::Services::Client.event_types.list
+
 # For performing operations on a known, registered object
 object_client = Dor::Services::Client.object(object_identifier)
 
@@ -159,6 +162,9 @@ object_client.release_tags.list(public: true) # only public release tags (i.e. l
 # Create and list events for an object
 object_client.events.create(type: type, data: data)
 object_client.events.list
+object_client.events.list(event_types: ['version_open', 'version_close'])
+# from is inclusive and to is exclusive; either may be a Time, Date, or ISO 8601 string (UTC if no offset is given)
+object_client.events.list(from: '2026-10-01', to: Time.now)
 
 # Create workspaces
 object_client.workspace.create(source: object_path_string)
