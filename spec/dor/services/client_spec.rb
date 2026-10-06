@@ -74,6 +74,16 @@ RSpec.describe Dor::Services::Client do
       end
     end
 
+    describe '.event_types' do
+      it 'returns an instance of Client::EventTypes' do
+        expect(described_class.event_types).to be_instance_of Dor::Services::Client::EventTypes
+      end
+
+      it 'returns the memoized instance when called again' do
+        expect(described_class.event_types).to eq described_class.event_types
+      end
+    end
+
     describe '.administrative_tags' do
       subject { described_class.administrative_tags }
 
