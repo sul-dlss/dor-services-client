@@ -120,6 +120,8 @@ object_client.version.solr(2)
 object_client.version.open(description: 'Changed title')
 # see dor-services-app openapi.yml for optional params
 object_client.version.close
+# Update the description of the currently open version
+object_client.version.update_description(description: 'Changed title and abstract', user_name: 'some_sunetid')
 
 # Manage user versions
 object_client.user_version.inventory

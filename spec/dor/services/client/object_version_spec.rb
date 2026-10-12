@@ -404,6 +404,57 @@ RSpec.describe Dor::Services::Client::ObjectVersion do
     end
   end
 
+  describe '#update_description' do
+    subject(:request) { client.update_description(description: 'Changed title', user_name: 'some_sunetid') }
+
+    let(:status) { [204, 'no content'] }
+
+    before do
+      stub_request(:patch, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/versions/current')
+        .with(
+          body: { description: 'Changed title', user_name: 'some_sunetid' }.to_json,
+          headers: { 'Content-Type' => 'application/json' }
+        )
+        .to_return(status: status)
+    end
+
+    context 'when API request succeeds' do
+      it 'does not raise' do
+        expect { request }.not_to raise_error
+      end
+    end
+
+    context 'when user_name is not provided' do
+      subject(:request) { client.update_description(description: 'Changed title') }
+
+      before do
+        stub_request(:patch, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/versions/current')
+          .with(body: { description: 'Changed title' }.to_json)
+          .to_return(status: 204)
+      end
+
+      it 'does not raise' do
+        expect { request }.not_to raise_error
+      end
+    end
+
+    context 'when API request returns 404' do
+      let(:status) { [404, 'not found'] }
+
+      it 'raises a NotFoundResponse exception' do
+        expect { request }.to raise_error(Dor::Services::Client::NotFoundResponse)
+      end
+    end
+
+    context 'when API request returns 409' do
+      let(:status) { [409, 'conflict'] }
+
+      it 'raises a ConflictResponse exception' do
+        expect { request }.to raise_error(Dor::Services::Client::ConflictResponse)
+      end
+    end
+  end
+
   describe '#discard' do
     subject(:request) { client.discard }
 

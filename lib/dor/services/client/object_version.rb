@@ -123,6 +123,23 @@ module Dor
           raise_exception_based_on_response!(resp)
         end
 
+        # Update the description of the currently open version for an object
+        # @param description [String] the new description of the version - required
+        # @param user_name [String] (optional) - sunetid
+        # @raise [NotFoundResponse] when the response is a 404 (object not found)
+        # @raise [ConflictResponse] when the response is a 409 (no version is open)
+        # @raise [UnexpectedResponse] when the response is not successful.
+        def update_description(description:, user_name: nil)
+          resp = connection.patch do |req|
+            req.url "#{base_path}/current"
+            req.headers['Content-Type'] = 'application/json'
+            req.body = { description: description, user_name: user_name }.compact.to_json
+          end
+          return if resp.success?
+
+          raise_exception_based_on_response!(resp)
+        end
+
         # @return [Array] a list of the versions
         # @raise [UnexpectedResponse] on an unsuccessful response from the server
         def inventory
