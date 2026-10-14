@@ -4,8 +4,13 @@ plugins:
   - rubocop-rspec
 
 AllCops:
-  TargetRubyVersion: 3.0
+  TargetRubyVersion: 4.0
   SuggestExtensions: false
+
+# Development uses Ruby 4, but the gem still supports older consumers.
+Gemspec/RequiredRubyVersion:
+  Exclude:
+    - dor-services-client.gemspec
 
 Metrics/BlockLength:
   Exclude:
