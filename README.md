@@ -169,7 +169,7 @@ object_client.events.list(event_types: ['version_open', 'version_close'])
 object_client.events.list(from: '2026-10-01', to: Time.now)
 
 # Create workspaces
-object_client.workspace.create(source: object_path_string)
+object_client.workspace.create(content: true, metadata: true)
 
 # Reindex
 object_client.reindex
