@@ -198,6 +198,21 @@ RSpec.describe Dor::Services::Client::Object do
         expect(Cocina::Models).to have_received(:build).with(cocina.to_h.deep_stringify_keys, validate: false)
       end
     end
+
+    context 'when without structural contains' do
+      subject(:model) { client.find(without_structural_contains: true) }
+
+      before do
+        stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:bc123df4567?without_structural_contains=true')
+          .to_return(status: 200, body: cocina.to_json, headers: { 'ETag' => 'W/"d41d8cd98f00b204e9800998ecf8427e"' })
+      end
+
+      it 'requests the object without structural contains' do
+        expect(model.externalIdentifier).to eq 'druid:bc123df4567'
+        expect(a_request(:get, 'https://dor-services.example.com/v1/objects/druid:bc123df4567?without_structural_contains=true'))
+          .to have_been_made
+      end
+    end
   end
 
   describe '#lock' do

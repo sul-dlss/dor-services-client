@@ -68,12 +68,15 @@ module Dor
 
         # Retrieves the Cocina model
         # @param [boolean] validate validate the response object
+        # @param [boolean] without_structural_contains omit the file sets (structural.contains), e.g., for objects
+        #   with many files. The returned model must not be used for an update, which would remove its files.
         # @raise [NotFoundResponse] when the response is a 404 (object not found)
         # @raise [UnexpectedResponse] when the response is not successful.
         # @return [Cocina::Models::DROWithMetadata,Cocina::Models::CollectionWithMetadata,Cocina::Models::AdminPolicyWithMetadata] the returned model
-        def find(validate: false)
+        def find(validate: false, without_structural_contains: false)
           resp = connection.get do |req|
             req.url object_path
+            req.params['without_structural_contains'] = true if without_structural_contains
           end
           raise_exception_based_on_response!(resp) unless resp.success?
 
