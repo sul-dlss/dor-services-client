@@ -84,6 +84,9 @@ module Dor
       # This occurs when the request is well-formed but the content is not indexable
       class UnprocessableContentError < UnexpectedResponse; end
 
+      # Error that is raised when dor-services-app returns a 500 because the stored cocina is invalid
+      class InvalidCocinaError < UnexpectedResponse; end
+
       module Types
         include Dry.Types()
       end

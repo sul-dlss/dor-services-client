@@ -16,6 +16,9 @@ module Dor
 
         JSON_API_MIME_TYPE = 'application/vnd.api+json'
 
+        # Title of the JSON:API error dor-services-app returns when stored cocina is invalid
+        INVALID_COCINA_TITLE = 'Invalid cocina'
+
         def initialize(connection:, version:)
           @connection = connection
           @api_version = version
@@ -36,10 +39,16 @@ module Dor
                  else
                    {}
                  end
-          exception_class = EXCEPTION_CLASS.fetch(response.status, UnexpectedResponse)
-          raise exception_class.new(response: response,
-                                    object_identifier: object_identifier,
-                                    errors: data.fetch('errors', []))
+          errors = data.fetch('errors', [])
+          raise exception_class_for(response.status, errors).new(response: response,
+                                                                 object_identifier: object_identifier,
+                                                                 errors: errors)
+        end
+
+        def exception_class_for(status, errors)
+          return InvalidCocinaError if status == 500 && errors.first&.dig('title') == INVALID_COCINA_TITLE
+
+          EXCEPTION_CLASS.fetch(status, UnexpectedResponse)
         end
 
         def build_cocina_from_response(item, headers: nil, validate: false)
