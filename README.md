@@ -134,6 +134,10 @@ object_client.user_version.update(user_version: Dor::Services::Client::UserVersi
 # Return the Cocina metadata
 object_client.find
 
+# Return the Cocina metadata without the file sets (structural.contains), e.g., for objects with many files.
+# Don't use the returned object for an update, which would remove its files.
+object_client.find(without_structural_contains: true)
+
 # Returns "lite" Cocina metadata (excluding specified attributes)
 object_client.find_lite(structural: false, geographic: false)
 
