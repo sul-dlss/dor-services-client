@@ -213,6 +213,19 @@ RSpec.describe Dor::Services::Client::Object do
           .to have_been_made
       end
     end
+
+    context 'when the stored cocina is invalid' do
+      before do
+        stub_request(:get, 'https://dor-services.example.com/v1/objects/druid:bc123df4567')
+          .to_return(status: 500,
+                     body: { errors: [{ status: '500', title: 'Invalid cocina', detail: 'bad cocina' }] }.to_json,
+                     headers: { 'content-type' => 'application/vnd.api+json' })
+      end
+
+      it 'raises an InvalidCocinaError' do
+        expect { model }.to raise_error(Dor::Services::Client::InvalidCocinaError, 'Invalid cocina (bad cocina)')
+      end
+    end
   end
 
   describe '#lock' do

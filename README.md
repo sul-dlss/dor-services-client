@@ -132,6 +132,7 @@ object_client.user_version.create(object_version: 3)
 object_client.user_version.update(user_version: Dor::Services::Client::UserVersion::Version.new(version: 3, userVersion: 3, withdrawn: true))
 
 # Return the Cocina metadata
+# Raises Dor::Services::Client::InvalidCocinaError if the stored cocina is invalid.
 object_client.find
 
 # Return the Cocina metadata without the file sets (structural.contains), e.g., for objects with many files.
