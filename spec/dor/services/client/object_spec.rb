@@ -545,6 +545,21 @@ RSpec.describe Dor::Services::Client::Object do
       end
     end
 
+    context 'with a user name' do
+      subject(:request) { client.refresh_descriptive_metadata_from_ils(user_name: 'dude') }
+
+      let(:status) { 200 }
+
+      before do
+        stub_request(:post, 'https://dor-services.example.com/v1/objects/druid:bc123df4567/refresh_metadata?user_name=dude')
+          .to_return(status:)
+      end
+
+      it 'sends the user name' do
+        expect(request).to be true
+      end
+    end
+
     context 'when API request returns 404' do
       let(:status) { [404, 'not found'] }
 

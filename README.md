@@ -98,8 +98,8 @@ object_client.publish(workflow: 'releaseWF', lane_id: 'low')
 # Start accessioning an object (initialize assemblyWF or specified workflow, and version object if needed)
 object_client.accession.start(**versioning_params)
 
-# Copy metadata from Symphony into descMetadata
-object_client.refresh_descriptive_metadata_from_ils
+# Copy metadata from Folio into the description, recording who requested it
+object_client.refresh_descriptive_metadata_from_ils(user_name: 'dude')
 
 # Apply defaults from the item's AdminPolicy to the item itself
 object_client.apply_admin_policy_defaults
